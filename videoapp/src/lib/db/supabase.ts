@@ -38,6 +38,17 @@ export const supabaseDb: Db = {
   async updateProfile(id, patch) {
     must(await supabaseAdmin().from("profiles").update(patch).eq("id", id));
   },
+  async getProfileByStripeCustomer(c) {
+    return must(
+      await supabaseAdmin().from("profiles").select("*").eq("stripe_customer_id", c).maybeSingle(),
+    ) as Profile | null;
+  },
+  async recordStripeEvent(id, type) {
+    const { error } = await supabaseAdmin().from("stripe_events").insert({ id, type });
+    if (!error) return true;
+    if (error.code === "23505") return false;
+    throw new Error(error.message);
+  },
   async listProfiles(limit = 200) {
     return must(
       await supabaseAdmin().from("profiles").select("*").order("created_at", { ascending: false }).limit(limit),

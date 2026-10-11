@@ -9,6 +9,8 @@ export interface Profile {
   role: Role;
   referral_code: string;
   referred_by: string | null;
+  stripe_customer_id?: string | null;
+  stripe_subscription_id?: string | null;
   created_at: string;
 }
 

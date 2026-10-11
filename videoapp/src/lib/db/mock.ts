@@ -32,6 +32,7 @@ interface Store {
   jobs: Job[];
   fingerprints: { user_id: string; fingerprint: string; created_at: string }[];
   moderation?: Record<string, unknown>[];
+  stripeEvents?: string[];
   consents?: Record<string, unknown>[];
   ledgerSeq: number;
 }
@@ -165,6 +166,14 @@ export const mockDb: Db = {
     tx((s) => {
       const p = s.profiles.find((x) => x.id === id);
       if (p) Object.assign(p, patch);
+    }),
+  getProfileByStripeCustomer: (c) => read((s) => clone(s.profiles.find((p) => p.stripe_customer_id === c) ?? null)),
+  recordStripeEvent: (id) =>
+    tx((s) => {
+      s.stripeEvents ??= [];
+      if (s.stripeEvents.includes(id)) return false;
+      s.stripeEvents.push(id);
+      return true;
     }),
   listProfiles: (limit = 200) =>
     read((s) => clone([...s.profiles].sort((a, b) => b.created_at.localeCompare(a.created_at)).slice(0, limit))),

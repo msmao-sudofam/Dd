@@ -46,7 +46,13 @@ export interface DailyMarginRow {
 export interface Db {
   getProfile(id: string): Promise<Profile | null>;
   getProfileByReferralCode(code: string): Promise<Profile | null>;
-  updateProfile(id: string, patch: Partial<Pick<Profile, "plan" | "role" | "referred_by">>): Promise<void>;
+  updateProfile(
+    id: string,
+    patch: Partial<Pick<Profile, "plan" | "role" | "referred_by" | "stripe_customer_id" | "stripe_subscription_id">>,
+  ): Promise<void>;
+  getProfileByStripeCustomer(customerId: string): Promise<Profile | null>;
+  /** Returns false if this Stripe event id was already recorded. */
+  recordStripeEvent(id: string, type: string): Promise<boolean>;
   listProfiles(limit?: number): Promise<Profile[]>;
 
   applyCredit(args: ApplyCreditArgs): Promise<ApplyCreditResult>;

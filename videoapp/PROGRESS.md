@@ -29,12 +29,12 @@ and `MOCK_PROVIDERS=true` (sample video after 5s, Stripe adds credits instantly)
 - [x] Commit `phase 2: ...`
 
 ## Phase 3 — Payments
-- [ ] Stripe Checkout for packs (Starter/Creator/Pro) + monthly plan
-- [ ] `/api/webhooks/stripe` idempotent on `stripe_event_id`
-- [ ] Mock Stripe adds credits instantly
-- [ ] Billing page: balance, ledger history, buy more
-- [ ] Tests: purchase adds credits exactly once even if webhook fires twice
-- [ ] Commit `phase 3: ...`
+- [x] Stripe Checkout for packs (Starter/Creator/Pro) + monthly plan
+- [x] `/api/webhooks/stripe` idempotent on `stripe_event_id`
+- [x] Mock Stripe adds credits instantly
+- [x] Billing page: balance, ledger history, buy more
+- [x] Tests: purchase adds credits exactly once even if webhook fires twice
+- [x] Commit `phase 3: ...`
 
 ## Phase 4 — Presets
 - [ ] Preset gallery homepage with categories + autoplay previews
@@ -67,6 +67,7 @@ All features run against mocks today. Add these to `.env.local` (and Vercel) to 
 - [ ] `OPENAI_API_KEY` for moderation (free endpoint). Without it only the local keyword rules run and images are not scanned.
 - [ ] `RESEND_API_KEY` + verified sending domain → `EMAIL_FROM` ("your video is ready" emails; currently logged to console).
 - [ ] Optional backup: `REPLICATE_API_TOKEN` + `REPLICATE_WEBHOOK_SECRET` (GET /v1/webhooks/default/secret). No Replicate models are seeded yet.
+- [ ] Stripe TEST keys: `STRIPE_SECRET_KEY` (sk_test_…) and `STRIPE_WEBHOOK_SECRET` (`stripe listen --forward-to localhost:3000/api/webhooks/stripe` locally; a Dashboard webhook endpoint on Vercel) subscribed to `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `invoice.paid`, `customer.subscription.deleted`. Enable the Customer Portal in Stripe settings.
 - [ ] Supabase project: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`; run migrations; enable Google provider (Google Cloud OAuth client id/secret)
 
 ## Decisions / notes
@@ -78,4 +79,7 @@ All features run against mocks today. Add these to `.env.local` (and Vercel) to 
 - Lost webhooks / localhost dev: polling `/api/jobs?ids=` reconciles pending jobs with the provider's status API;
   jobs pending > 30 min are failed + refunded.
 - No real generation smoke test was run (no FAL_KEY) — $0 spent.
+- Stripe idempotency: ledger `stripe_event_id` stores a per-payment key (`cs:<session>` / `in:<invoice>`), stronger than the
+  raw event id (two different events for one payment can't double-credit). Raw event ids are logged in `stripe_events`.
+- Prices are inline `price_data` (no Stripe Dashboard products needed). Pack prices live in `src/lib/pricing.ts`.
 - Signup bonus = 24 credits = one 6s "Fast" clip.

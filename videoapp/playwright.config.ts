@@ -10,6 +10,7 @@ const mockEnv = {
   SESSION_SECRET: "e2e-secret",
   NEXT_PUBLIC_APP_URL: `http://localhost:${PORT}`,
   ADMIN_EMAILS: "admin@example.com",
+  STRIPE_WEBHOOK_SECRET: "whsec_e2e_test_secret",
 };
 
 export default defineConfig({
