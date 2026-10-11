@@ -3,6 +3,8 @@ import type { Client } from "pg";
 import { asUser, createMigratedDb, pgAvailable } from "./helpers";
 
 const available = await pgAvailable();
+// CI sets REQUIRE_PG so a missing database fails loudly instead of silently skipping.
+if (!available && process.env.REQUIRE_PG) throw new Error(`REQUIRE_PG set but Postgres is unreachable`);
 
 describe.skipIf(!available)("core migration (local Postgres)", () => {
   let db: Client;
