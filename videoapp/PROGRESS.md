@@ -110,3 +110,25 @@ All features run against mocks today. Add these to `.env.local` (and Vercel) to 
 ## Status
 All 6 phases complete against mocks. Final run: 53/53 Vitest (incl. SQL), 18/18 Playwright, lint + typecheck clean.
 Next: HANDOFF.md → "Go live".
+
+---
+
+# GO-LIVE (mocks → real services → Vercel preview)
+
+Rules: $5 cap for step 3; step 4 only at the amount M approves; Stripe TEST keys only; never deploy production; never buy
+a domain; RunPod Draft hidden; never commit keys; commit "golive step N: …" after each step.
+
+## Step 0 — Logins & keys
+- [x] CLIs installed: supabase 2.120, vercel 63.1, stripe 1.31, gh 2.89 (gh API works via proxy, admin on repo)
+- [x] Vercel connector authenticated as moquinmoreno@gmail.com (Hobby)
+- [ ] BLOCKED on M: network allowlist + env-var secrets in the cloud environment settings (see list below), then a new session
+- [ ] Verify every key works
+- How keys reach the app: the container is ephemeral, so keys live as environment variables in the cloud environment
+  settings; the session writes `videoapp/.env.local` from them (gitignored) — never pasted into chat or committed.
+
+## Step 1 — Supabase  - [ ]
+## Step 2 — fal pricing (≥60% margin)  - [ ]
+## Step 3 — Real smoke test (≤ $5)  - [ ]
+## Step 4 — Preset previews (wait for M's approval of the exact cost)  - [ ]
+## Step 5 — CI on PRs + pushes  - [ ]
+## Step 6 — Vercel preview + webhooks + e2e against preview  - [ ]
