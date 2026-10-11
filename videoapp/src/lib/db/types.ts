@@ -1,4 +1,4 @@
-import type { Job, LedgerEntry, LedgerReason, Model, Preset, Profile, ProviderName } from "@/lib/types";
+import type { Job, LedgerEntry, LedgerReason, Model, Preset, Profile, ProviderName, UgcActor, UgcProject } from "@/lib/types";
 
 export class InsufficientCreditsError extends Error {
   constructor() {
@@ -23,11 +23,26 @@ export interface ApplyCreditResult {
 }
 
 export type NewJob = Pick<Job, "user_id" | "model_id" | "input_json" | "provider" | "output_type"> &
-  Partial<Pick<Job, "preset_id" | "credits_charged" | "cost_usd" | "status">>;
+  Partial<Pick<Job, "preset_id" | "credits_charged" | "cost_usd" | "status" | "kind" | "stage" | "stage_data">>;
 
 export type JobPatch = Partial<
-  Pick<Job, "status" | "provider_request_id" | "output_url" | "error" | "completed_at" | "cost_usd" | "credits_charged">
+  Pick<
+    Job,
+    | "status"
+    | "provider"
+    | "provider_request_id"
+    | "output_url"
+    | "error"
+    | "completed_at"
+    | "cost_usd"
+    | "credits_charged"
+    | "stage"
+    | "stage_data"
+  >
 >;
+
+export type NewUgcActor = Omit<UgcActor, "id" | "created_at">;
+export type NewUgcProject = Omit<UgcProject, "id" | "created_at">;
 
 export type ModelInput = Omit<Model, "id" | "created_at"> & { id?: string };
 export type PresetInput = Omit<Preset, "id" | "created_at"> & { id?: string };
@@ -73,6 +88,8 @@ export interface Db {
   updateJob(id: string, patch: JobPatch): Promise<Job>;
   /** Conditional update: only applies if the job's status is in `from`. Returns null if it wasn't. */
   transitionJob(id: string, from: Job["status"][], patch: JobPatch): Promise<Job | null>;
+  /** Conditional update keyed on the current provider_request_id (pipeline stage claim). Null if it changed. */
+  claimJobRequest(id: string, expectedRequestId: string, patch: JobPatch): Promise<Job | null>;
   getJob(id: string): Promise<Job | null>;
   findJobByProviderRequest(provider: ProviderName, requestId: string): Promise<Job | null>;
   listJobs(userId: string, limit?: number): Promise<Job[]>;
@@ -81,6 +98,12 @@ export interface Db {
 
   logModeration(e: { userId: string | null; kind: "text" | "image"; excerpt: string; reasons: string[]; source: "local" | "openai" }): Promise<void>;
   logConsent(e: { userId: string; uploadPath: string; statement: string; ip: string | null; userAgent: string | null }): Promise<void>;
+
+  listUgcActors(userId: string | null): Promise<UgcActor[]>;
+  getUgcActor(id: string): Promise<UgcActor | null>;
+  createUgcActor(a: NewUgcActor): Promise<UgcActor>;
+  createUgcProject(p: NewUgcProject): Promise<UgcProject>;
+  getUgcProject(id: string): Promise<UgcProject | null>;
 
   /** Records a signup fingerprint; returns how many accounts already used it. */
   recordSignupFingerprint(userId: string, fingerprint: string): Promise<number>;

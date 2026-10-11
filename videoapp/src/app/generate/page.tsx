@@ -9,7 +9,7 @@ export const metadata = { title: "Create" };
 export default async function GeneratePage() {
   const profile = await requireProfile("/generate");
   const [allModels, jobs] = await Promise.all([db().listModels(), db().listJobs(profile.id, 30)]);
-  const models = allModels.filter(modelAvailable);
+  const models = allModels.filter((m) => m.type !== "ugc" && modelAvailable(m));
   const mockProviders = isMockProvidersForced() || models.some((m) => !providerConfigured(m.provider));
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">

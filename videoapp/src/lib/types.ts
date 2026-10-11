@@ -35,7 +35,7 @@ export interface LedgerEntry {
 }
 
 export type ProviderName = "fal" | "replicate" | "self" | "mock";
-export type ModelType = "t2v" | "i2v" | "t2i" | "i2i";
+export type ModelType = "t2v" | "i2v" | "t2i" | "i2i" | "ugc";
 export type Tier = "fast" | "mid" | "premium";
 
 export interface Model {
@@ -93,8 +93,14 @@ export interface JobInput {
   [k: string]: unknown;
 }
 
+export type JobKind = "single" | "ugc";
+export type UgcStage = "voice" | "composite" | "avatar" | "broll" | "assemble" | "done";
+
 export interface Job {
   id: string;
+  kind?: JobKind;
+  stage?: UgcStage | null;
+  stage_data?: Record<string, unknown>;
   user_id: string;
   model_id: string;
   preset_id: string | null;
@@ -114,4 +120,44 @@ export interface Job {
 export interface SessionUser {
   id: string;
   email: string;
+}
+
+export interface UgcActor {
+  id: string;
+  slug: string;
+  name: string;
+  vibe: string;
+  age_range: string;
+  setting: string;
+  portrait_url: string | null;
+  preview_video_url: string | null;
+  voice: string;
+  voice_label: string;
+  tags: string[];
+  owner_id: string | null;
+  upload_path: string | null;
+  sort_order: number;
+  enabled: boolean;
+  created_at: string;
+}
+
+export interface UgcProject {
+  id: string;
+  user_id: string;
+  product_name: string;
+  product_description: string;
+  product_url: string | null;
+  benefits: string[];
+  audience: string;
+  offer: string;
+  product_image_path: string | null;
+  created_at: string;
+}
+
+export interface UgcScript {
+  angle: string;
+  hook: string;
+  body: string[];
+  cta: string;
+  on_screen_hook: string;
 }

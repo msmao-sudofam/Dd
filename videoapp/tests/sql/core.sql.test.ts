@@ -116,3 +116,44 @@ describe.skipIf(!available)("core migration (local Postgres)", () => {
     });
   });
 });
+
+describe.skipIf(!available)("UGC tables (local Postgres)", () => {
+  let db: Client;
+  let drop: () => Promise<void>;
+  beforeAll(async () => {
+    ({ client: db, drop } = await createMigratedDb());
+  });
+  afterAll(async () => drop?.());
+
+  it("library creators are visible to everyone, own-face creators only to their owner", async () => {
+    const { rows: a } = await db.query("insert into auth.users (email) values ('ugc-a@example.com') returning id");
+    const { rows: b } = await db.query("insert into auth.users (email) values ('ugc-b@example.com') returning id");
+    await db.query(
+      "insert into public.ugc_actors (slug, name, voice, owner_id, upload_path) values ('me-a', 'A', 'Sarah', $1, $2)",
+      [a[0].id, `${a[0].id}/selfie.jpg`],
+    );
+    const lib = (await db.query("select count(*)::int as n from public.ugc_actors where owner_id is null")).rows[0].n;
+    expect(lib).toBe(8); // seeded
+    await asUser(db, b[0].id, async () => {
+      const { rows } = await db.query("select slug from public.ugc_actors");
+      expect(rows.map((r) => r.slug)).not.toContain("me-a");
+      expect(rows).toHaveLength(8);
+    });
+    await asUser(db, a[0].id, async () => {
+      const { rows } = await db.query("select slug from public.ugc_actors");
+      expect(rows.map((r) => r.slug)).toContain("me-a");
+    });
+  });
+
+  it("own-face creators must reference an upload, and jobs accept the ugc kind", async () => {
+    const { rows: u } = await db.query("insert into auth.users (email) values ('ugc-c@example.com') returning id");
+    await expect(
+      db.query("insert into public.ugc_actors (slug, name, voice, owner_id) values ('bad', 'x', 'Sarah', $1)", [u[0].id]),
+    ).rejects.toThrow(/check/);
+    const { rows: m } = await db.query("select id from public.models where slug = 'ugc-studio'");
+    await db.query("insert into public.jobs (user_id, model_id, provider, kind, stage) values ($1, $2, 'fal', 'ugc', 'voice')", [
+      u[0].id,
+      m[0].id,
+    ]);
+  });
+});

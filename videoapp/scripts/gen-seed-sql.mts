@@ -1,7 +1,7 @@
 // Generates supabase/seed.sql from src/lib/seed-data.ts so Supabase and the mock DB share one catalog.
 // Run: npm run gen:seed
 import { writeFileSync } from "node:fs";
-import { SEED_MODELS, SEED_PRESETS } from "../src/lib/seed-data.ts";
+import { SEED_MODELS, SEED_PRESETS, SEED_UGC_ACTORS } from "../src/lib/seed-data.ts";
 
 const q = (v: unknown): string => {
   if (v === null || v === undefined) return "null";
@@ -31,6 +31,14 @@ for (const { model_slug, ...p } of SEED_PRESETS) {
       `on conflict (slug) do update set ${[...cols.filter((c) => c !== "slug"), "model_id"].map((c) => `${c} = excluded.${c}`).join(", ")};`,
   );
 }
+out.push("");
+for (const a of SEED_UGC_ACTORS) {
+  const cols = Object.keys(a);
+  out.push(
+    `insert into public.ugc_actors (${cols.join(", ")}) values (${cols.map((c) => q((a as Record<string, unknown>)[c])).join(", ")})\n` +
+      `on conflict (slug) do update set ${cols.filter((c) => c !== "slug").map((c) => `${c} = excluded.${c}`).join(", ")};`,
+  );
+}
 out.push("", "commit;", "");
 writeFileSync(new URL("../supabase/seed.sql", import.meta.url), out.join("\n"));
-console.log(`seed.sql: ${SEED_MODELS.length} models, ${SEED_PRESETS.length} presets`);
+console.log(`seed.sql: ${SEED_MODELS.length} models, ${SEED_PRESETS.length} presets, ${SEED_UGC_ACTORS.length} UGC actors`);

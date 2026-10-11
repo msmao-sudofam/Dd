@@ -9,6 +9,7 @@ import { apiCostFor, creditCostFor } from "@/lib/pricing";
 import { adapterByName, adapterForModel, modelAvailable, webhookUrlFor, type ProviderResult } from "@/lib/providers";
 import { postProcessOutput } from "@/lib/postprocess";
 import { track } from "@/lib/analytics";
+import { advanceUgc, reconcileUgc } from "@/lib/ugc/pipeline";
 import type { Job, Model, Preset, Profile } from "@/lib/types";
 
 export class GenerationError extends Error {
@@ -227,6 +228,7 @@ export async function failJob(jobId: string, error: string): Promise<Job | null>
 }
 
 export async function applyProviderResult(job: Job, result: ProviderResult): Promise<Job | null> {
+  if (job.kind === "ugc") return advanceUgc(job, result);
   if (result.state === "succeeded" && result.outputUrl) return completeJob(job.id, result.outputUrl);
   if (result.state === "failed") return failJob(job.id, result.error ?? "Generation failed");
   return job;
@@ -240,6 +242,7 @@ const STALE_MS = 30 * 60_000;
  */
 export async function reconcileJob(job: Job): Promise<Job | null> {
   if (job.status !== "queued" && job.status !== "running") return job;
+  if (job.kind === "ugc") return reconcileUgc(job);
   if (!job.provider_request_id) {
     if (Date.now() - Date.parse(job.created_at) > 2 * 60_000) return failJob(job.id, "Never submitted");
     return job;

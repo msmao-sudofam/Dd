@@ -97,6 +97,17 @@ export default async function Home() {
       </section>
 
       <section className="mx-auto max-w-6xl px-4 pt-24">
+        <Link href="/ugc" className="group grid items-center gap-6 rounded-[32px] border border-border p-8 transition hover:border-white/25 md:grid-cols-[1fr_auto] md:p-12" data-testid="home-ugc">
+          <div>
+            <p className="text-sm text-muted">New · UGC Ad Studio</p>
+            <h2 className="display mt-2 max-w-2xl text-[clamp(32px,4.5vw,56px)]">UGC ads without hiring creators.</h2>
+            <p className="mt-3 max-w-xl text-muted">AI creators hold your product and pitch it to camera — scripts, voice, captions and end card included.</p>
+          </div>
+          <span className="btn-ghost shrink-0 group-hover:bg-surface-2">Open the studio →</span>
+        </Link>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 pt-24">
         <div className="rounded-[32px] bg-wash p-8 md:p-12">
           <h2 className="display max-w-xl text-[clamp(32px,4vw,48px)]">Brands pay $2k for this ad. It takes 30 seconds here.</h2>
           <div className="mt-10 grid gap-8 md:grid-cols-3">

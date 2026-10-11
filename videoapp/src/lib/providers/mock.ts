@@ -19,8 +19,12 @@ function outcome(requestId: string, now = Date.now()): ProviderResult {
   const [, ts, fail, kind, aspect] = requestId.split("_");
   if (now - Number(ts) < delayMs()) return { state: "running" };
   if (fail === "1") return { state: "failed", error: "Mock provider: forced failure" };
+  const base = `${env.appUrl()}/mock`;
+  if (kind === "audio") return { state: "succeeded", outputUrl: `${base}/ugc-voice.mp3` };
+  if (kind === "ugcimage") return { state: "succeeded", outputUrl: `${base}/ugc-portrait-9x16.jpg` };
+  if (kind === "ugcavatar") return { state: "succeeded", outputUrl: `${base}/ugc-avatar-9x16.mp4` };
   const ext = kind === "image" ? "jpg" : "mp4";
-  return { state: "succeeded", outputUrl: `${env.appUrl()}/mock/sample-${aspect}.${ext}` };
+  return { state: "succeeded", outputUrl: `${base}/sample-${aspect}.${ext}` };
 }
 
 export const mockAdapter: ProviderAdapter = {
@@ -28,21 +32,22 @@ export const mockAdapter: ProviderAdapter = {
 
   async submit(model, req, webhookUrl) {
     const kind = model.type === "t2i" || model.type === "i2i" ? "image" : "video";
-    const requestId = `mock_${Date.now()}_${req.forceFail ? 1 : 0}_${kind}_${aspectSlug(req.aspectRatio)}_${Math.random().toString(36).slice(2, 8)}`;
+    return mockSubmit(kind, aspectSlug(req.aspectRatio), !!req.forceFail, webhookUrl);
+  },
 
-    if (process.env.MOCK_PROVIDER_WEBHOOKS !== "false") {
-      setTimeout(() => {
-        const body = JSON.stringify({ request_id: requestId, ...outcome(requestId) });
-        fetch(webhookUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", [MOCK_SIGNATURE_HEADER]: mockSign(body) },
-          body,
-        }).catch(() => {
-          /* polling picks it up */
-        });
-      }, delayMs() + 50).unref?.();
-    }
-    return { requestId };
+  async submitRaw(endpointId, input, webhookUrl, opts) {
+    const kind = /tts|speech/.test(endpointId)
+      ? "audio"
+      : /avatar|omnihuman/.test(endpointId)
+        ? "ugcavatar"
+        : /edit|nano-banana/.test(endpointId)
+          ? "ugcimage"
+          : "video";
+    return mockSubmit(kind, aspectSlug(input.aspect_ratio as string | undefined), !!opts?.forceFail, webhookUrl);
+  },
+
+  async statusRaw(_endpointId, requestId) {
+    return outcome(requestId);
   },
 
   async status(_model, requestId) {
@@ -62,3 +67,20 @@ export const mockAdapter: ProviderAdapter = {
     return { requestId: body.request_id, result: this.parseResult(body) };
   },
 };
+
+async function mockSubmit(kind: string, aspect: string, fail: boolean, webhookUrl: string) {
+  const requestId = `mock_${Date.now()}_${fail ? 1 : 0}_${kind}_${aspect}_${Math.random().toString(36).slice(2, 8)}`;
+  if (process.env.MOCK_PROVIDER_WEBHOOKS !== "false") {
+    setTimeout(() => {
+      const body = JSON.stringify({ request_id: requestId, ...outcome(requestId) });
+      fetch(webhookUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", [MOCK_SIGNATURE_HEADER]: mockSign(body) },
+        body,
+      }).catch(() => {
+        /* polling picks it up */
+      });
+    }, delayMs() + 50).unref?.();
+  }
+  return { requestId };
+}

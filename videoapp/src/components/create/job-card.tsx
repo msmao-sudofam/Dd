@@ -10,9 +10,19 @@ const STATUS_LABEL: Record<Job["status"], string> = {
   refunded: "Failed — credits refunded",
 };
 
+const UGC_STAGE: Record<string, string> = {
+  voice: "Recording voiceover…",
+  composite: "Casting creator with your product…",
+  avatar: "Filming creator…",
+  broll: "Shooting product b-roll…",
+  assemble: "Editing captions & end card…",
+};
+
 export function JobCard({ job }: { job: Job }) {
   const pending = job.status === "queued" || job.status === "running";
-  const aspect = job.input_json.aspect_ratio === "16:9" ? "aspect-video" : job.input_json.aspect_ratio === "1:1" ? "aspect-square" : "aspect-[9/16]";
+  const label = pending && job.kind === "ugc" && job.stage ? (UGC_STAGE[job.stage] ?? STATUS_LABEL[job.status]) : STATUS_LABEL[job.status];
+  const aspect =
+    job.input_json.aspect_ratio === "16:9" ? "aspect-video" : job.input_json.aspect_ratio === "1:1" ? "aspect-square" : job.input_json.aspect_ratio === "4:5" ? "aspect-[4/5]" : "aspect-[9/16]";
   return (
     <div className="card overflow-hidden" data-testid="job-card" data-status={job.status} data-job-id={job.id}>
       <div className={`relative ${aspect} bg-surface-2`}>
@@ -27,7 +37,7 @@ export function JobCard({ job }: { job: Job }) {
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 p-4 text-center text-sm text-muted">
             {pending && <span className="h-6 w-6 animate-spin rounded-full border-2 border-white/40 border-t-transparent" />}
             <span className={job.status === "refunded" || job.status === "failed" ? "text-danger" : ""}>
-              {STATUS_LABEL[job.status]}
+              {label}
             </span>
           </div>
         )}
@@ -35,7 +45,7 @@ export function JobCard({ job }: { job: Job }) {
       <div className="space-y-2 p-3">
         <p className="line-clamp-2 text-xs text-muted">{job.input_json.prompt}</p>
         <div className="flex items-center justify-between text-xs">
-          <span data-testid="job-status">{STATUS_LABEL[job.status]}</span>
+          <span data-testid="job-status">{job.kind === "ugc" && job.input_json.actor ? `UGC · ${String(job.input_json.actor)}` : STATUS_LABEL[job.status]}</span>
           <span className="text-muted">{job.credits_charged} cr</span>
         </div>
         {job.status === "succeeded" && job.output_url && (

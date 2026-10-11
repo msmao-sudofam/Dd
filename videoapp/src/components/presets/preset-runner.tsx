@@ -2,6 +2,7 @@
 
 import { prepareImage } from "@/lib/client/resize-image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useJobs } from "@/lib/client/use-jobs";
 import type { Job } from "@/lib/types";
@@ -25,6 +26,7 @@ export function PresetRunner({
   requiresSubject: boolean;
   balance: number;
 }) {
+  const router = useRouter();
   const [balance, setBalance] = useState(initialBalance);
   const { jobs, upsert } = useJobs([], setBalance);
   const [consent, setConsent] = useState(false);
@@ -45,6 +47,7 @@ export function PresetRunner({
     if (!res.ok) throw new Error(data.error ?? "Generation failed");
     upsert([data.job]);
     setBalance(data.balance);
+      router.refresh(); // header credit chip
   }
 
   async function onFile(file: File) {

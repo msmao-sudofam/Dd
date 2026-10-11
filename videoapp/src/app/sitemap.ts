@@ -5,7 +5,7 @@ import { listPresetCards } from "@/lib/presets";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = env.appUrl();
   const presets = await listPresetCards();
-  const staticPages = ["", "/presets", "/pricing", "/legal/terms", "/legal/privacy", "/legal/acceptable-use", "/legal/refunds"];
+  const staticPages = ["", "/presets", "/ugc", "/pricing", "/legal/terms", "/legal/privacy", "/legal/acceptable-use", "/legal/refunds"];
   return [
     ...staticPages.map((p) => ({ url: `${base}${p}`, changeFrequency: "weekly" as const, priority: p === "" ? 1 : 0.6 })),
     ...presets.map((p) => ({

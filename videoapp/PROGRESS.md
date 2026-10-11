@@ -126,9 +126,16 @@ a domain; RunPod Draft hidden; never commit keys; commit "golive step N: …" af
 - How keys reach the app: the container is ephemeral, so keys live as environment variables in the cloud environment
   settings; the session writes `videoapp/.env.local` from them (gitignored) — never pasted into chat or committed.
 
+## Added during go-live prep
+- [x] Midnight Studio redesign (Refero) + scroll-film hero — docs/DESIGN.md
+- [x] UGC Ad Studio (/ugc, /ugc/new): scripts → AI creators → voice → captions → edit pipeline — docs/UGC_STUDIO.md
+- Step 2 must also price the UGC stages (src/lib/ugc/config.ts) from fal's real pricing.
+- Step 4 batch must also include 8 UGC creator portraits + the hero film.
+- Optional key: `ANTHROPIC_API_KEY` (AI-written UGC scripts; templates otherwise).
+
 ## Step 1 — Supabase  - [ ]
 ## Step 2 — fal pricing (≥60% margin)  - [ ]
 ## Step 3 — Real smoke test (≤ $5)  - [ ]
 ## Step 4 — Preset previews (wait for M's approval of the exact cost)  - [ ]
-## Step 5 — CI on PRs + pushes  - [ ]
+## Step 5 — CI on PRs + pushes  - [x] (green on PR #3: lint/typecheck/unit+SQL and Playwright e2e)
 ## Step 6 — Vercel preview + webhooks + e2e against preview  - [ ]

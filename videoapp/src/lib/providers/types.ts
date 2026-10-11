@@ -34,6 +34,9 @@ export interface ProviderAdapter {
   parseResult(raw: unknown): ProviderResult;
   /** Returns null if the signature is missing/invalid. */
   verifyWebhook(headers: Headers, rawBody: string, url: URL): Promise<WebhookEvent | null>;
+  /** Pipeline stages (UGC studio) call endpoints directly with a ready-made input. */
+  submitRaw?(endpointId: string, input: Record<string, unknown>, webhookUrl: string, opts?: { forceFail?: boolean }): Promise<{ requestId: string }>;
+  statusRaw?(endpointId: string, requestId: string): Promise<ProviderResult>;
 }
 
 export class ProviderError extends Error {

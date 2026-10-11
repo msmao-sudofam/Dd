@@ -86,14 +86,22 @@ export const falAdapter: ProviderAdapter = {
   name: "fal",
 
   async submit(model, req, webhookUrl) {
-    const url = `${QUEUE}/${model.provider_model_id}?fal_webhook=${encodeURIComponent(webhookUrl)}`;
-    const body = await falFetch(url, { method: "POST", body: JSON.stringify(buildProviderInput(model, req)) });
+    return this.submitRaw!(model.provider_model_id, buildProviderInput(model, req), webhookUrl);
+  },
+
+  async submitRaw(endpointId, input, webhookUrl) {
+    const url = `${QUEUE}/${endpointId}?fal_webhook=${encodeURIComponent(webhookUrl)}`;
+    const body = await falFetch(url, { method: "POST", body: JSON.stringify(input) });
     if (typeof body.request_id !== "string") throw new ProviderError("fal: no request_id in submit response");
     return { requestId: body.request_id };
   },
 
   async status(model, requestId) {
-    const root = `${QUEUE}/${falAppRoot(model.provider_model_id)}/requests/${requestId}`;
+    return this.statusRaw!(model.provider_model_id, requestId);
+  },
+
+  async statusRaw(endpointId, requestId) {
+    const root = `${QUEUE}/${falAppRoot(endpointId)}/requests/${requestId}`;
     const st = await falFetch(`${root}/status`);
     if (st.status === "IN_QUEUE") return { state: "queued" };
     if (st.status === "IN_PROGRESS") return { state: "running" };

@@ -3,8 +3,8 @@ import { createHmac, randomBytes, randomUUID } from "node:crypto";
 import { mkdirSync, readFileSync, writeFileSync, renameSync, existsSync } from "node:fs";
 import path from "node:path";
 import { env } from "@/lib/env";
-import { SEED_MODELS, SEED_PRESETS } from "@/lib/seed-data";
-import type { Job, LedgerEntry, Model, Preset, Profile } from "@/lib/types";
+import { SEED_MODELS, SEED_PRESETS, SEED_UGC_ACTORS } from "@/lib/seed-data";
+import type { Job, LedgerEntry, Model, Preset, Profile, UgcActor, UgcProject } from "@/lib/types";
 import {
   InsufficientCreditsError,
   type ApplyCreditArgs,
@@ -32,6 +32,8 @@ interface Store {
   fingerprints: { user_id: string; fingerprint: string; created_at: string }[];
   moderation?: Record<string, unknown>[];
   stripeEvents?: string[];
+  ugcActors?: UgcActor[];
+  ugcProjects?: UgcProject[];
   consents?: Record<string, unknown>[];
   ledgerSeq: number;
 }
@@ -59,6 +61,13 @@ function syncSeed(s: Store): boolean {
   for (const { model_slug, ...p } of SEED_PRESETS) {
     if (!s.presets.some((x) => x.slug === p.slug) && bySlug.has(model_slug)) {
       s.presets.push({ ...p, model_id: bySlug.get(model_slug)!, id: randomUUID(), created_at: now() });
+      changed = true;
+    }
+  }
+  s.ugcActors ??= [];
+  for (const a of SEED_UGC_ACTORS) {
+    if (!s.ugcActors.some((x) => x.slug === a.slug)) {
+      s.ugcActors.push({ ...a, owner_id: null, upload_path: null, id: randomUUID(), created_at: now() });
       changed = true;
     }
   }
@@ -255,6 +264,9 @@ export const mockDb: Db = {
         credits_charged: 0,
         cost_usd: 0,
         status: "queued",
+        kind: "single",
+        stage: null,
+        stage_data: {},
         ...j,
         id: randomUUID(),
         provider_request_id: null,
@@ -277,6 +289,13 @@ export const mockDb: Db = {
     tx((s) => {
       const j = s.jobs.find((x) => x.id === id);
       if (!j || !from.includes(j.status)) return null;
+      Object.assign(j, patch);
+      return clone(j);
+    }),
+  claimJobRequest: (id, expected, patch) =>
+    tx((s) => {
+      const j = s.jobs.find((x) => x.id === id);
+      if (!j || j.provider_request_id !== expected) return null;
       Object.assign(j, patch);
       return clone(j);
     }),
@@ -304,6 +323,29 @@ export const mockDb: Db = {
     tx((s) => {
       (s.consents ??= []).push({ ...e, created_at: now() });
     }),
+
+  listUgcActors: (userId) =>
+    read((s) =>
+      clone(
+        (s.ugcActors ?? [])
+          .filter((a) => a.enabled && (a.owner_id === null || a.owner_id === userId))
+          .sort((a, b) => (a.owner_id ? -1 : 0) - (b.owner_id ? -1 : 0) || a.sort_order - b.sort_order),
+      ),
+    ),
+  getUgcActor: (id) => read((s) => clone((s.ugcActors ?? []).find((a) => a.id === id || a.slug === id) ?? null)),
+  createUgcActor: (a) =>
+    tx((s) => {
+      const row: UgcActor = { ...a, id: randomUUID(), created_at: now() };
+      (s.ugcActors ??= []).push(row);
+      return clone(row);
+    }),
+  createUgcProject: (p) =>
+    tx((s) => {
+      const row: UgcProject = { ...p, id: randomUUID(), created_at: now() };
+      (s.ugcProjects ??= []).push(row);
+      return clone(row);
+    }),
+  getUgcProject: (id) => read((s) => clone((s.ugcProjects ?? []).find((p) => p.id === id) ?? null)),
 
   recordSignupFingerprint: (userId, fingerprint) =>
     tx((s) => {

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import type { Job, Model } from "@/lib/types";
 import { useJobs } from "@/lib/client/use-jobs";
@@ -12,6 +13,7 @@ const TYPE_LABEL: Record<Model["type"], string> = {
   i2v: "Image → Video",
   t2i: "Text → Image",
   i2i: "Image → Image",
+  ugc: "UGC ad",
 };
 
 function cost(model: Model, duration: number | null) {
@@ -30,6 +32,7 @@ export function Generator({
   initialBalance: number;
   mockProviders: boolean;
 }) {
+  const router = useRouter();
   const [balance, setBalance] = useState(initialBalance);
   const { jobs, upsert } = useJobs(initialJobs, setBalance);
   const [modelId, setModelId] = useState(models[0]?.id ?? "");
@@ -73,6 +76,7 @@ export function Generator({
       if (!res.ok) throw new Error(data.error ?? "Generation failed");
       upsert([data.job]);
       setBalance(data.balance);
+      router.refresh(); // header credit chip
     } catch (err) {
       setError((err as Error).message);
     } finally {

@@ -47,7 +47,7 @@ export function extractOutputUrl(output: unknown): string | undefined {
   }
   if (typeof output === "object") {
     const o = output as Record<string, unknown>;
-    for (const k of ["video", "image", "images", "video_url", "output", "url"]) {
+    for (const k of ["video", "image", "images", "audio", "audio_url", "video_url", "output", "url"]) {
       const u = extractOutputUrl(o[k]);
       if (u) return u;
     }

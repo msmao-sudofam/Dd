@@ -1,7 +1,7 @@
 import "server-only";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { env } from "@/lib/env";
-import type { Job, LedgerEntry, Model, Preset, Profile } from "@/lib/types";
+import type { Job, LedgerEntry, Model, Preset, Profile, UgcActor, UgcProject } from "@/lib/types";
 import { InsufficientCreditsError, type Db } from "./types";
 
 let admin: SupabaseClient | null = null;
@@ -150,6 +150,12 @@ export const supabaseDb: Db = {
     ) as Job | null;
     return row && normJob(row);
   },
+  async claimJobRequest(id, expected, patch) {
+    const row = must(
+      await supabaseAdmin().from("jobs").update(patch).eq("id", id).eq("provider_request_id", expected).select("*").maybeSingle(),
+    ) as Job | null;
+    return row && normJob(row);
+  },
   async getJob(id) {
     const row = must(await supabaseAdmin().from("jobs").select("*").eq("id", id).maybeSingle()) as Job | null;
     return row && normJob(row);
@@ -213,6 +219,27 @@ export const supabaseDb: Db = {
         user_agent: e.userAgent,
       }),
     );
+  },
+
+  async listUgcActors(userId) {
+    let q = supabaseAdmin().from("ugc_actors").select("*").eq("enabled", true).order("sort_order");
+    q = userId ? q.or(`owner_id.is.null,owner_id.eq.${userId}`) : q.is("owner_id", null);
+    const rows = must(await q) as UgcActor[];
+    return [...rows.filter((a) => a.owner_id), ...rows.filter((a) => !a.owner_id)];
+  },
+  async getUgcActor(k) {
+    return must(
+      await supabaseAdmin().from("ugc_actors").select("*").eq(isUuid(k) ? "id" : "slug", k).maybeSingle(),
+    ) as UgcActor | null;
+  },
+  async createUgcActor(a) {
+    return must(await supabaseAdmin().from("ugc_actors").insert(a).select("*").single()) as UgcActor;
+  },
+  async createUgcProject(p) {
+    return must(await supabaseAdmin().from("ugc_projects").insert(p).select("*").single()) as UgcProject;
+  },
+  async getUgcProject(id) {
+    return must(await supabaseAdmin().from("ugc_projects").select("*").eq("id", id).maybeSingle()) as UgcProject | null;
   },
 
   async recordSignupFingerprint(userId, fingerprint) {

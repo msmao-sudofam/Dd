@@ -21,7 +21,7 @@ export default async function PricingPage() {
             <tr><th className="p-3">Model</th><th className="p-3">Type</th><th className="p-3 text-right">Credits</th></tr>
           </thead>
           <tbody>
-            {models.filter(modelAvailable).map((m) => (
+            {models.filter((m) => m.type !== "ugc" && modelAvailable(m)).map((m) => (
               <tr key={m.slug} className="border-t border-border">
                 <td className="p-3 font-medium">{m.name}</td>
                 <td className="p-3 text-muted">{m.type === "t2i" ? "Image" : `${m.default_duration}s video`}</td>
