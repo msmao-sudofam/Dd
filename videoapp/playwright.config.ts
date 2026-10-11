@@ -18,7 +18,9 @@ export default defineConfig({
   testDir: "tests/e2e",
   timeout: 60_000,
   workers: 1,
-  reporter: [["list"]],
+  // In CI, failures also become check-run annotations (readable via the API when logs are not).
+  reporter: process.env.CI ? [["github"], ["list"]] : [["list"]],
+  retries: 0,
   use: { baseURL: `http://localhost:${PORT}`, trace: "retain-on-failure", ...devices["Desktop Chrome"] },
   webServer: {
     // E2E_DEV=1 uses `next dev` for faster iteration; default is a production build.
