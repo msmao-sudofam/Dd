@@ -33,7 +33,7 @@ export interface GenerateInput {
 }
 
 export function renderPresetPrompt(preset: Pick<Preset, "prompt_template">, subject?: string): string {
-  const s = (subject ?? "").trim() || "the product";
+  const s = (subject ?? "").trim() || "product";
   return preset.prompt_template.replaceAll("{subject}", s).replace(/\s+/g, " ").trim();
 }
 

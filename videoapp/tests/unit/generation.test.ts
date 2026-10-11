@@ -92,6 +92,6 @@ describe("generation engine (mock provider)", () => {
     expect(renderPresetPrompt({ prompt_template: "{subject} spinning, {subject} glowing" }, "red sneaker")).toBe(
       "red sneaker spinning, red sneaker glowing",
     );
-    expect(renderPresetPrompt({ prompt_template: "{subject} on water" })).toBe("the product on water");
+    expect(renderPresetPrompt({ prompt_template: "{subject} on water" })).toBe("product on water");
   });
 });

@@ -47,17 +47,32 @@ export function storageDir() {
   return path.join(path.dirname(dbPath()), "storage");
 }
 
-function seedStore(): Store {
-  const models: Model[] = SEED_MODELS.map((m) => ({ ...m, id: randomUUID(), created_at: now() }));
-  const bySlug = new Map(models.map((m) => [m.slug, m.id]));
-  const presets: Preset[] = SEED_PRESETS.map(({ model_slug, ...p }) => ({
-    ...p,
-    model_id: bySlug.get(model_slug)!,
-    id: randomUUID(),
-    created_at: now(),
-  }));
-  return { users: [], profiles: [], ledger: [], models, presets, jobs: [], fingerprints: [], ledgerSeq: 0 };
+/** Adds any seed models/presets missing from the store (never overwrites admin edits). */
+function syncSeed(s: Store): boolean {
+  let changed = false;
+  for (const m of SEED_MODELS) {
+    if (!s.models.some((x) => x.slug === m.slug)) {
+      s.models.push({ ...m, id: randomUUID(), created_at: now() });
+      changed = true;
+    }
+  }
+  const bySlug = new Map(s.models.map((m) => [m.slug, m.id]));
+  for (const { model_slug, ...p } of SEED_PRESETS) {
+    if (!s.presets.some((x) => x.slug === p.slug) && bySlug.has(model_slug)) {
+      s.presets.push({ ...p, model_id: bySlug.get(model_slug)!, id: randomUUID(), created_at: now() });
+      changed = true;
+    }
+  }
+  return changed;
 }
+
+function seedStore(): Store {
+  const s: Store = { users: [], profiles: [], ledger: [], models: [], presets: [], jobs: [], fingerprints: [], ledgerSeq: 0 };
+  syncSeed(s);
+  return s;
+}
+
+let seedChecked = false;
 
 function load(): Store {
   const p = dbPath();
@@ -66,7 +81,12 @@ function load(): Store {
     save(s);
     return s;
   }
-  return JSON.parse(readFileSync(p, "utf8")) as Store;
+  const s = JSON.parse(readFileSync(p, "utf8")) as Store;
+  if (!seedChecked) {
+    seedChecked = true;
+    if (syncSeed(s)) save(s);
+  }
+  return s;
 }
 
 function save(s: Store) {

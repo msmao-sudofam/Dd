@@ -1,5 +1,6 @@
 "use client";
 
+import { prepareImage } from "@/lib/client/resize-image";
 import { useId, useState } from "react";
 
 export const CONSENT_LABEL =
@@ -33,7 +34,7 @@ export function ImageUpload({
     setBusy(true);
     try {
       const fd = new FormData();
-      fd.set("file", file);
+      fd.set("file", await prepareImage(file));
       fd.set("consent", "true");
       const res = await fetch("/api/uploads", { method: "POST", body: fd });
       const data = await res.json();

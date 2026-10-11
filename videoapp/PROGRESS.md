@@ -37,12 +37,12 @@ and `MOCK_PROVIDERS=true` (sample video after 5s, Stripe adds credits instantly)
 - [x] Commit `phase 3: ...`
 
 ## Phase 4 — Presets
-- [ ] Preset gallery homepage with categories + autoplay previews
-- [ ] 15–20 launch presets (product ads, camera moves, effects, UGC)
-- [ ] Preset run flow: upload photo / subject → generate (≤3 clicks)
-- [ ] Admin (role-gated) CRUD for presets + models
-- [ ] Tests: new user picks preset → upload → clip in ≤3 clicks
-- [ ] Commit `phase 4: ...`
+- [x] Preset gallery homepage with categories + autoplay previews
+- [x] 15–20 launch presets (product ads, camera moves, effects, UGC)
+- [x] Preset run flow: upload photo / subject → generate (≤3 clicks)
+- [x] Admin (role-gated) CRUD for presets + models
+- [x] Tests: new user picks preset → upload → clip in ≤3 clicks
+- [x] Commit `phase 4: ...`
 
 ## Phase 5 — Margin + growth
 - [ ] Self-hosted Wan/LTX endpoint adapter (RunPod Serverless) as "Fast" tier
@@ -68,6 +68,8 @@ All features run against mocks today. Add these to `.env.local` (and Vercel) to 
 - [ ] `RESEND_API_KEY` + verified sending domain → `EMAIL_FROM` ("your video is ready" emails; currently logged to console).
 - [ ] Optional backup: `REPLICATE_API_TOKEN` + `REPLICATE_WEBHOOK_SECRET` (GET /v1/webhooks/default/secret). No Replicate models are seeded yet.
 - [ ] Stripe TEST keys: `STRIPE_SECRET_KEY` (sk_test_…) and `STRIPE_WEBHOOK_SECRET` (`stripe listen --forward-to localhost:3000/api/webhooks/stripe` locally; a Dashboard webhook endpoint on Vercel) subscribed to `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `invoice.paid`, `customer.subscription.deleted`. Enable the Customer Portal in Stripe settings.
+- [ ] **Real preset preview videos.** All 20 presets use 5 per-category placeholder clips (`public/presets/placeholder-*.mp4`).
+  Run each preset once on fal (or MOMOBEAST) and upload the result in Admin → Presets → "upload preview".
 - [ ] Supabase project: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`; run migrations; enable Google provider (Google Cloud OAuth client id/secret)
 
 ## Decisions / notes
@@ -82,4 +84,8 @@ All features run against mocks today. Add these to `.env.local` (and Vercel) to 
 - Stripe idempotency: ledger `stripe_event_id` stores a per-payment key (`cs:<session>` / `in:<invoice>`), stronger than the
   raw event id (two different events for one payment can't double-credit). Raw event ids are logged in `stripe_events`.
 - Prices are inline `price_data` (no Stripe Dashboard products needed). Pack prices live in `src/lib/pricing.ts`.
+- 3-click preset flow: tile → consent checkbox → choose photo (choosing the photo uploads AND starts the job; the
+  cost is printed on the upload button beforehand). Fast presets cost 24 credits = the signup bonus.
+- Images are downscaled in the browser to ≤2048px/3.5 MB (Vercel's ~4.5 MB request cap).
+- Presets are checked against the same IP/public-figure rules as user prompts when saved in admin.
 - Signup bonus = 24 credits = one 6s "Fast" clip.
