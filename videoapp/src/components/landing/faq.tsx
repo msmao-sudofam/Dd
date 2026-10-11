@@ -31,14 +31,14 @@ export const FAQ_ITEMS: { q: string; a: string }[] = [
 
 export function Faq() {
   return (
-    <div className="divide-y divide-border rounded-2xl border border-border bg-surface">
+    <div className="divide-y divide-border border-y border-border">
       {FAQ_ITEMS.map((f) => (
-        <details key={f.q} className="group p-5">
-          <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold">
+        <details key={f.q} className="group py-5">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-[17px] font-medium tracking-[-0.02em]">
             {f.q}
             <span className="text-muted transition group-open:rotate-45">+</span>
           </summary>
-          <p className="mt-3 text-sm leading-relaxed text-muted">{f.a}</p>
+          <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-muted">{f.a}</p>
         </details>
       ))}
     </div>

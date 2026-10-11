@@ -11,7 +11,7 @@ export default async function AdminModels({ searchParams }: PageProps<"/admin/mo
         <h1 className="text-2xl font-black">Models</h1>
         <Link href="/admin/models/new" className="btn-primary">New model</Link>
       </div>
-      {sp.saved && <p className="mb-4 text-sm text-accent">Saved.</p>}
+      {sp.saved && <p className="mb-4 text-sm text-foreground">Saved.</p>}
       <p className="mb-4 text-xs text-muted">Worst-case margin uses the cheapest credit price (${CREDIT_FLOOR_USD.toFixed(3)}/credit). Target ≥ 60%.</p>
       <div className="card overflow-x-auto">
         <table className="w-full text-sm">
@@ -28,7 +28,7 @@ export default async function AdminModels({ searchParams }: PageProps<"/admin/mo
                   <td className="p-3">{m.provider}{!providerConfigured(m.provider) && <span className="ml-1 text-xs text-danger">(mock)</span>}</td>
                   <td className="p-3 text-right">{m.credit_cost}</td>
                   <td className="p-3 text-right">${m.api_cost_usd.toFixed(3)}</td>
-                  <td className={`p-3 text-right ${margin < 0.6 ? "text-danger" : "text-accent"}`}>{Math.round(margin * 100)}%</td>
+                  <td className={`p-3 text-right ${margin < 0.6 ? "text-danger" : "text-foreground"}`}>{Math.round(margin * 100)}%</td>
                   <td className="p-3">{m.enabled ? "on" : <span className="text-muted">off</span>}</td>
                 </tr>
               );

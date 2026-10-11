@@ -22,7 +22,7 @@ export default async function BillingPage({ searchParams }: PageProps<"/billing"
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
       <h1 className="text-3xl font-black tracking-tight">Billing</h1>
-      {sp.success && <p className="mt-4 rounded-xl bg-accent/10 p-3 text-sm text-accent" data-testid="purchase-success">Payment received — credits added.</p>}
+      {sp.success && <p className="mt-4 rounded-xl bg-wash p-3 text-sm text-foreground" data-testid="purchase-success">Payment received — credits added.</p>}
       {sp.canceled && <p className="mt-4 text-sm text-muted">Checkout canceled.</p>}
       {sp.error && <p className="mt-4 text-sm text-danger">Checkout couldn&apos;t start. Try again.</p>}
 
@@ -62,7 +62,7 @@ export default async function BillingPage({ searchParams }: PageProps<"/billing"
               <tr key={l.id} className="border-t border-border" data-reason={l.reason}>
                 <td className="p-3 text-muted">{new Date(l.created_at).toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" })}</td>
                 <td className="p-3">{REASON[l.reason] ?? l.reason}</td>
-                <td className={`p-3 text-right font-mono ${l.delta > 0 ? "text-accent" : ""}`}>{l.delta > 0 ? `+${l.delta}` : l.delta}</td>
+                <td className={`p-3 text-right font-mono ${l.delta > 0 ? "text-foreground" : ""}`}>{l.delta > 0 ? `+${l.delta}` : l.delta}</td>
               </tr>
             ))}
           </tbody>

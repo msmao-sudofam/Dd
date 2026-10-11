@@ -10,7 +10,7 @@ export default async function AdminPresets({ searchParams }: PageProps<"/admin/p
         <h1 className="text-2xl font-black">Presets</h1>
         <Link href="/admin/presets/new" className="btn-primary">New preset</Link>
       </div>
-      {sp.saved && <p className="mb-4 text-sm text-accent">Saved.</p>}
+      {sp.saved && <p className="mb-4 text-sm text-foreground">Saved.</p>}
       <div className="card overflow-hidden">
         <table className="w-full text-sm">
           <thead className="bg-surface-2 text-left text-xs uppercase text-muted">
@@ -19,7 +19,7 @@ export default async function AdminPresets({ searchParams }: PageProps<"/admin/p
           <tbody>
             {presets.map((p) => (
               <tr key={p.id} className="border-t border-border">
-                <td className="p-3"><Link className="underline" href={`/admin/presets/${p.id}`}>{p.name}</Link>{p.is_featured && <span className="ml-2 text-xs text-accent">featured</span>}</td>
+                <td className="p-3"><Link className="underline" href={`/admin/presets/${p.id}`}>{p.name}</Link>{p.is_featured && <span className="ml-2 text-xs text-foreground">featured</span>}</td>
                 <td className="p-3 text-muted">{p.category}</td>
                 <td className="p-3 text-muted">{modelName.get(p.model_id)}</td>
                 <td className="p-3">{p.enabled ? "live" : <span className="text-muted">hidden</span>}</td>

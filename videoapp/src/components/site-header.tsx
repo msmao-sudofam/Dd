@@ -5,48 +5,48 @@ import { Analytics } from "./analytics";
 
 export async function SiteHeader() {
   const profile = await getCurrentProfile();
+  const links = [
+    { href: "/presets", label: "Presets" },
+    { href: "/generate", label: "Create" },
+    ...(profile ? [{ href: "/library", label: "Library" }] : []),
+    { href: "/pricing", label: "Pricing" },
+    ...(isAdminProfile(profile) ? [{ href: "/admin", label: "Admin" }] : []),
+  ];
   return (
     <>
-    <Analytics userId={profile?.id} email={profile?.email} />
-    <header className="sticky top-0 z-30 border-b border-border bg-background/85 backdrop-blur">
-      <div className="mx-auto flex h-14 max-w-6xl items-center gap-4 px-4">
-        <Link href="/" className="text-base font-black tracking-tight">
-          {env.brandName()}
-          <span className="text-accent">.</span>
-        </Link>
-        <nav className="hidden items-center gap-4 text-sm text-muted sm:flex">
-          <Link href="/presets" className="hover:text-foreground">Presets</Link>
-          <Link href="/generate" className="hover:text-foreground">Create</Link>
-          {profile && <Link href="/library" className="hover:text-foreground">Library</Link>}
-          <Link href="/pricing" className="hover:text-foreground">Pricing</Link>
-          {isAdminProfile(profile) && <Link href="/admin" className="hover:text-foreground">Admin</Link>}
-        </nav>
-        <div className="ml-auto flex items-center gap-2">
-          {profile ? (
-            <>
-              <Link href="/billing" className="btn-ghost !px-3 !py-1.5" data-testid="credit-balance">
-                <span className="text-accent">●</span>
-                <span>{profile.credits_balance}</span>
-                <span className="text-muted">credits</span>
-              </Link>
-              <Link href="/dashboard" className="btn-ghost !px-3 !py-1.5">Account</Link>
-            </>
-          ) : (
-            <>
-              <Link href="/login" className="btn-ghost !px-4 !py-1.5">Log in</Link>
-              <Link href="/signup" className="btn-primary !px-4 !py-1.5">Get free credits</Link>
-            </>
-          )}
+      <Analytics userId={profile?.id} email={profile?.email} />
+      <header className="sticky top-0 z-40 bg-black/80 backdrop-blur-md">
+        <div className="mx-auto flex h-14 max-w-6xl items-center gap-6 px-4">
+          <Link href="/" className="text-[15px] font-bold tracking-[-0.03em]">
+            {env.brandName()}
+          </Link>
+          <nav className="hidden items-center gap-5 text-sm text-muted sm:flex">
+            {links.map((l) => (
+              <Link key={l.href} href={l.href} className="transition hover:text-foreground">{l.label}</Link>
+            ))}
+          </nav>
+          <div className="ml-auto flex items-center gap-2">
+            {profile ? (
+              <>
+                <Link href="/billing" className="btn-ghost !px-3.5 !py-1.5 tabular-nums" data-testid="credit-balance">
+                  {profile.credits_balance} <span className="text-muted">credits</span>
+                </Link>
+                <Link href="/dashboard" className="btn-ghost !px-3.5 !py-1.5">Account</Link>
+              </>
+            ) : (
+              <>
+                <Link href="/login" className="btn-ghost !px-3.5 !py-1.5">Log in</Link>
+                <Link href="/signup" className="btn-primary !py-1.5">Start free</Link>
+              </>
+            )}
+          </div>
         </div>
-      </div>
-      <nav className="flex gap-5 overflow-x-auto border-t border-border px-4 py-2 text-sm text-muted sm:hidden">
-        <Link href="/presets">Presets</Link>
-        <Link href="/generate">Create</Link>
-        {profile && <Link href="/library">Library</Link>}
-        <Link href="/pricing">Pricing</Link>
-        {isAdminProfile(profile) && <Link href="/admin">Admin</Link>}
-      </nav>
-    </header>
+        <nav className="no-scrollbar flex gap-5 overflow-x-auto px-4 pb-2.5 text-sm text-muted sm:hidden">
+          {links.map((l) => (
+            <Link key={l.href} href={l.href}>{l.label}</Link>
+          ))}
+        </nav>
+      </header>
     </>
   );
 }

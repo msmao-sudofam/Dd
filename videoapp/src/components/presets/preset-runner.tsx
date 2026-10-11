@@ -101,7 +101,7 @@ export function PresetRunner({
       {short ? (
         <div className="card p-4 text-sm">
           This preset costs {credits} credits — you have {balance}.{" "}
-          <Link href="/billing" className="text-accent underline">Get credits</Link>
+          <Link href="/billing" className="text-foreground underline">Get credits</Link>
         </div>
       ) : requiresImage ? (
         <>
@@ -110,7 +110,7 @@ export function PresetRunner({
             <span>{CONSENT_LABEL}</span>
           </label>
           <label
-            className={`flex h-36 cursor-pointer flex-col items-center justify-center gap-1 rounded-2xl border border-dashed text-center transition ${consent ? "border-accent bg-accent/5 hover:bg-accent/10" : "border-border opacity-50"}`}
+            className={`flex h-36 cursor-pointer flex-col items-center justify-center gap-1 rounded-2xl border border-dashed text-center transition ${consent ? "border-white/40 bg-wash hover:bg-wash" : "border-border opacity-50"}`}
           >
             <span className="text-base font-semibold">{busy === "upload" ? "Uploading…" : busy === "generate" ? "Starting…" : "Upload photo & generate"}</span>
             <span className="text-xs text-muted">{credits} credits · balance {balance}</span>

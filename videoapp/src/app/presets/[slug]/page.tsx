@@ -51,21 +51,21 @@ export default async function PresetPage({ params }: PageProps<"/presets/[slug]"
         <Link href="/presets" className="hover:text-foreground">Presets</Link> / {category?.label}
       </nav>
       <div className="grid gap-10 md:grid-cols-[minmax(0,360px)_1fr]">
-        <div className="mx-auto w-full max-w-[260px] overflow-hidden rounded-3xl border border-border md:max-w-none">
+        <div className="mx-auto w-full max-w-[260px] overflow-hidden rounded-[32px] border border-border md:max-w-none">
           {preset.preview_video_url && (
             <video src={preset.preview_video_url} poster={preset.thumbnail_url ?? undefined} className="aspect-[9/16] w-full object-cover" autoPlay muted loop playsInline />
           )}
         </div>
         <div>
-          <h1 className="text-4xl font-black tracking-tight">{preset.name}</h1>
+          <h1 className="display text-[clamp(40px,6vw,72px)]">{preset.name}</h1>
           <p className="mt-3 text-lg text-muted">{preset.description}</p>
           <ul className="mt-5 flex flex-wrap gap-2 text-xs text-muted">
-            <li className="rounded-full border border-border px-3 py-1">9:16 vertical</li>
-            <li className="rounded-full border border-border px-3 py-1">{preset.requires_image ? "Upload 1 photo" : "No photo needed"}</li>
-            <li className="rounded-full border border-border px-3 py-1">{preset.credits} credits</li>
-            <li className="rounded-full border border-border px-3 py-1">Model: {preset.modelName}</li>
+            <li className="rounded-full bg-ghost px-3 py-1 text-soft">9:16 vertical</li>
+            <li className="rounded-full bg-ghost px-3 py-1 text-soft">{preset.requires_image ? "Upload 1 photo" : "No photo needed"}</li>
+            <li className="rounded-full bg-ghost px-3 py-1 text-soft">{preset.credits} credits</li>
+            <li className="rounded-full bg-ghost px-3 py-1 text-soft">Model: {preset.modelName}</li>
           </ul>
-          <div className="card mt-8 p-5">
+          <div className="card mt-8 rounded-[20px] p-5">
             {profile ? (
               <PresetRunner
                 presetId={preset.id}
@@ -91,7 +91,7 @@ export default async function PresetPage({ params }: PageProps<"/presets/[slug]"
       </div>
       {related.length > 0 && (
         <section className="mt-16">
-          <h2 className="mb-4 text-lg font-bold">More {category?.label}</h2>
+          <h2 className="mb-5 text-xl font-semibold tracking-[-0.02em]">More {category?.label}</h2>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
             {related.map((p) => <PresetTile key={p.id} preset={p} />)}
           </div>

@@ -20,18 +20,18 @@ export function PricingCards({ loggedIn, currentPlan }: { loggedIn: boolean; cur
   return (
     <div className="grid gap-4 md:grid-cols-4">
       {CREDIT_PACKS.map((p, i) => (
-        <div key={p.id} className={`card flex flex-col p-6 ${i === 1 ? "border-accent" : ""}`}>
+        <div key={p.id} className={`card flex flex-col rounded-[20px] p-6 ${i === 1 ? "!border-white/30" : ""}`}>
           <div className="text-sm font-semibold text-muted">{p.name}</div>
-          <div className="mt-2 text-4xl font-black">${p.priceUsd}</div>
+          <div className="display mt-3 text-5xl">${p.priceUsd}</div>
           <div className="mt-1 text-sm">{p.credits} credits</div>
           <div className="mt-1 text-xs text-muted">≈ {Math.floor(p.credits / 24)} Fast clips · ${(p.priceUsd / p.credits).toFixed(3)}/credit</div>
           <p className="mt-3 text-sm text-muted">{p.blurb}</p>
           {cta(p.id, `Buy ${p.name}`, i === 1)}
         </div>
       ))}
-      <div className="card flex flex-col p-6">
+      <div className="card flex flex-col rounded-[20px] p-6">
         <div className="text-sm font-semibold text-muted">{MONTHLY_PLAN.name}</div>
-        <div className="mt-2 text-4xl font-black">
+        <div className="display mt-3 text-5xl">
           ${MONTHLY_PLAN.priceUsd}
           <span className="text-base font-medium text-muted">/mo</span>
         </div>
@@ -39,7 +39,7 @@ export function PricingCards({ loggedIn, currentPlan }: { loggedIn: boolean; cur
         <div className="mt-1 text-xs text-muted">Cancel anytime · no watermark</div>
         <p className="mt-3 text-sm text-muted">{MONTHLY_PLAN.blurb}</p>
         {currentPlan === "monthly" ? (
-          <div className="mt-auto pt-6 text-center text-sm text-accent">Current plan</div>
+          <div className="mt-auto pt-6 text-center text-sm text-muted">Current plan</div>
         ) : (
           cta("monthly", "Subscribe")
         )}

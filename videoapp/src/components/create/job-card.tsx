@@ -25,7 +25,7 @@ export function JobCard({ job }: { job: Job }) {
           )
         ) : (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 p-4 text-center text-sm text-muted">
-            {pending && <span className="h-6 w-6 animate-spin rounded-full border-2 border-accent border-t-transparent" />}
+            {pending && <span className="h-6 w-6 animate-spin rounded-full border-2 border-white/40 border-t-transparent" />}
             <span className={job.status === "refunded" || job.status === "failed" ? "text-danger" : ""}>
               {STATUS_LABEL[job.status]}
             </span>

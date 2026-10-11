@@ -51,7 +51,7 @@ export function AuthForm({ mode, next, mock }: { mode: "login" | "signup"; next:
           />
         </div>
         {err && <p className="text-sm text-danger" role="alert" data-testid="auth-error">{err}</p>}
-        {state?.message && <p className="text-sm text-accent">{state.message}</p>}
+        {state?.message && <p className="text-sm text-foreground">{state.message}</p>}
         <button className="btn-primary w-full" disabled={pending}>
           {pending ? "…" : mode === "login" ? "Log in" : "Sign up"}
         </button>

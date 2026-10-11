@@ -19,7 +19,7 @@ export const MONTHLY_PLAN = {
   name: "Monthly",
   creditsPerCycle: 250,
   priceUsd: 19,
-  blurb: "250 credits every month, no watermark",
+  blurb: "For brands posting every week",
 };
 
 /** Cheapest price a user can pay per credit — margin math always uses this worst case. */

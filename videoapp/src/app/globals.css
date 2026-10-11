@@ -1,14 +1,23 @@
 @import "tailwindcss";
 
+/*
+ * Midnight Studio — reference lock (see docs/DESIGN.md)
+ * Primary: Morphic (pure black canvas, Inter only, image-led rounded clip cards, ONE saturated CTA colour).
+ * Lime is CTA-only (+ focus ring). Active/selected states are white. No glows, no gradients on surfaces.
+ */
 :root {
-  --background: #0b0b0f;
-  --surface: #15151c;
-  --surface-2: #1d1d27;
-  --border: #2a2a37;
-  --foreground: #f2f2f5;
-  --muted: #9a9aab;
-  --accent: #c6ff3d;
-  --accent-ink: #0b0b0f;
+  --background: #000000;      /* Ebony canvas */
+  --surface: #212121;         /* Nightfall: elevated panels */
+  --surface-2: #292929;       /* Charcoal: hover */
+  --wash: rgba(255, 255, 255, 0.05); /* feature-highlight card */
+  --ghost: rgba(100, 100, 100, 0.16); /* ghost pill fill */
+  --border: rgba(255, 255, 255, 0.08);
+  --foreground: #ffffff;
+  --soft: #f5f5f5;            /* button text */
+  --muted: #999999;           /* helper / secondary */
+  --subtle: #737373;          /* tertiary */
+  --accent: #c6ff3d;          /* CTA ONLY */
+  --accent-ink: #000000;
   --danger: #ff5c7a;
 }
 
@@ -16,47 +25,81 @@
   --color-background: var(--background);
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
+  --color-wash: var(--wash);
+  --color-ghost: var(--ghost);
   --color-border: var(--border);
   --color-foreground: var(--foreground);
+  --color-soft: var(--soft);
   --color-muted: var(--muted);
+  --color-subtle: var(--subtle);
   --color-accent: var(--accent);
   --color-accent-ink: var(--accent-ink);
   --color-danger: var(--danger);
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
+html {
+  color-scheme: dark;
+}
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
+  font-feature-settings: "cv11", "ss01";
+  letter-spacing: -0.011em;
+}
+h1, h2, h3 {
+  text-wrap: balance;
+}
+p {
+  text-wrap: pretty;
+}
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
+/* Film grain (borrowed from the animated-website system) — decorative, pointer-events none. */
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@utility display {
+  @apply font-bold tracking-[-0.05em] leading-[0.95];
+}
 @utility btn {
-  @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50;
+  @apply inline-flex items-center justify-center gap-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50;
 }
+/* Morphic primary action: filled, 7px radius. Lime = the only saturated UI colour. */
 @utility btn-primary {
-  @apply btn bg-accent text-accent-ink hover:brightness-110;
+  @apply btn rounded-[7px] bg-accent px-4 py-2.5 text-accent-ink hover:brightness-110;
 }
+/* Morphic secondary ghost: translucent grey pill. */
 @utility btn-ghost {
-  @apply btn border border-border bg-surface text-foreground hover:bg-surface-2;
+  @apply btn rounded-full bg-ghost px-[18px] py-[9px] text-soft hover:bg-surface-2;
 }
 @utility input {
-  @apply w-full rounded-xl border border-border bg-surface px-4 py-3 text-sm text-foreground placeholder:text-muted outline-none focus:border-accent;
+  @apply w-full rounded-[10px] border border-border bg-ghost px-4 py-3 text-sm text-foreground placeholder:text-subtle outline-none focus:border-white/40;
 }
+/* Feature-highlight surface (translucent wash, no shadow). */
 @utility card {
-  @apply rounded-2xl border border-border bg-surface;
+  @apply rounded-2xl border border-border bg-wash;
 }
 @utility label {
-  @apply mb-1.5 block text-xs font-medium uppercase tracking-wide text-muted;
+  @apply mb-1.5 block text-xs font-medium text-muted;
 }
-
-@keyframes wall-up {
-  from { transform: translateY(0); }
-  to { transform: translateY(-50%); }
+@utility pill {
+  @apply inline-flex items-center rounded-full bg-black/70 px-2.5 py-1 text-[11px] font-medium text-white;
 }
-.wall-col { animation: wall-up 38s linear infinite; }
-.wall-col.slow { animation-duration: 52s; }
-.wall-col.reverse { animation-direction: reverse; }
-@media (prefers-reduced-motion: reduce) {
-  .wall-col { animation: none; }
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }

@@ -26,7 +26,7 @@ function Table({ rows, showDay }: { rows: MarginRow[]; showDay?: boolean }) {
               <td className="p-3 text-right">{r.creditsSpent}</td>
               <td className="p-3 text-right">{usd(r.revenueUsd)}</td>
               <td className="p-3 text-right">{usd(r.costUsd)}</td>
-              <td className={`p-3 text-right font-semibold ${r.profitUsd < 0 ? "text-danger" : "text-accent"}`}>{usd(r.profitUsd)}</td>
+              <td className={`p-3 text-right font-semibold ${r.profitUsd < 0 ? "text-danger" : "text-foreground"}`}>{usd(r.profitUsd)}</td>
               <td className={`p-3 text-right ${r.marginPct < 0.6 ? "text-danger" : ""}`}>{pct(r.marginPct)}</td>
             </tr>
           ))}
@@ -51,7 +51,7 @@ export default async function MarginPage({ searchParams }: PageProps<"/admin/mar
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-black">Margin — last {days} days</h1>
         <div className="flex gap-2 text-sm">
-          {[7, 30, 90].map((d) => <a key={d} href={`?days=${d}`} className={d === days ? "text-accent" : "text-muted"}>{d}d</a>)}
+          {[7, 30, 90].map((d) => <a key={d} href={`?days=${d}`} className={d === days ? "text-foreground" : "text-muted"}>{d}d</a>)}
         </div>
       </div>
       <div className="grid gap-4 sm:grid-cols-4">

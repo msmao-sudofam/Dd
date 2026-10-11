@@ -1,13 +1,20 @@
 import { expect, test } from "@playwright/test";
 
-test("landing page: video wall, presets, pricing, FAQ, CTA", async ({ page }) => {
+test("landing page: scroll film, presets, pricing, FAQ, CTA", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("One product photo in.");
-  await expect(page.getByTestId("video-wall").locator("video").first()).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("photo in.");
+  const film = page.getByTestId("scroll-film");
+  await expect(film.locator("canvas")).toBeVisible();
+  await expect(film.locator('[data-beat="0"]')).toHaveAttribute("data-active", "true");
+  // Scrolling through the pinned section advances the beats and paints frames.
+  const box = (await film.boundingBox())!;
+  await page.mouse.wheel(0, box.height * 0.9);
+  await expect(film.locator('[data-beat="2"]')).toHaveAttribute("data-active", "true");
+  expect(await film.locator("canvas").evaluate((c: HTMLCanvasElement) => c.width > 0)).toBe(true);
   await expect(page.locator("#pricing").getByText("Starter")).toBeVisible();
   await page.getByText("What if a generation fails?").click();
   await expect(page.getByText(/refunded automatically if it fails/)).toBeVisible();
-  await page.getByTestId("hero-cta").click();
+  await film.locator('[data-beat="2"]').getByTestId("hero-cta").click();
   await expect(page).toHaveURL(/\/signup/);
 });
 

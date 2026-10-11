@@ -7,11 +7,13 @@ import type { PresetCategory } from "@/lib/types";
 export function PresetGallery({
   categories,
   items,
+  initial = "all",
 }: {
   categories: { id: PresetCategory; label: string }[];
   items: { category: PresetCategory; featured: boolean; node: ReactNode; key: string }[];
+  initial?: PresetCategory | "featured" | "all";
 }) {
-  const [active, setActive] = useState<PresetCategory | "featured" | "all">("all");
+  const [active, setActive] = useState<PresetCategory | "featured" | "all">(initial);
   const shown = items.filter((i) => active === "all" || (active === "featured" ? i.featured : i.category === active));
   const tabs: { id: typeof active; label: string }[] = [{ id: "all", label: "All" }, { id: "featured", label: "Trending" }, ...categories];
   return (
@@ -23,7 +25,7 @@ export function PresetGallery({
             role="tab"
             aria-selected={active === t.id}
             onClick={() => setActive(t.id)}
-            className={`shrink-0 rounded-full border px-4 py-1.5 text-sm transition ${active === t.id ? "border-accent bg-accent text-accent-ink" : "border-border text-muted hover:text-foreground"}`}
+            className={`shrink-0 rounded-full px-4 py-1.5 text-sm font-medium transition ${active === t.id ? "bg-white text-black" : "bg-ghost text-soft hover:bg-surface-2"}`}
           >
             {t.label}
           </button>

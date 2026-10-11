@@ -96,11 +96,11 @@ export function Generator({
                 aria-checked={m.id === model.id}
                 onClick={() => pickModel(m)}
                 data-testid={`model-${m.slug}`}
-                className={`rounded-xl border p-3 text-left text-xs transition ${m.id === model.id ? "border-accent bg-surface-2" : "border-border hover:border-muted"}`}
+                className={`rounded-xl border p-3 text-left text-xs transition ${m.id === model.id ? "border-white/40 bg-surface-2" : "border-border hover:border-muted"}`}
               >
                 <div className="text-sm font-semibold text-foreground">{m.name}</div>
                 <div className="text-muted">{TYPE_LABEL[m.type]}</div>
-                <div className="mt-1 text-[11px] uppercase tracking-wide text-accent">{m.tier}</div>
+                <div className="mt-1 text-[11px] uppercase tracking-wide text-foreground">{m.tier}</div>
               </button>
             ))}
           </div>

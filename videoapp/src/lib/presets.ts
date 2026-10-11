@@ -4,12 +4,12 @@ import { creditCostFor } from "@/lib/pricing";
 import { modelAvailable } from "@/lib/providers";
 import type { Model, Preset, PresetCategory } from "@/lib/types";
 
-export const CATEGORIES: { id: PresetCategory; label: string }[] = [
-  { id: "product-ads", label: "Product Ads" },
-  { id: "camera-moves", label: "Camera Moves" },
-  { id: "ugc", label: "UGC" },
-  { id: "effects", label: "Effects" },
-  { id: "viral", label: "Viral Trends" },
+export const CATEGORIES: { id: PresetCategory; label: string; blurb: string }[] = [
+  { id: "product-ads", label: "Product Ads", blurb: "Spins, hero shots and unboxings from one product photo." },
+  { id: "camera-moves", label: "Camera Moves", blurb: "Crash zooms, orbits and FPV dives that stop the scroll." },
+  { id: "ugc", label: "UGC", blurb: "Creator-style clips. Your own photo only." },
+  { id: "effects", label: "Effects", blurb: "Melt it, inflate it, turn it into a figurine." },
+  { id: "viral", label: "Viral Trends", blurb: "Whatever's trending this week, as a preset." },
 ];
 
 export interface PresetCard {

@@ -63,7 +63,7 @@ export function ImageUpload({
           <label className="mb-3 flex items-start gap-2 text-xs text-muted">
             <input
               type="checkbox"
-              className="mt-0.5 accent-[var(--accent)]"
+              className="mt-0.5 accent-white"
               checked={consent}
               onChange={(e) => setConsent(e.target.checked)}
               data-testid="consent-checkbox"
@@ -72,7 +72,7 @@ export function ImageUpload({
           </label>
           <label
             htmlFor={id}
-            className={`flex h-28 cursor-pointer items-center justify-center rounded-xl border border-dashed border-border bg-surface-2 text-sm text-muted hover:border-accent ${!consent ? "opacity-50" : ""}`}
+            className={`flex h-28 cursor-pointer items-center justify-center rounded-xl border border-dashed border-border bg-surface-2 text-sm text-muted hover:border-white/40 ${!consent ? "opacity-50" : ""}`}
           >
             {busy ? "Uploading…" : "Drop a photo or click to upload"}
           </label>
