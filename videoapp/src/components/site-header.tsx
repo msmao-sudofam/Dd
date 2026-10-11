@@ -1,10 +1,13 @@
 import Link from "next/link";
 import { getCurrentProfile, isAdminProfile } from "@/lib/auth";
 import { env } from "@/lib/env";
+import { Analytics } from "./analytics";
 
 export async function SiteHeader() {
   const profile = await getCurrentProfile();
   return (
+    <>
+    <Analytics userId={profile?.id} email={profile?.email} />
     <header className="sticky top-0 z-30 border-b border-border bg-background/85 backdrop-blur">
       <div className="mx-auto flex h-14 max-w-6xl items-center gap-4 px-4">
         <Link href="/" className="text-base font-black tracking-tight">
@@ -36,6 +39,14 @@ export async function SiteHeader() {
           )}
         </div>
       </div>
+      <nav className="flex gap-5 overflow-x-auto border-t border-border px-4 py-2 text-sm text-muted sm:hidden">
+        <Link href="/presets">Presets</Link>
+        <Link href="/generate">Create</Link>
+        {profile && <Link href="/library">Library</Link>}
+        <Link href="/pricing">Pricing</Link>
+        {isAdminProfile(profile) && <Link href="/admin">Admin</Link>}
+      </nav>
     </header>
+    </>
   );
 }

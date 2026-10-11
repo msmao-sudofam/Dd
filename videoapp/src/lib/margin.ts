@@ -89,3 +89,8 @@ export function computeMargin(jobs: Job[], ledger: LedgerEntry[], models: Model[
     byDay: rows.filter((r) => r.day).sort((a, b) => (b.day! + a.model).localeCompare(a.day! + b.model)),
   };
 }
+
+/** ISO timestamp `days` ago (kept out of components so render stays pure). */
+export function isoDaysAgo(days: number): string {
+  return new Date(Date.now() - days * 86_400_000).toISOString();
+}

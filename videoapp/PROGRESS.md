@@ -54,12 +54,13 @@ and `MOCK_PROVIDERS=true` (sample video after 5s, Stripe adds credits instantly)
 - [x] Commit `phase 5: ...`
 
 ## Phase 6 — Launch polish
-- [ ] Landing page (video wall, pricing, FAQ)
-- [ ] Legal pages (Terms, Privacy, Acceptable Use, Refunds)
-- [ ] SEO pages `/presets/[slug]` + sitemap/robots
-- [ ] DEPLOY.md (Vercel CLI not logged in)
-- [ ] HANDOFF.md
-- [ ] Commit `phase 6: ...`
+- [x] Landing page (video wall, pricing, FAQ)
+- [x] Legal pages (Terms, Privacy, Acceptable Use, Refunds)
+- [x] SEO pages `/presets/[slug]` + sitemap/robots
+- [x] DEPLOY.md (Vercel CLI not logged in)
+- [x] HANDOFF.md
+- [x] PostHog funnel events (signup → generation → purchase)
+- [x] Commit `phase 6: ...`
 
 ## NEEDS FROM M
 All features run against mocks today. Add these to `.env.local` (and Vercel) to switch each one to real:
@@ -74,6 +75,9 @@ All features run against mocks today. Add these to `.env.local` (and Vercel) to 
   `RUNPOD_API_KEY`, `RUNPOD_ENDPOINT_ID`, `SELF_WEBHOOK_SECRET` (see docs/SELF_HOSTED.md). Measure real GPU cost/clip and
   update the Draft model's `api_cost_usd` in Admin → Models.
 - [ ] Replace `public/watermark.png` with the real brand logo (keep it wide, ~420×90, semi-transparent backdrop).
+- [ ] Legal review of `src/lib/legal.ts` (Terms, Privacy, AUP, Refunds are templates) + `LEGAL_COMPANY_NAME`, `NEXT_PUBLIC_SUPPORT_EMAIL`.
+- [ ] `NEXT_PUBLIC_POSTHOG_KEY` for analytics.
+- [ ] Vercel: CLI wasn't logged in, so no preview deploy was made — follow DEPLOY.md.
 - [ ] Supabase project: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`; run migrations; enable Google provider (Google Cloud OAuth client id/secret)
 
 ## Decisions / notes
@@ -102,3 +106,7 @@ All features run against mocks today. Add these to `.env.local` (and Vercel) to 
   if ffmpeg fails the clean file is stored (never fail a paid generation over a watermark).
 - Margin: revenue = credits spent on non-failed jobs × (cash in ÷ all credits issued incl. free ones); cost includes failed jobs.
 - Signup bonus = 24 credits = one 6s "Fast" clip.
+
+## Status
+All 6 phases complete against mocks. Final run: 53/53 Vitest (incl. SQL), 18/18 Playwright, lint + typecheck clean.
+Next: HANDOFF.md → "Go live".

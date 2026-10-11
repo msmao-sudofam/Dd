@@ -8,6 +8,7 @@ import { moderateText, moderationMessage } from "@/lib/moderation";
 import { apiCostFor, creditCostFor } from "@/lib/pricing";
 import { adapterByName, adapterForModel, modelAvailable, webhookUrlFor, type ProviderResult } from "@/lib/providers";
 import { postProcessOutput } from "@/lib/postprocess";
+import { track } from "@/lib/analytics";
 import type { Job, Model, Preset, Profile } from "@/lib/types";
 
 export class GenerationError extends Error {
@@ -144,6 +145,12 @@ export async function startGeneration(profile: Profile, input: GenerateInput): P
       },
       webhookUrlFor(adapter.name),
     );
+    await track(profile.id, "generation_started", {
+      model: r.model.slug,
+      preset: r.preset?.slug ?? null,
+      credits: r.credits,
+      plan: profile.plan,
+    });
     return await db().updateJob(job.id, { provider_request_id: requestId, status: "running" });
   } catch (e) {
     console.error("[generate] submit failed", (e as Error).message);
@@ -193,6 +200,7 @@ export async function completeJob(jobId: string, providerUrl: string): Promise<J
     completed_at: new Date().toISOString(),
   });
   if (done) {
+    await track(done.user_id, "generation_succeeded", { job: done.id, credits: done.credits_charged });
     const profile = await db().getProfile(done.user_id);
     if (profile?.email) {
       const mail = videoReadyEmail(outputUrl);
@@ -210,6 +218,7 @@ export async function failJob(jobId: string, error: string): Promise<Job | null>
     completed_at: new Date().toISOString(),
   });
   if (!failed) return db().getJob(jobId);
+  await track(failed.user_id, "generation_failed", { job: failed.id, error: error.slice(0, 200) });
   if (failed.credits_charged > 0) {
     await db().applyCredit({ userId: failed.user_id, delta: failed.credits_charged, reason: "refund", jobId: failed.id });
     return db().transitionJob(jobId, ["failed"], { status: "refunded" });

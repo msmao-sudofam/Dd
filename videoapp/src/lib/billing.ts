@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 import { env, isMockStripe } from "@/lib/env";
 import { CREDIT_PACKS, MONTHLY_PLAN, type CreditPack } from "@/lib/pricing";
 import { onPurchaseCompleted } from "@/lib/referrals";
+import { track } from "@/lib/analytics";
 import type { Profile } from "@/lib/types";
 
 let stripeClient: Stripe | null = null;
@@ -148,6 +149,7 @@ async function applyStripeEvent(event: Stripe.Event): Promise<HandleResult> {
         const p = await db().getProfile(userId);
         if (p?.plan === "free") await db().updateProfile(userId, { plan: "paid" });
         await onPurchaseCompleted(userId, `cs:${s.id}`);
+        await track(userId, "purchase_completed", { product: s.metadata?.productId, credits, usd: (s.amount_total ?? 0) / 100 });
       }
       return { handled: true, credited: r.applied ? credits : 0, duplicate: !r.applied };
     }
@@ -172,7 +174,10 @@ async function applyStripeEvent(event: Stripe.Event): Promise<HandleResult> {
         stripe_customer_id: customerId(inv.customer),
         stripe_subscription_id: customerId(details?.subscription as string | { id: string } | null),
       });
-      if (r.applied) await onPurchaseCompleted(userId, `in:${inv.id}`);
+      if (r.applied) {
+        await onPurchaseCompleted(userId, `in:${inv.id}`);
+        await track(userId, "purchase_completed", { product: "monthly", credits, usd: inv.amount_paid / 100, billing_reason: inv.billing_reason });
+      }
       return { handled: true, credited: r.applied ? credits : 0, duplicate: !r.applied };
     }
 

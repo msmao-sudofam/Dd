@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { computeMargin, type MarginRow } from "@/lib/margin";
+import { computeMargin, isoDaysAgo, type MarginRow } from "@/lib/margin";
 
 const usd = (n: number) => `$${n.toFixed(2)}`;
 const pct = (n: number) => `${Math.round(n * 100)}%`;
@@ -39,7 +39,7 @@ function Table({ rows, showDay }: { rows: MarginRow[]; showDay?: boolean }) {
 export default async function MarginPage({ searchParams }: PageProps<"/admin/margin">) {
   const sp = await searchParams;
   const days = Math.min(365, Math.max(1, Number(sp.days ?? 30)));
-  const since = new Date(Date.now() - days * 86_400_000).toISOString();
+  const since = isoDaysAgo(days);
   const [jobs, ledger, models] = await Promise.all([
     db().listJobsSince(since),
     db().listLedgerSince(since, ["purchase", "subscription", "signup_bonus", "referral", "admin"]),

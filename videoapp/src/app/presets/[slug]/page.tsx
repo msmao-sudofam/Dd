@@ -51,7 +51,7 @@ export default async function PresetPage({ params }: PageProps<"/presets/[slug]"
         <Link href="/presets" className="hover:text-foreground">Presets</Link> / {category?.label}
       </nav>
       <div className="grid gap-10 md:grid-cols-[minmax(0,360px)_1fr]">
-        <div className="overflow-hidden rounded-3xl border border-border">
+        <div className="mx-auto w-full max-w-[260px] overflow-hidden rounded-3xl border border-border md:max-w-none">
           {preset.preview_video_url && (
             <video src={preset.preview_video_url} poster={preset.thumbnail_url ?? undefined} className="aspect-[9/16] w-full object-cover" autoPlay muted loop playsInline />
           )}

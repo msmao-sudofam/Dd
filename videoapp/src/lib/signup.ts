@@ -4,6 +4,7 @@ import { cookies, headers } from "next/headers";
 import { db } from "@/lib/db";
 import { env } from "@/lib/env";
 import { SIGNUP_BONUS_CREDITS } from "@/lib/pricing";
+import { track } from "@/lib/analytics";
 
 export const DEVICE_COOKIE = "did";
 export const REFERRAL_COOKIE = "ref";
@@ -49,5 +50,7 @@ export async function attachReferral(userId: string): Promise<void> {
 /** Everything that happens right after an account is created (email signup or first OAuth login). */
 export async function afterSignup(userId: string) {
   await attachReferral(userId);
-  return claimSignupBonus(userId, await requestFingerprint());
+  const bonus = await claimSignupBonus(userId, await requestFingerprint());
+  if (bonus.granted || bonus.reason !== "already_claimed") await track(userId, "signed_up", { bonus: bonus.granted });
+  return bonus;
 }

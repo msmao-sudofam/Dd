@@ -49,3 +49,14 @@ body {
 @utility label {
   @apply mb-1.5 block text-xs font-medium uppercase tracking-wide text-muted;
 }
+
+@keyframes wall-up {
+  from { transform: translateY(0); }
+  to { transform: translateY(-50%); }
+}
+.wall-col { animation: wall-up 38s linear infinite; }
+.wall-col.slow { animation-duration: 52s; }
+.wall-col.reverse { animation-direction: reverse; }
+@media (prefers-reduced-motion: reduce) {
+  .wall-col { animation: none; }
+}
