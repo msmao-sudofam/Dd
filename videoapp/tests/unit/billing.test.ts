@@ -1,15 +1,16 @@
+import { createUser } from "./helpers";
 import { rmSync } from "node:fs";
 import { beforeEach, describe, expect, it } from "vitest";
 import Stripe from "stripe";
 import { createCheckout, handleStripeEvent, mockCheckoutEvent, mockInvoicePaidEvent } from "@/lib/billing";
-import { mockCreateUser, mockDb } from "@/lib/db/mock";
+import { mockDb } from "@/lib/db/mock";
 import { MONTHLY_PLAN, SIGNUP_BONUS_CREDITS } from "@/lib/pricing";
 
 process.env.MOCK_STRIPE = "true";
 beforeEach(() => rmSync(".data-test", { recursive: true, force: true }));
 
 async function user() {
-  const u = await mockCreateUser(`b${Math.random()}@example.com`, "h");
+  const u = await createUser(`b${Math.random()}@example.com`);
   return (await mockDb.getProfile(u.id))!;
 }
 const bal = async (id: string) => (await mockDb.getProfile(id))!.credits_balance;

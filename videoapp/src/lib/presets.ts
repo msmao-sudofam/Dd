@@ -1,6 +1,7 @@
 import "server-only";
 import { db } from "@/lib/db";
 import { creditCostFor } from "@/lib/pricing";
+import { modelAvailable } from "@/lib/providers";
 import type { Model, Preset, PresetCategory } from "@/lib/types";
 
 export const CATEGORIES: { id: PresetCategory; label: string }[] = [
@@ -28,7 +29,7 @@ export interface PresetCard {
 
 export function toCard(p: Preset, models: Map<string, Model>): PresetCard | null {
   const m = models.get(p.model_id);
-  if (!m || !m.enabled) return null;
+  if (!m || !modelAvailable(m)) return null;
   const duration = (p.params_json as { duration?: number }).duration ?? m.default_duration;
   return {
     id: p.id,

@@ -1,4 +1,4 @@
-import { env, isMockProvidersForced } from "@/lib/env";
+import { env, isMockBackend, isMockProvidersForced } from "@/lib/env";
 import type { ProviderName } from "@/lib/types";
 import { falAdapter } from "./fal";
 import { mockAdapter } from "./mock";
@@ -28,7 +28,21 @@ export function providerConfigured(name: ProviderName): boolean {
   }
 }
 
-/** Adapter used to SUBMIT a job for a model: falls back to mock when keys are missing. */
+/**
+ * Mock fallback is only allowed in mock/dev setups. With a real Supabase backend (production),
+ * a model whose provider has no key is unavailable — paying users must never get sample videos.
+ * Set MOCK_PROVIDERS=true to force mocks anyway (e.g. staging).
+ */
+export function mockFallbackAllowed(): boolean {
+  return isMockProvidersForced() || isMockBackend();
+}
+
+export function modelAvailable(m: { provider: ProviderName; enabled: boolean }): boolean {
+  if (!m.enabled) return false;
+  return isMockProvidersForced() || providerConfigured(m.provider) || mockFallbackAllowed();
+}
+
+/** Adapter used to SUBMIT a job for a model: falls back to mock when keys are missing (dev only). */
 export function adapterForModel(provider: ProviderName): ProviderAdapter {
   if (isMockProvidersForced() || !providerConfigured(provider)) return mockAdapter;
   return adapters[provider];

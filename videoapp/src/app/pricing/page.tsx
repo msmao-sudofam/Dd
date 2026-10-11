@@ -1,6 +1,7 @@
 import { getSessionUser } from "@/lib/auth";
 import { PricingCards } from "@/components/pricing-cards";
 import { db } from "@/lib/db";
+import { modelAvailable } from "@/lib/providers";
 
 export const metadata = { title: "Pricing", description: "Simple credit packs. Pay only for what you generate." };
 
@@ -20,7 +21,7 @@ export default async function PricingPage() {
             <tr><th className="p-3">Model</th><th className="p-3">Type</th><th className="p-3 text-right">Credits</th></tr>
           </thead>
           <tbody>
-            {models.map((m) => (
+            {models.filter(modelAvailable).map((m) => (
               <tr key={m.slug} className="border-t border-border">
                 <td className="p-3 font-medium">{m.name}</td>
                 <td className="p-3 text-muted">{m.type === "t2i" ? "Image" : `${m.default_duration}s video`}</td>

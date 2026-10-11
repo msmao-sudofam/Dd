@@ -7,6 +7,8 @@ import type { Profile, SessionUser } from "@/lib/types";
 import { MOCK_SESSION_COOKIE, decodeSession, encodeSession, hashPassword, verifyPassword } from "./mock-session";
 import { mockCreateUser, mockFindUserByEmail } from "@/lib/db/mock";
 import { createSupabaseServerClient } from "./supabase-server";
+import { afterSignup } from "@/lib/signup";
+import { isDisposableEmail } from "@/lib/disposable-domains";
 
 export async function getSessionUser(): Promise<SessionUser | null> {
   if (isMockBackend()) {
@@ -62,11 +64,13 @@ async function setMockSession(user: SessionUser) {
 }
 
 export async function signUpWithPassword(email: string, password: string): Promise<AuthResult> {
+  if (isDisposableEmail(email)) return { ok: false, error: "Please use a permanent email address." };
   if (isMockBackend()) {
     if (await mockFindUserByEmail(email)) return { ok: false, error: "An account with this email already exists." };
     const user = await mockCreateUser(email, await hashPassword(password));
     const session = { id: user.id, email: user.email };
     await setMockSession(session);
+    await afterSignup(user.id);
     return { ok: true, user: session };
   }
   const supabase = await createSupabaseServerClient();
@@ -76,6 +80,8 @@ export async function signUpWithPassword(email: string, password: string): Promi
     options: { emailRedirectTo: `${env.appUrl()}/auth/callback?next=/dashboard` },
   });
   if (error) return { ok: false, error: error.message };
+  // Fingerprint the device that signed up now; the bonus is claimed here or on email confirmation.
+  if (data.user) await afterSignup(data.user.id);
   if (!data.session) return { ok: true, user: null, message: "Check your email to confirm your account." };
   return { ok: true, user: { id: data.user!.id, email: data.user!.email ?? email } };
 }

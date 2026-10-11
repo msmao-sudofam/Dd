@@ -7,6 +7,27 @@ export type SeedPreset = Omit<Preset, "id" | "created_at" | "model_id"> & { mode
 
 export const SEED_MODELS: SeedModel[] = [
   {
+    // Phase 5 margin play: open-weight LTX-Video on our own RunPod Serverless endpoint.
+    // GPU cost estimate: ~15 s on an L40S/A100 at ~$0.0008/s ≈ $0.012, rounded up to $0.03 for cold starts.
+    slug: "draft-self",
+    name: "Draft",
+    description: "Our own GPUs — the cheapest way to test ideas before a premium render.",
+    provider: "self",
+    provider_model_id: "ltx-video-0.9.8-distilled",
+    type: "t2v",
+    tier: "fast",
+    credit_cost: 10,
+    credit_cost_per_second: 2,
+    api_cost_usd: 0.03,
+    default_duration: 5,
+    max_duration: 5,
+    allowed_durations: [5],
+    allowed_aspects: ["9:16", "16:9", "1:1"],
+    params_json: { duration_format: "number", defaults: { num_inference_steps: 8 } },
+    sort_order: 5,
+    enabled: true,
+  },
+  {
     slug: "ltx-fast",
     name: "Fast",
     description: "LTX 2.3 fast — quick drafts and cheap volume.",

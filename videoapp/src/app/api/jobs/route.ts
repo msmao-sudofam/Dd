@@ -3,6 +3,9 @@ import { db } from "@/lib/db";
 import { reconcileJob } from "@/lib/generation";
 import type { Job } from "@/lib/types";
 
+// Downloading + watermarking + re-uploading a clip can take a while.
+export const maxDuration = 300;
+
 // GET /api/jobs            → recent jobs
 // GET /api/jobs?ids=a,b    → those jobs (pending ones are reconciled with the provider)
 export async function GET(req: Request) {

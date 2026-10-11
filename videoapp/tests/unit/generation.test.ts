@@ -1,7 +1,8 @@
+import { createUser } from "./helpers";
 import { rmSync, existsSync } from "node:fs";
 import path from "node:path";
 import { beforeEach, describe, expect, it } from "vitest";
-import { mockCreateUser, mockDb, storageDir } from "@/lib/db/mock";
+import { mockDb, storageDir } from "@/lib/db/mock";
 import { completeJob, failJob, GenerationError, reconcileJob, renderPresetPrompt, startGeneration } from "@/lib/generation";
 import { SIGNUP_BONUS_CREDITS } from "@/lib/pricing";
 
@@ -12,7 +13,7 @@ process.env.MOCK_PROVIDER_DELAY_MS = "0";
 beforeEach(() => rmSync(".data-test", { recursive: true, force: true }));
 
 async function setup(credits = SIGNUP_BONUS_CREDITS) {
-  const u = await mockCreateUser(`u${Math.random()}@example.com`, "h");
+  const u = await createUser(`u${Math.random()}@example.com`);
   if (credits !== SIGNUP_BONUS_CREDITS)
     await mockDb.applyCredit({ userId: u.id, delta: credits - SIGNUP_BONUS_CREDITS, reason: "admin" });
   const fast = (await mockDb.getModel("ltx-fast"))!;

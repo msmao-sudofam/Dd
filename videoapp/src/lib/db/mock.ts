@@ -3,7 +3,6 @@ import { createHmac, randomBytes, randomUUID } from "node:crypto";
 import { mkdirSync, readFileSync, writeFileSync, renameSync, existsSync } from "node:fs";
 import path from "node:path";
 import { env } from "@/lib/env";
-import { SIGNUP_BONUS_CREDITS } from "@/lib/pricing";
 import { SEED_MODELS, SEED_PRESETS } from "@/lib/seed-data";
 import type { Job, LedgerEntry, Model, Preset, Profile } from "@/lib/types";
 import {
@@ -151,7 +150,7 @@ export function mockFindUserByEmail(email: string): Promise<MockUser | null> {
   return read((s) => clone(s.users.find((u) => u.email === email.toLowerCase()) ?? null));
 }
 
-/** Creates the user and runs the equivalent of the on_auth_user_created trigger. */
+/** Creates the user + profile (equivalent of the on_auth_user_created trigger). The bonus is claimed separately. */
 export function mockCreateUser(email: string, passwordHash: string): Promise<MockUser> {
   return tx((s) => {
     const e = email.toLowerCase();
@@ -168,7 +167,6 @@ export function mockCreateUser(email: string, passwordHash: string): Promise<Moc
       referred_by: null,
       created_at: now(),
     });
-    applyCreditIn(s, { userId: user.id, delta: SIGNUP_BONUS_CREDITS, reason: "signup_bonus" });
     return clone(user);
   });
 }

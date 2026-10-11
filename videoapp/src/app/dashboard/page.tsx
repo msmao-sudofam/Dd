@@ -1,11 +1,15 @@
 import Link from "next/link";
 import { requireProfile } from "@/lib/auth";
+import { db } from "@/lib/db";
+import { env } from "@/lib/env";
+import { REFERRAL_BONUS_CREDITS } from "@/lib/pricing";
 import { signOutAction } from "../(auth)/actions";
 
 export const metadata = { title: "Account" };
 
 export default async function DashboardPage() {
   const profile = await requireProfile("/dashboard");
+  const gotBonus = await db().hasLedgerReason(profile.id, "signup_bonus");
   return (
     <div className="mx-auto max-w-3xl px-4 py-12">
       <p className="text-sm text-muted">{profile.email}</p>
@@ -22,6 +26,12 @@ export default async function DashboardPage() {
         </div>
       </div>
 
+      {!gotBonus && (
+        <p className="mt-4 text-sm text-muted" data-testid="bonus-denied">
+          The free welcome credits were already claimed from this device. Grab a credit pack to get started.
+        </p>
+      )}
+
       <div className="mt-8 grid gap-4 sm:grid-cols-2">
         <div className="card p-6">
           <div className="label">Plan</div>
@@ -32,9 +42,9 @@ export default async function DashboardPage() {
         </div>
         <div className="card p-6">
           <div className="label">Invite friends</div>
-          <code className="text-sm" data-testid="referral-code">{profile.referral_code}</code>
+          <code className="block break-all text-sm" data-testid="referral-link">{`${env.appUrl()}/?ref=${profile.referral_code}`}</code>
           <p className="mt-1 text-sm text-muted">
-            You both get bonus credits after their first purchase.
+            You both get {REFERRAL_BONUS_CREDITS} credits after their first purchase.
           </p>
         </div>
       </div>

@@ -5,6 +5,9 @@ import type { ProviderName } from "@/lib/types";
 
 const PROVIDERS: ProviderName[] = ["fal", "replicate", "self", "mock"];
 
+// Downloading + watermarking + re-uploading a clip can take a while.
+export const maxDuration = 300;
+
 // Provider completion webhooks: verify signature → copy output to storage → succeed, or fail + refund.
 export async function POST(req: Request, ctx: RouteContext<"/api/webhooks/[provider]">) {
   const { provider } = await ctx.params;

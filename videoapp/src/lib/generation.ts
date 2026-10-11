@@ -6,7 +6,7 @@ import { sendEmail, videoReadyEmail } from "@/lib/email";
 import { env } from "@/lib/env";
 import { moderateText, moderationMessage } from "@/lib/moderation";
 import { apiCostFor, creditCostFor } from "@/lib/pricing";
-import { adapterByName, adapterForModel, webhookUrlFor, type ProviderResult } from "@/lib/providers";
+import { adapterByName, adapterForModel, modelAvailable, webhookUrlFor, type ProviderResult } from "@/lib/providers";
 import { postProcessOutput } from "@/lib/postprocess";
 import type { Job, Model, Preset, Profile } from "@/lib/types";
 
@@ -59,7 +59,7 @@ export async function resolveRequest(input: GenerateInput) {
   } else if (input.modelId) {
     model = await db().getModel(input.modelId);
   }
-  if (!model || !model.enabled) throw new GenerationError("Model not available.", 404, "model_not_found");
+  if (!model || !modelAvailable(model)) throw new GenerationError("Model not available.", 404, "model_not_found");
 
   if (!prompt) throw new GenerationError("Write a prompt.", 400, "prompt_required");
   if (prompt.length > 2000) throw new GenerationError("Prompt is too long (2000 characters max).", 400, "prompt_too_long");

@@ -15,6 +15,8 @@ describe.skipIf(!available)("core migration (local Postgres)", () => {
 
   async function newUser(email: string): Promise<string> {
     const { rows } = await db.query("insert into auth.users (email) values ($1) returning id", [email]);
+    // The app grants the welcome bonus after the fingerprint check (Phase 5).
+    await db.query("select public.apply_credit_delta($1, 24, 'signup_bonus')", [rows[0].id]);
     return rows[0].id;
   }
   async function balance(id: string): Promise<number> {
@@ -26,8 +28,15 @@ describe.skipIf(!available)("core migration (local Postgres)", () => {
     return rows[0] as { applied: boolean; balance: number };
   }
 
-  it("signup creates a profile with a signup bonus recorded in the ledger", async () => {
+  it("signup trigger creates a profile with zero credits", async () => {
+    const { rows: u } = await db.query("insert into auth.users (email) values ('fresh@example.com') returning id");
+    const { rows: p } = await db.query("select credits_balance from public.profiles where id = $1", [u[0].id]);
+    expect(p[0].credits_balance).toBe(0);
+  });
+
+  it("only one signup bonus per user", async () => {
     const id = await newUser("a@example.com");
+    await apply(id, 24, "signup_bonus");
     const { rows } = await db.query("select * from public.credit_ledger where user_id = $1", [id]);
     expect(rows).toHaveLength(1);
     expect(rows[0].reason).toBe("signup_bonus");
@@ -72,6 +81,16 @@ describe.skipIf(!available)("core migration (local Postgres)", () => {
     await apply(id, 5, "refund", j[0].id);
     await apply(id, 5, "refund", j[0].id); // duplicate refund ignored
     expect(await balance(id)).toBe(start);
+  });
+
+  it("record_signup_fingerprint counts other accounts on the same device", async () => {
+    const a = await newUser("fp-a@example.com");
+    const b = await newUser("fp-b@example.com");
+    const q = async (u: string) =>
+      (await db.query("select public.record_signup_fingerprint($1, 'dev:abc') as n", [u])).rows[0].n;
+    expect(await q(a)).toBe(0);
+    expect(await q(a)).toBe(0); // same user again
+    expect(await q(b)).toBe(1);
   });
 
   it("RLS: users only read their own rows and cannot write balances", async () => {

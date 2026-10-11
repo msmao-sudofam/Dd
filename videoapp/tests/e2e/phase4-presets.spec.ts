@@ -1,6 +1,6 @@
 import path from "node:path";
 import { expect, test } from "@playwright/test";
-import { signUp, uniqueEmail } from "./helpers";
+import { loginOrSignUp, signUp, uniqueEmail } from "./helpers";
 
 // Phase 4 "Done when": a new user can pick a preset, upload one photo, and get a usable clip in under 3 clicks.
 test("new user: preset → photo → clip in 3 clicks", async ({ page }) => {
@@ -41,7 +41,7 @@ test("gallery filters by category and preset pages are SEO-ready", async ({ page
 });
 
 test("admin can add a preset without code; non-admins can't reach admin", async ({ page, browser }) => {
-  await signUp(page, "admin@example.com");
+  await loginOrSignUp(page, "admin@example.com");
   await page.goto("/admin/presets/new");
   await page.getByLabel("Name").fill("Neon Glow");
   await page.getByLabel("Slug (URL)").fill("neon-glow");

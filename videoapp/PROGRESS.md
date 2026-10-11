@@ -45,13 +45,13 @@ and `MOCK_PROVIDERS=true` (sample video after 5s, Stripe adds credits instantly)
 - [x] Commit `phase 4: ...`
 
 ## Phase 5 — Margin + growth
-- [ ] Self-hosted Wan/LTX endpoint adapter (RunPod Serverless) as "Fast" tier
-- [ ] Referrals: both sides credited after referee's first purchase
-- [ ] Watermark free-tier outputs
-- [ ] Abuse limits: 1 bonus per device/IP fingerprint, per-user rate limit, disposable email block
-- [ ] Admin margin dashboard (revenue vs cost_usd by model per day)
-- [ ] Tests
-- [ ] Commit `phase 5: ...`
+- [x] Self-hosted Wan/LTX endpoint adapter (RunPod Serverless) as "Fast" tier
+- [x] Referrals: both sides credited after referee's first purchase
+- [x] Watermark free-tier outputs
+- [x] Abuse limits: 1 bonus per device/IP fingerprint, per-user rate limit, disposable email block
+- [x] Admin margin dashboard (revenue vs cost_usd by model per day)
+- [x] Tests
+- [x] Commit `phase 5: ...`
 
 ## Phase 6 — Launch polish
 - [ ] Landing page (video wall, pricing, FAQ)
@@ -70,6 +70,10 @@ All features run against mocks today. Add these to `.env.local` (and Vercel) to 
 - [ ] Stripe TEST keys: `STRIPE_SECRET_KEY` (sk_test_…) and `STRIPE_WEBHOOK_SECRET` (`stripe listen --forward-to localhost:3000/api/webhooks/stripe` locally; a Dashboard webhook endpoint on Vercel) subscribed to `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `invoice.paid`, `customer.subscription.deleted`. Enable the Customer Portal in Stripe settings.
 - [ ] **Real preset preview videos.** All 20 presets use 5 per-category placeholder clips (`public/presets/placeholder-*.mp4`).
   Run each preset once on fal (or MOMOBEAST) and upload the result in Admin → Presets → "upload preview".
+- [ ] Self-hosted Draft tier: build/push `workers/runpod-ltx`, create a RunPod Serverless endpoint, then set
+  `RUNPOD_API_KEY`, `RUNPOD_ENDPOINT_ID`, `SELF_WEBHOOK_SECRET` (see docs/SELF_HOSTED.md). Measure real GPU cost/clip and
+  update the Draft model's `api_cost_usd` in Admin → Models.
+- [ ] Replace `public/watermark.png` with the real brand logo (keep it wide, ~420×90, semi-transparent backdrop).
 - [ ] Supabase project: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`; run migrations; enable Google provider (Google Cloud OAuth client id/secret)
 
 ## Decisions / notes
@@ -88,4 +92,13 @@ All features run against mocks today. Add these to `.env.local` (and Vercel) to 
   cost is printed on the upload button beforehand). Fast presets cost 24 credits = the signup bonus.
 - Images are downscaled in the browser to ≤2048px/3.5 MB (Vercel's ~4.5 MB request cap).
 - Presets are checked against the same IP/public-figure rules as user prompts when saved in admin.
+- Production safety: with a real Supabase backend, models whose provider has no key are hidden/unusable (no silent mock
+  outputs to paying users). `MOCK_PROVIDERS=true` overrides for staging.
+- Signup bonus is now granted by the app (`claimSignupBonus`), not the DB trigger: max 1 per device cookie, 3 per IP
+  (`SIGNUP_MAX_PER_IP`), stored as salted hashes. Disposable email domains are rejected at signup.
+- Referral: `?ref=CODE` cookie (30 days) → `referred_by` on new accounts (<1h old) → both get 50 credits on the
+  referee's first purchase/subscription payment; idempotent per referee.
+- Watermark: free-plan jobs (`input_json.watermark`) get `public/watermark.png` burned in bottom-right via ffmpeg-static;
+  if ffmpeg fails the clean file is stored (never fail a paid generation over a watermark).
+- Margin: revenue = credits spent on non-failed jobs × (cash in ÷ all credits issued incl. free ones); cost includes failed jobs.
 - Signup bonus = 24 credits = one 6s "Fast" clip.

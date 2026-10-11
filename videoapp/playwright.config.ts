@@ -11,6 +11,7 @@ const mockEnv = {
   NEXT_PUBLIC_APP_URL: `http://localhost:${PORT}`,
   ADMIN_EMAILS: "admin@example.com",
   STRIPE_WEBHOOK_SECRET: "whsec_e2e_test_secret",
+  SIGNUP_MAX_PER_IP: "100000",
 };
 
 export default defineConfig({
