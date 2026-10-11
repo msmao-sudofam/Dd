@@ -65,11 +65,16 @@ export interface Db {
 
   createJob(j: NewJob): Promise<Job>;
   updateJob(id: string, patch: JobPatch): Promise<Job>;
+  /** Conditional update: only applies if the job's status is in `from`. Returns null if it wasn't. */
+  transitionJob(id: string, from: Job["status"][], patch: JobPatch): Promise<Job | null>;
   getJob(id: string): Promise<Job | null>;
   findJobByProviderRequest(provider: ProviderName, requestId: string): Promise<Job | null>;
   listJobs(userId: string, limit?: number): Promise<Job[]>;
   listJobsSince(sinceIso: string): Promise<Job[]>;
   countJobsSince(userId: string, sinceIso: string): Promise<number>;
+
+  logModeration(e: { userId: string | null; kind: "text" | "image"; excerpt: string; reasons: string[]; source: "local" | "openai" }): Promise<void>;
+  logConsent(e: { userId: string; uploadPath: string; statement: string; ip: string | null; userAgent: string | null }): Promise<void>;
 
   /** Records a signup fingerprint; returns how many accounts already used it. */
   recordSignupFingerprint(userId: string, fingerprint: string): Promise<number>;

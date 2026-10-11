@@ -19,14 +19,14 @@ and `MOCK_PROVIDERS=true` (sample video after 5s, Stripe adds credits instantly)
 - [x] Commit `phase 1: ...`
 
 ## Phase 2 — Generation engine
-- [ ] Provider adapter interface (`submit`, `status`, `parseResult`) + fal, replicate, self (RunPod), mock adapters
-- [ ] Seed 4–6 models (cheap, mid, premium, i2v, t2i) with credit_cost ≈ 3x API cost
-- [ ] Moderation (OpenAI omni-moderation + local blocklist, consent checkbox for faces)
-- [ ] `/api/generate`: validate → balance → moderation → debit → submit → insert job
-- [ ] `/api/webhooks/fal` (+ replicate, self): verify signature → re-upload to storage → succeed, or fail + refund
-- [ ] Generate page: model picker, prompt, image upload, duration/aspect (9:16 default), live status, library grid + download
-- [ ] Tests: Vitest (adapters, signature verify, refund), Playwright generate 9:16 + forced failure refund
-- [ ] Commit `phase 2: ...`
+- [x] Provider adapter interface (`submit`, `status`, `parseResult`) + fal, replicate, self (RunPod), mock adapters
+- [x] Seed 4–6 models (cheap, mid, premium, i2v, t2i) with credit_cost ≈ 3x API cost
+- [x] Moderation (OpenAI omni-moderation + local blocklist, consent checkbox for faces)
+- [x] `/api/generate`: validate → balance → moderation → debit → submit → insert job
+- [x] `/api/webhooks/fal` (+ replicate, self): verify signature → re-upload to storage → succeed, or fail + refund
+- [x] Generate page: model picker, prompt, image upload, duration/aspect (9:16 default), live status, library grid + download
+- [x] Tests: Vitest (adapters, signature verify, refund), Playwright generate 9:16 + forced failure refund
+- [x] Commit `phase 2: ...`
 
 ## Phase 3 — Payments
 - [ ] Stripe Checkout for packs (Starter/Creator/Pro) + monthly plan
@@ -63,6 +63,10 @@ and `MOCK_PROVIDERS=true` (sample video after 5s, Stripe adds credits instantly)
 
 ## NEEDS FROM M
 All features run against mocks today. Add these to `.env.local` (and Vercel) to switch each one to real:
+- [ ] `FAL_KEY` (fal.ai → Dashboard → Keys; add billing). Then re-check prices in docs/PROVIDER_REFERENCE.md (sourced from search; Kling v3 pricing conflicting) and run one smoke generation per model (≤ $2 total).
+- [ ] `OPENAI_API_KEY` for moderation (free endpoint). Without it only the local keyword rules run and images are not scanned.
+- [ ] `RESEND_API_KEY` + verified sending domain → `EMAIL_FROM` ("your video is ready" emails; currently logged to console).
+- [ ] Optional backup: `REPLICATE_API_TOKEN` + `REPLICATE_WEBHOOK_SECRET` (GET /v1/webhooks/default/secret). No Replicate models are seeded yet.
 - [ ] Supabase project: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`; run migrations; enable Google provider (Google Cloud OAuth client id/secret)
 
 ## Decisions / notes
@@ -70,4 +74,8 @@ All features run against mocks today. Add these to `.env.local` (and Vercel) to 
   Postgres 16 with a small auth/storage shim (`tests/sql/supabase-shim.sql`).
 - Next.js 16: `middleware.ts` is now `src/proxy.ts`. Cache Components is disabled to keep auth'd pages simple (all dynamic).
 - Mock backend = JSON file DB (`.data/mock-db.json`) + HMAC-signed session cookie; it mirrors the SQL ledger rules.
+- Providers whose key is missing fall back to the mock adapter per job (job.provider records which adapter ran).
+- Lost webhooks / localhost dev: polling `/api/jobs?ids=` reconciles pending jobs with the provider's status API;
+  jobs pending > 30 min are failed + refunded.
+- No real generation smoke test was run (no FAL_KEY) — $0 spent.
 - Signup bonus = 24 credits = one 6s "Fast" clip.

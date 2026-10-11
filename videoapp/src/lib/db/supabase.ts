@@ -133,6 +133,12 @@ export const supabaseDb: Db = {
   async updateJob(id, patch) {
     return normJob(must(await supabaseAdmin().from("jobs").update(patch).eq("id", id).select("*").single()) as Job);
   },
+  async transitionJob(id, from, patch) {
+    const row = must(
+      await supabaseAdmin().from("jobs").update(patch).eq("id", id).in("status", from).select("*").maybeSingle(),
+    ) as Job | null;
+    return row && normJob(row);
+  },
   async getJob(id) {
     const row = must(await supabaseAdmin().from("jobs").select("*").eq("id", id).maybeSingle()) as Job | null;
     return row && normJob(row);
@@ -173,6 +179,29 @@ export const supabaseDb: Db = {
       .gte("created_at", since);
     if (error) throw new Error(error.message);
     return count ?? 0;
+  },
+
+  async logModeration(e) {
+    must(
+      await supabaseAdmin().from("moderation_events").insert({
+        user_id: e.userId,
+        kind: e.kind,
+        excerpt: e.excerpt.slice(0, 500),
+        reasons: e.reasons,
+        source: e.source,
+      }),
+    );
+  },
+  async logConsent(e) {
+    must(
+      await supabaseAdmin().from("consent_log").insert({
+        user_id: e.userId,
+        upload_path: e.uploadPath,
+        statement: e.statement,
+        ip: e.ip,
+        user_agent: e.userAgent,
+      }),
+    );
   },
 
   async recordSignupFingerprint(userId, fingerprint) {

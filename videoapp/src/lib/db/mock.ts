@@ -31,6 +31,8 @@ interface Store {
   presets: Preset[];
   jobs: Job[];
   fingerprints: { user_id: string; fingerprint: string; created_at: string }[];
+  moderation?: Record<string, unknown>[];
+  consents?: Record<string, unknown>[];
   ledgerSeq: number;
 }
 
@@ -244,6 +246,13 @@ export const mockDb: Db = {
       Object.assign(j, patch);
       return clone(j);
     }),
+  transitionJob: (id, from, patch) =>
+    tx((s) => {
+      const j = s.jobs.find((x) => x.id === id);
+      if (!j || !from.includes(j.status)) return null;
+      Object.assign(j, patch);
+      return clone(j);
+    }),
   getJob: (id) => read((s) => clone(s.jobs.find((j) => j.id === id) ?? null)),
   findJobByProviderRequest: (provider, reqId) =>
     read((s) => clone(s.jobs.find((j) => j.provider === provider && j.provider_request_id === reqId) ?? null)),
@@ -259,6 +268,15 @@ export const mockDb: Db = {
   listJobsSince: (since) => read((s) => clone(s.jobs.filter((j) => j.created_at >= since))),
   countJobsSince: (userId, since) =>
     read((s) => s.jobs.filter((j) => j.user_id === userId && j.created_at >= since).length),
+
+  logModeration: (e) =>
+    tx((s) => {
+      (s.moderation ??= []).push({ ...e, created_at: now() });
+    }),
+  logConsent: (e) =>
+    tx((s) => {
+      (s.consents ??= []).push({ ...e, created_at: now() });
+    }),
 
   recordSignupFingerprint: (userId, fingerprint) =>
     tx((s) => {

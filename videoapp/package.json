@@ -7,10 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit -p tsconfig.test.json",
     "test": "vitest run",
     "test:e2e": "playwright test",
-    "gen:seed": "node --experimental-strip-types scripts/gen-seed-sql.ts",
+    "gen:seed": "node --no-warnings --experimental-strip-types scripts/gen-seed-sql.mts",
     "dev:mock": "MOCK_BACKEND=true MOCK_PROVIDERS=true MOCK_STRIPE=true next dev"
   },
   "dependencies": {
@@ -21,7 +21,6 @@
     "posthog-js": "^1.438.7",
     "react": "19.3.0",
     "react-dom": "19.3.0",
-    "resend": "^6.32.1",
     "server-only": "^0.0.1",
     "stripe": "^23.0.0",
     "zod": "^4.6.6"
