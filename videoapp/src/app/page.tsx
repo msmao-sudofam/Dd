@@ -10,7 +10,7 @@ import { LazyVideo } from "@/components/lazy-video";
 import { PresetShowcase } from "@/components/presets/preset-showcase";
 import { PricingCards } from "@/components/pricing-cards";
 import { db } from "@/lib/db";
-import { SIGNUP_BONUS_CREDITS } from "@/lib/pricing";
+import { MONTHLY_PLAN, SIGNUP_BONUS_CREDITS } from "@/lib/pricing";
 import { CATEGORIES, listPresetCards } from "@/lib/presets";
 import { currentTryView } from "@/lib/try/session";
 
@@ -183,10 +183,11 @@ export default async function Home() {
         <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-3" data-reveal>
           <div>
             <p className="text-sm text-muted">Pricing</p>
-            <h2 className="display mt-2 text-[clamp(36px,5vw,56px)]">Pay for what you make.</h2>
+            <h2 className="display mt-2 text-[clamp(36px,5vw,56px)]">Fresh credits every month.</h2>
           </div>
           <p className="max-w-sm text-muted md:pb-1.5">
-            Credit packs or a monthly plan. {SIGNUP_BONUS_CREDITS} free credits to start, no card required.
+            ${MONTHLY_PLAN.priceUsd} a month for {MONTHLY_PLAN.creditsPerCycle} credits, or a one-off pack when you need a burst.{" "}
+            {SIGNUP_BONUS_CREDITS} free credits to start, no card required.
           </p>
         </div>
         <div className="mt-10" data-reveal style={{ "--d": "90ms" } as React.CSSProperties}>

@@ -1,17 +1,22 @@
 import { getSessionUser } from "@/lib/auth";
 import { PricingCards } from "@/components/pricing-cards";
 import { db } from "@/lib/db";
+import { MONTHLY_PLAN } from "@/lib/pricing";
 import { modelAvailable } from "@/lib/providers";
 
-export const metadata = { title: "Pricing", description: "Simple credit packs. Pay only for what you generate." };
+export const metadata = {
+  title: "Pricing",
+  description: `A monthly plan with ${MONTHLY_PLAN.creditsPerCycle} credits for $${MONTHLY_PLAN.priceUsd}, or one-off credit packs. You see the cost before every generation.`,
+};
 
 export default async function PricingPage() {
   const [user, models] = await Promise.all([getSessionUser(), db().listModels()]);
   return (
     <div className="mx-auto max-w-6xl px-4 py-14">
-      <h1 className="text-4xl font-black tracking-tight">Simple, credit-based pricing</h1>
+      <h1 className="text-4xl font-black tracking-tight">One monthly plan, or a pack when you need one</h1>
       <p className="mt-3 max-w-2xl text-muted">
-        Buy credits once, spend them on any preset or model. You always see the cost before you generate, and failed generations are refunded automatically.
+        The monthly plan adds {MONTHLY_PLAN.creditsPerCycle} credits every month for ${MONTHLY_PLAN.priceUsd} and can be cancelled anytime. Packs are one-off and never expire.
+        Spend credits on any preset or model: you always see the cost before you generate, and failed generations are refunded automatically.
       </p>
       <div className="mt-10"><PricingCards loggedIn={!!user} /></div>
       <h2 className="mt-14 mb-4 text-xl font-bold">What things cost</h2>

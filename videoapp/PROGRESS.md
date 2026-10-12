@@ -117,6 +117,10 @@ Next: HANDOFF.md → "Go live".
 
 Rules: $5 cap for step 3; step 4 only at the amount M approves; Stripe TEST keys only; never deploy production; never buy
 a domain; RunPod Draft hidden; never commit keys; commit "golive step N: …" after each step.
+- 2026-10-12: M lifted two of these in his own words: "Push it live all of it" (commits pushed to PR #3, app deployed
+  to the production slot). Still in force: Stripe test keys only, no domain purchase, no keys in commits.
+- Business goal stated by M the same day: **monthly subscriptions are the main goal.** Pricing now leads with the
+  monthly plan (first card, highlighted, the only lime button); packs are labelled one-off.
 
 ## Step 0 — Logins & keys
 - [x] CLIs installed: supabase 2.120, vercel 63.1, stripe 1.31, gh 2.89 (gh API works via proxy, admin on repo)

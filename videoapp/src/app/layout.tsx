@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { DemoBanner } from "@/components/demo-banner";
 import { Fx } from "@/components/fx";
 import { TryBarSlot } from "@/components/try-bar-slot";
 import { env } from "@/lib/env";
@@ -17,6 +18,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className="h-full antialiased">
       <body className="grain flex min-h-full flex-col">
+        <DemoBanner />
         <SiteHeader />
         <main className="flex-1">{children}</main>
         <SiteFooter />

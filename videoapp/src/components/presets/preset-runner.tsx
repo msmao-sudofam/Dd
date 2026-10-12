@@ -131,7 +131,7 @@ export function PresetRunner({
       {short ? (
         <div className="card p-4 text-sm">
           This preset costs {credits} credits — you have {balance}.{" "}
-          <Link href="/billing" className="text-foreground underline">Get credits</Link>
+          <Link href="/billing" className="text-foreground underline">Go monthly or get a pack</Link>
         </div>
       ) : requiresImage && useCarried && carried ? (
         <div className="space-y-3" data-testid="carried">

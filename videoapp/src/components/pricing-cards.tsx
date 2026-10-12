@@ -6,7 +6,12 @@ const FAST_CLIP_CREDITS = 24;
 
 /** What every paid option includes. Each line is backed by the Terms (legal.ts) and the watermark rule (generation.ts). */
 const PACK_INCLUDES = ["Credits don't expire", "No watermark", "Commercial use"];
-const MONTHLY_INCLUDES = ["Credits added every month", "No watermark", "Cancel anytime"];
+const MONTHLY_INCLUDES = ["Credits added every month", "No watermark", "Commercial use", "Cancel anytime"];
+
+const perCredit = (usd: number, credits: number) => usd / credits;
+const MONTHLY_PER_CREDIT = perCredit(MONTHLY_PLAN.priceUsd, MONTHLY_PLAN.creditsPerCycle);
+/** Only claimed while it is true of the numbers in lib/pricing.ts. */
+const MONTHLY_IS_CHEAPEST = CREDIT_PACKS.every((p) => MONTHLY_PER_CREDIT <= perCredit(p.priceUsd, p.credits));
 
 function Check() {
   return (
@@ -17,8 +22,9 @@ function Check() {
 }
 
 /**
- * Credit packs + monthly plan (Epidemic Sound / JetBrains pattern: price, one line of scale, a short included list,
- * one highlighted option). Logged-in users get checkout buttons; others go to signup.
+ * The monthly plan first and highlighted (subscriptions are the business goal), then the one-off credit packs
+ * (Epidemic Sound / JetBrains pattern: price, one line of scale, a short included list, one highlighted option).
+ * Logged-in users get checkout buttons; others go to signup.
  */
 export function PricingCards({ loggedIn, currentPlan }: { loggedIn: boolean; currentPlan?: string }) {
   const cta = (product: string, label: string, primary = false) =>
@@ -49,28 +55,15 @@ export function PricingCards({ loggedIn, currentPlan }: { loggedIn: boolean; cur
   );
 
   return (
-    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-      {CREDIT_PACKS.map((p, i) => {
-        const featured = i === 1;
-        return (
-          <div
-            key={p.id}
-            className={`spot flex flex-col rounded-[20px] border p-6 ${featured ? "border-white/25 bg-[linear-gradient(180deg,rgba(255,255,255,0.09),rgba(255,255,255,0.025))]" : "border-border bg-wash"}`}
-          >
-            <div className="text-sm font-semibold">{p.name}</div>
-            <div className="mt-0.5 text-xs text-muted">{p.blurb}</div>
-            <div className="display mt-5 text-[56px] tabular-nums">${p.priceUsd}</div>
-            <div className="mt-2 text-sm">
-              {p.credits} credits <span className="text-muted">· ≈ {Math.floor(p.credits / FAST_CLIP_CREDITS)} Fast clips</span>
-            </div>
-            <div className="mt-0.5 text-xs text-subtle tabular-nums">${(p.priceUsd / p.credits).toFixed(3)} per credit</div>
-            {includes(PACK_INCLUDES)}
-            {cta(p.id, `Buy ${p.name}`, featured)}
-          </div>
-        );
-      })}
-      <div className="spot flex flex-col rounded-[20px] border border-border bg-wash p-6">
-        <div className="text-sm font-semibold">{MONTHLY_PLAN.name}</div>
+    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4" data-testid="pricing-cards">
+      <div
+        className="spot flex flex-col rounded-[20px] border border-white/25 bg-[linear-gradient(180deg,rgba(255,255,255,0.09),rgba(255,255,255,0.025))] p-6"
+        data-testid="plan-monthly"
+      >
+        <div className="flex items-center justify-between gap-3">
+          <div className="text-sm font-semibold">{MONTHLY_PLAN.name}</div>
+          {MONTHLY_IS_CHEAPEST && <span className="rounded-full bg-white px-2.5 py-0.5 text-[11px] font-semibold text-black">Lowest price per credit</span>}
+        </div>
         <div className="mt-0.5 text-xs text-muted">{MONTHLY_PLAN.blurb}</div>
         <div className="display mt-5 text-[56px] tabular-nums">
           ${MONTHLY_PLAN.priceUsd}
@@ -79,14 +72,29 @@ export function PricingCards({ loggedIn, currentPlan }: { loggedIn: boolean; cur
         <div className="mt-2 text-sm">
           {MONTHLY_PLAN.creditsPerCycle} credits/mo <span className="text-muted">· ≈ {Math.floor(MONTHLY_PLAN.creditsPerCycle / FAST_CLIP_CREDITS)} Fast clips</span>
         </div>
-        <div className="mt-0.5 text-xs text-subtle tabular-nums">${(MONTHLY_PLAN.priceUsd / MONTHLY_PLAN.creditsPerCycle).toFixed(3)} per credit</div>
+        <div className="mt-0.5 text-xs text-subtle tabular-nums">${MONTHLY_PER_CREDIT.toFixed(3)} per credit</div>
         {includes(MONTHLY_INCLUDES)}
         {currentPlan === "monthly" ? (
           <div className="mt-auto pt-7 text-center text-sm text-muted">Current plan</div>
         ) : (
-          cta("monthly", "Subscribe")
+          cta("monthly", "Subscribe", true)
         )}
       </div>
+      {CREDIT_PACKS.map((p) => (
+        <div key={p.id} className="spot flex flex-col rounded-[20px] border border-border bg-wash p-6">
+          <div className="text-sm font-semibold">
+            {p.name} <span className="font-normal text-muted">· one-off pack</span>
+          </div>
+          <div className="mt-0.5 text-xs text-muted">{p.blurb}</div>
+          <div className="display mt-5 text-[56px] tabular-nums">${p.priceUsd}</div>
+          <div className="mt-2 text-sm">
+            {p.credits} credits <span className="text-muted">· ≈ {Math.floor(p.credits / FAST_CLIP_CREDITS)} Fast clips</span>
+          </div>
+          <div className="mt-0.5 text-xs text-subtle tabular-nums">${perCredit(p.priceUsd, p.credits).toFixed(3)} per credit</div>
+          {includes(PACK_INCLUDES)}
+          {cta(p.id, `Buy ${p.name}`)}
+        </div>
+      ))}
     </div>
   );
 }
