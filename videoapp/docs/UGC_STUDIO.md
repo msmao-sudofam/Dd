@@ -27,7 +27,7 @@ Brands turn a product into talking-creator ads: script → AI creator → voice 
 - Assembly: cover-crop to aspect, b-roll overlay after the hook while the voice continues, pop-in captions (word groups
   timed by word length), on-screen hook, AI label, 1.6 s darkened end card with product name + CTA; free plan watermark.
 - Credits: `src/lib/ugc/config.ts` → `estimateUgcCost` (same ≥3x worst-case markup rule as every model).
-  **Per-stage prices are estimates** — re-check on fal.ai in go-live Step 2.
+  Per-stage prices were read from fal.ai on 2026-10-12 (go-live Step 2); see `docs/PROVIDER_REFERENCE.md`.
 
 ## Placeholders to replace (go-live Step 4 batch)
 - 8 creator portraits `public/ugc/actors/*.jpg` → generate fictional adult personas (e.g. nano-banana / FLUX),

@@ -76,7 +76,9 @@ export const SEED_MODELS: SeedModel[] = [
     tier: "mid",
     credit_cost: 40,
     credit_cost_per_second: 8,
-    api_cost_usd: 0.84, // 5s × $0.168 (conservative)
+    // fal lists $0.084/s with audio off. Credits stay at the old, higher estimate until the Step 3 smoke test
+    // confirms what fal actually bills (the page's billing metadata shows a $0.14/s base unit).
+    api_cost_usd: 0.42, // 5s × $0.084 (audio off)
     default_duration: 5,
     max_duration: 10,
     allowed_durations: [5, 10],
@@ -133,7 +135,7 @@ export const SEED_MODELS: SeedModel[] = [
     tier: "mid",
     credit_cost: 40,
     credit_cost_per_second: 8,
-    api_cost_usd: 0.84,
+    api_cost_usd: 0.42, // 5s × $0.084 (audio off); same caveat as kling-3
     default_duration: 5,
     max_duration: 10,
     allowed_durations: [5, 10],

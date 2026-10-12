@@ -1,7 +1,6 @@
 // UGC Ad Studio — fal endpoints and cost model.
 // Endpoint ids and input schemas verified against @fal-ai/client@1.10.1 types (src/types/endpoints.d.ts).
-// PRICES ARE ESTIMATES (vendor pricing pages were unreachable from the build sandbox) — go-live Step 2
-// re-checks them on fal.ai and updates this file. They are deliberately on the high side.
+// Prices read from each endpoint's fal.ai model page on 2026-10-12 (go-live Step 2), see docs/PROVIDER_REFERENCE.md.
 import { CREDIT_FLOOR_USD, MARKUP } from "@/lib/pricing";
 
 export type UgcQuality = "standard" | "premium";
@@ -20,10 +19,10 @@ export const UGC_ENDPOINTS = {
 } as const;
 
 export const UGC_COST = {
-  voicePer1kChars: 0.1, // ElevenLabs turbo on fal (estimate)
-  composite: 0.04, // nano-banana edit, 1 image (estimate)
-  avatarPerSecond: { standard: 0.12, premium: 0.2 }, // Kling AI Avatar v2 std / OmniHuman v1.5 (estimates)
-  brollClip: 0.36, // LTX i2v fast, 6 s × $0.06
+  voicePer1kChars: 0.05, // ElevenLabs turbo v2.5 on fal
+  composite: 0.04, // nano-banana edit, 1 image ($0.039 on the model page, $0.0398 on the pricing page)
+  avatarPerSecond: { standard: 0.0562, premium: 0.16 }, // Kling AI Avatar v2 standard / OmniHuman v1.5
+  brollClip: 0.36, // LTX i2v fast at 1080p, 6 s × $0.06
 };
 
 export const WORDS_PER_SECOND = 2.6;

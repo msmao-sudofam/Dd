@@ -133,9 +133,32 @@ a domain; RunPod Draft hidden; never commit keys; commit "golive step N: …" af
 - Step 4 batch must also include 8 UGC creator portraits + the hero film.
 - Optional key: `ANTHROPIC_API_KEY` (AI-written UGC scripts; templates otherwise).
 
-## Step 1 — Supabase  - [ ]
-## Step 2 — fal pricing (≥60% margin)  - [ ]
-## Step 3 — Real smoke test (≤ $5)  - [ ]
+## Local Windows session (2026-10-12, MOMOBEAST)
+- [x] Node 24.19 / npm 11.17 present; installed supabase 2.120.0 (`~/.local/bin`), vercel 63.1.2 (npm -g), stripe 1.53.1 (winget)
+- [x] `npm install`; typecheck + lint clean; Vitest 54 passed / 9 skipped (SQL tests need a local Postgres); Playwright 21/21
+- [x] Windows fixes: ffmpeg `subtitles` filter path (drive colon + backslashes) in `src/lib/ugc/assemble.ts`;
+  race in the phase 5 watermark e2e (it could read the earlier free job's card)
+- [x] Logins: vercel (moquinmoreno-1021, team "kom's projects"), stripe CLI (account `elegantad.carrd.co` — M to confirm
+  it is the right account; test mode only)
+- [ ] `supabase login` — waiting on M (browser flow needs a real terminal)
+- [ ] `.env.local` — M creates it and pastes keys (Claude's settings deny reading/writing `.env*`)
+- Not fixed: `npm run dev:mock` uses POSIX `VAR=value` syntax, so it only works from Git Bash, not cmd/PowerShell.
+
+## Step 1 — Supabase  - [ ] (blocked on `supabase login`)
+## Step 2 — fal pricing (≥60% margin)  - [x]
+Prices re-read from fal.ai model pages 2026-10-12; table in docs/PROVIDER_REFERENCE.md. Worst-case margin (credit at $0.076):
+ltx-fast / ltx-i2v 80%, wan-26 74%, kling-3 / kling-3-i2v 86%, veo-31 67%, flux 92–96%, UGC standard 71%, UGC premium 67%.
+- Changed: Kling v3 standard is $0.084/s audio off, not $0.168 (that was Pro with audio) → `api_cost_usd` 0.84 → 0.42.
+  Credits left at 8/s until Step 3 confirms the real charge (billing metadata on the page shows a $0.14/s base unit).
+- Changed UGC stage costs: voice $0.10 → $0.05 per 1k chars, avatar standard $0.12 → $0.0562/s, premium $0.20 → $0.16/s.
+  UGC ad credits are computed from these, so UGC ads got cheaper for users (a ~20 s standard ad with b-roll: about 130 → about 71 credits).
+- Unchanged and confirmed: LTX 2.3 fast $0.06/s @1080p, Wan 2.6 $0.10/s @720p, Veo 3.1 $0.40/s with audio, nano-banana ~$0.04.
+- FLUX schnell bills per megapixel rounded up: sizes over 1 MP cost $0.006, not $0.003 (margin still > 90%).
+## Step 3 — Real smoke test (≤ $5)  - [ ] (needs FAL_KEY + Supabase)
+Planned at list prices: ltx-fast 6s $0.36, wan-26 5s $0.50, kling-3 5s $0.42, veo-31 4s $1.60, ltx-i2v 6s $0.36,
+kling-3-i2v 5s $0.42, flux $0.003, one ~10 s standard UGC ad without b-roll ≈ $0.61 → ≈ $4.27 (≈ $4.83 if Kling bills $0.14/s).
 ## Step 4 — Preset previews (wait for M's approval of the exact cost)  - [ ]
+Estimate for one take each, no retries: 20 presets $7.68 (11 ltx-i2v, 8 kling-3-i2v, 1 ltx-fast) + 19 source photos and
+8 creator portraits ≈ $0.45 + hero film ≈ $0.46 → ≈ $8.60 (≈ $11.10 if Kling bills $0.14/s). Not started; needs M's approval.
 ## Step 5 — CI on PRs + pushes  - [x] (green on PR #3: lint/typecheck/unit+SQL and Playwright e2e)
 ## Step 6 — Vercel preview + webhooks + e2e against preview  - [ ]
