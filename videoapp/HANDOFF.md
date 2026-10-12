@@ -75,8 +75,9 @@ The SQL tests need a Postgres on `127.0.0.1:5432` with user/password `postgres`/
 - **Prices aren't verified.** Vendor doc sites were blocked during the build, so fal prices came from search summaries.
   Kling v3 pricing in particular was conflicting, so I used the conservative value. Check them on fal.ai and fix
   `api_cost_usd` in Admin → Models; the min-margin column turns red below 60%.
-- **Preview videos are placeholders.** All 20 presets use 5 per-category placeholder clips. Generate a real preview
-  per preset and upload it in Admin.
+- **Preview videos were made with local models, not the hosted ones.** Each preset has its own clip (go-live Step 4),
+  rendered on M's PC with MiniMax H3 from an AI-generated photo. They show the preset's look; what a customer gets
+  comes from the hosted model (LTX 2.3 or Kling v3) and will differ in detail. Replace any of them in Admin → Presets.
 - **Legal pages are plain-language templates.** Have a lawyer review them before launch.
 - **Moderation is partly keyword-based.** Public-figure and IP detection use keyword lists, which a determined user can
   get around (misspellings, or a celebrity photo uploaded with an innocent prompt). OpenAI moderation doesn't detect

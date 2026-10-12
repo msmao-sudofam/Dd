@@ -69,8 +69,8 @@ All features run against mocks today. Add these to `.env.local` (and Vercel) to 
 - [ ] `RESEND_API_KEY` + verified sending domain → `EMAIL_FROM` ("your video is ready" emails; currently logged to console).
 - [ ] Optional backup: `REPLICATE_API_TOKEN` + `REPLICATE_WEBHOOK_SECRET` (GET /v1/webhooks/default/secret). No Replicate models are seeded yet.
 - [ ] Stripe TEST keys: `STRIPE_SECRET_KEY` (sk_test_…) and `STRIPE_WEBHOOK_SECRET` (`stripe listen --forward-to localhost:3000/api/webhooks/stripe` locally; a Dashboard webhook endpoint on Vercel) subscribed to `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `invoice.paid`, `customer.subscription.deleted`. Enable the Customer Portal in Stripe settings.
-- [ ] **Real preset preview videos.** All 20 presets use 5 per-category placeholder clips (`public/presets/placeholder-*.mp4`).
-  Run each preset once on fal (or MOMOBEAST) and upload the result in Admin → Presets → "upload preview".
+- [x] **Real preset preview videos.** Done in go-live Step 4 on MOMOBEAST (local models, $0): one clip per preset in
+  `public/presets/<slug>.mp4`. Replace any of them in Admin → Presets → "upload preview".
 - [ ] Self-hosted Draft tier: build/push `workers/runpod-ltx`, create a RunPod Serverless endpoint, then set
   `RUNPOD_API_KEY`, `RUNPOD_ENDPOINT_ID`, `SELF_WEBHOOK_SECRET` (see docs/SELF_HOSTED.md). Measure real GPU cost/clip and
   update the Draft model's `api_cost_usd` in Admin → Models.
@@ -143,8 +143,13 @@ a domain; RunPod Draft hidden; never commit keys; commit "golive step N: …" af
 - [x] `supabase login` — browser flow, approved in M's signed-in Chrome (the CLI needs `--output-format text` and a
   pseudo-terminal when launched from an agent session; it silently refuses to prompt otherwise)
 - [x] `.env.local` created (M said "do it all"): app URL, brand, session secret, admin email, Supabase URL + keys,
-  `SUPABASE_DB_PASSWORD`. Still empty and only M can fill: `FAL_KEY`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`,
-  `OPENAI_API_KEY` (copying API keys out of dashboards is blocked for Claude; fal.ai is not signed in at all)
+  `SUPABASE_DB_PASSWORD`. M then supplied `FAL_KEY`, `OPENAI_API_KEY`, `RESEND_API_KEY` and `NEXT_PUBLIC_POSTHOG_KEY`
+  (OpenAI moderation and the Resend key verified with free calls). Still empty: `STRIPE_SECRET_KEY` (M sent a key id
+  starting `mk_`, which is not the `sk_test_` secret) and `STRIPE_WEBHOOK_SECRET`.
+- Resend has no verified sending domain yet, so `EMAIL_FROM` is the Resend test sender (`onboarding@resend.dev`),
+  which only delivers to the Resend account owner. Real "video ready" emails and Supabase custom SMTP need a domain.
+- [x] Mocked runs (`npm run dev:mock`, Playwright e2e) now blank the real keys from `.env.local`, so tests cannot send
+  email, analytics or moderation calls to real services. (One e2e run before this fix sent test events to PostHog.)
 - [x] `npm run dev:mock` now runs `scripts/dev-mock.mjs`, so it works from cmd/PowerShell (was POSIX `VAR=value` syntax).
 - `npm audit`: 5 "high" findings are all one advisory in `braces`, pulled in only by `eslint-config-next` (lint tooling,
   not shipped). The only offered fix is `--force` with breaking changes; left alone.
@@ -176,12 +181,30 @@ ltx-fast / ltx-i2v 80%, wan-26 74%, kling-3 / kling-3-i2v 86%, veo-31 67%, flux 
   UGC ad credits are computed from these, so UGC ads got cheaper for users (a ~20 s standard ad with b-roll: about 130 → about 71 credits).
 - Unchanged and confirmed: LTX 2.3 fast $0.06/s @1080p, Wan 2.6 $0.10/s @720p, Veo 3.1 $0.40/s with audio, nano-banana ~$0.04.
 - FLUX schnell bills per megapixel rounded up: sizes over 1 MP cost $0.006, not $0.003 (margin still > 90%).
-## Step 3 — Real smoke test (≤ $5)  - [ ] (needs FAL_KEY + Supabase)
+## Step 3 — Real smoke test (≤ $5)  - [ ] (blocked: the fal account has no balance)
+The test exists: `tests/live/real-providers.spec.ts` (one real generation per model + one UGC ad through the whole
+pipeline; skipped unless `SMOKE_REAL=1`; `SMOKE_ONLY=slug,…` reruns a subset without paying twice). First call
+(FLUX, $0.003) on 2026-10-12: fal answered 403 "User is locked. Reason: Exhausted balance" → the job was refunded
+and recorded at $0 cost, which is the correct behaviour. $0 spent. Top up at fal.ai/dashboard/billing, then run
+`npx next dev` and `SMOKE_REAL=1 npx playwright test -c playwright.live.config.ts real-providers`.
+Known limit: a library creator's portrait is served by this app, so fal cannot fetch it from localhost or from a
+preview behind Vercel login; the smoke test casts an uploaded creator instead. Works once the site is public.
 Planned at list prices: ltx-fast 6s $0.36, wan-26 5s $0.50, kling-3 5s $0.42, veo-31 4s $1.60, ltx-i2v 6s $0.36,
 kling-3-i2v 5s $0.42, flux $0.003, one ~10 s standard UGC ad without b-roll ≈ $0.61 → ≈ $4.27 (≈ $4.83 if Kling bills $0.14/s).
-## Step 4 — Preset previews (wait for M's approval of the exact cost)  - [ ]
-Estimate for one take each, no retries: 20 presets $7.68 (11 ltx-i2v, 8 kling-3-i2v, 1 ltx-fast) + 19 source photos and
-8 creator portraits ≈ $0.45 + hero film ≈ $0.46 → ≈ $8.60 (≈ $11.10 if Kling bills $0.14/s). Not started; needs M's approval.
+## Step 4 — Preset previews, creator portraits, hero film  - [x] (made with local models, $0)
+M chose local generation on MOMOBEAST instead of fal (the fal estimate was ≈ $8.60–11.10). Done 2026-10-12:
+- 20 preset previews: `public/presets/<slug>.mp4` (576×1024, 5.2 s, silent H.264, 96 KB–1.2 MB) + first-frame poster
+  `<slug>.jpg` (the teaser's poster is its lit last frame). Source photos: Krea 2 Turbo; motion: MiniMax H3 FL2VA
+  pruned PDD in Wan2GP, with each preset's own prompt. About 4 minutes per clip on the RTX 5080.
+- 8 UGC creator portraits: `public/ugc/actors/<slug>.jpg` (576×1024), fictional adults matching each creator's
+  listed age range and setting.
+- Hero film: `media/hero-film.mp4` (plain listing photo → finished ad, 4.5 s) → 72 frames in `public/film/`.
+- Catalog: `src/lib/seed-data.ts` points every preset at its own files; `supabase/seed.sql` regenerated and applied.
+- Everything shown is fictional and unbranded. Retaken for that reason or for a weak effect: Crash Zoom (the
+  first sneaker close-up grew a brand-like stripe), 360 Spin, Orbit, Teaser, Turn into Figurine.
+- Caveat: the previews come from a local model, not from the hosted LTX 2.3 / Kling v3 that customers get, and each
+  starts from a photo already staged for the effect. They show the preset's look, not a guaranteed result.
+- Prompts, scripts, source stills and raw renders: `~/Projects/reelforge-previews` on MOMOBEAST (see its README).
 ## Step 5 — CI on PRs + pushes  - [x] (green on PR #3: lint/typecheck/unit+SQL and Playwright e2e)
 ## Step 6 — Vercel preview + webhooks + e2e against preview  - [ ] (preview is up; webhooks + logged-in e2e open)
 - Vercel project `reelforge` (team "kom's projects", Hobby). Preview: https://reelforge-preview.vercel.app (stable alias,

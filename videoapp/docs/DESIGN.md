@@ -48,7 +48,11 @@ Chosen by M from three reference-locked directions (A Midnight Studio / B Neon P
 | Reduced motion: no pinning, static poster, beats in flow | Craft (accessibility) | No scroll-jacking for users who opt out |
 
 ## Media
-- `public/film/` holds a **placeholder** film (72 frames, 0.5 MB desktop / 0.26 MB mobile), built from the placeholder
-  preset clips. Replace `media/hero-film.mp4` with a real "product photo → finished ad" clip (generated in go-live
-  Step 4) and run `npm run film`. Keep it 9:16, 3–5 s, the first frame a plain product photo.
-- Preset previews are placeholders too (see PROGRESS.md).
+- `public/film/` holds the hero film (72 frames, 1.9 MB desktop / 1.1 MB mobile): a plain listing photo of a skincare
+  bottle that turns into a finished ad, generated locally in go-live Step 4 (first and last frame from Krea 2, motion
+  from MiniMax H3). To change it, replace `media/hero-film.mp4` and run `npm run film` (on Windows call
+  `python scripts/extract_frames.py …` with the same arguments; `python3` is a Store stub there). Keep it 9:16,
+  3–5 s, the first frame a plain product photo.
+- Preset previews: one 576×1024, 5 s, silent H.264 clip per preset in `public/presets/<slug>.mp4`, with its first
+  frame as the poster (`<slug>.jpg`) so tiles don't jump when the clip starts. The five `placeholder-*` files are
+  no longer referenced by the seed catalog.
