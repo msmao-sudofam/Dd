@@ -209,7 +209,9 @@ M chose local generation on MOMOBEAST instead of fal (the fal estimate was ≈ $
 ## Step 6 — Vercel preview + webhooks + e2e against preview  - [ ] (preview is up; webhooks + logged-in e2e open)
 - Vercel project `reelforge` (team "kom's projects", Hobby). Preview: https://reelforge-preview.vercel.app (stable alias,
   behind Vercel login). Preview env: Supabase keys, app URL, session secret, admin email, `MOCK_PROVIDERS=true`,
-  `MOCK_STRIPE=true` (until the fal and Stripe keys exist). No production env vars are set.
+  `MOCK_STRIPE=true`, plus (2026-10-12) `FAL_KEY`, `OPENAI_API_KEY`, `RESEND_API_KEY`, `EMAIL_FROM` and the PostHog key
+  and host. The mocks stay on until fal has balance and the Stripe test key exists. No production env vars are set.
+  Redeployed 2026-10-12 with the Step 4 media; all 20 preview clips, portraits and film frames are served.
 - INCIDENT: Vercel auto-promoted the project's first deployment to production (twice, the second time despite
   `--target=preview`). Both were removed within about a minute; they had no env vars and, because of the framework
   preset, served only 404s. The production slot now holds an empty "Nothing here" page so app deploys stay previews.
@@ -220,4 +222,5 @@ M chose local generation on MOMOBEAST instead of fal (the fal estimate was ≈ $
 - [ ] Logged-in e2e on the preview (M runs it, or after keys): `LIVE_BASE_URL=https://reelforge-preview.vercel.app`.
 - [ ] Stripe test webhook endpoint on the preview (needs `STRIPE_SECRET_KEY`; Deployment Protection blocks webhooks
   unless the URL carries the bypass secret).
-- [ ] Remove `MOCK_PROVIDERS` / `MOCK_STRIPE` from the preview env once real keys are added, then redeploy.
+- [ ] Remove `MOCK_PROVIDERS` from the preview env once Step 3 passes, and `MOCK_STRIPE` once the Stripe test key
+  exists, then redeploy.
