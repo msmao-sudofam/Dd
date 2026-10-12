@@ -13,7 +13,7 @@ type Cat = { id: PresetCategory; label: string; blurb?: string };
  * Runway Watch strip). Every tile stays in the DOM and is hidden with `hidden` when filtered out, so the page
  * always carries all presets (tests and crawlers see the full catalog).
  */
-export function PresetShowcase({ categories, presets }: { categories: Cat[]; presets: PresetCard[] }) {
+export function PresetShowcase({ categories, presets, photoLabel }: { categories: Cat[]; presets: PresetCard[]; photoLabel?: string }) {
   const [active, setActive] = useState<PresetCategory | "all">("all");
   const strip = useRef<HTMLDivElement>(null);
   const cats = categories.filter((c) => presets.some((p) => p.category === c.id));
@@ -60,6 +60,7 @@ export function PresetShowcase({ categories, presets }: { categories: Cat[]; pre
           <PresetTile
             key={p.id}
             preset={p}
+            photoLabel={photoLabel}
             className={`w-[44vw] shrink-0 snap-start sm:w-[220px] ${active === "all" || p.category === active ? "" : "hidden"}`}
           />
         ))}

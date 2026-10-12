@@ -20,10 +20,11 @@ export async function signupAction(_: AuthFormState, form: FormData): Promise<Au
   const email = String(form.get("email") ?? "");
   const parsed = credentials.safeParse({ email: form.get("email"), password: form.get("password") });
   if (!parsed.success) return { error: parsed.error.issues[0].message, email };
-  const res = await signUpWithPassword(parsed.data.email, parsed.data.password);
+  const next = safeNext(form.get("next"));
+  const res = await signUpWithPassword(parsed.data.email, parsed.data.password, next);
   if (!res.ok) return { error: res.error, email };
   if (!res.user) return { message: res.message };
-  redirect(safeNext(form.get("next")));
+  redirect(next);
 }
 
 export async function loginAction(_: AuthFormState, form: FormData): Promise<AuthFormState> {

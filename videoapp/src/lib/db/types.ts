@@ -1,4 +1,4 @@
-import type { Job, LedgerEntry, LedgerReason, Model, Preset, Profile, ProviderName, UgcActor, UgcProject } from "@/lib/types";
+import type { Job, LedgerEntry, LedgerReason, Model, Preset, Profile, ProviderName, TrySession, UgcActor, UgcProject } from "@/lib/types";
 
 export class InsufficientCreditsError extends Error {
   constructor() {
@@ -43,6 +43,9 @@ export type JobPatch = Partial<
 
 export type NewUgcActor = Omit<UgcActor, "id" | "created_at">;
 export type NewUgcProject = Omit<UgcProject, "id" | "created_at">;
+
+export type NewTrySession = Pick<TrySession, "id" | "ip_hash" | "product_name" | "source_url" | "upload_path">;
+export type TrySessionPatch = Partial<Omit<TrySession, "id" | "ip_hash" | "created_at">>;
 
 export type ModelInput = Omit<Model, "id" | "created_at"> & { id?: string };
 export type PresetInput = Omit<Preset, "id" | "created_at"> & { id?: string };
@@ -108,7 +111,18 @@ export interface Db {
   /** Records a signup fingerprint; returns how many accounts already used it. */
   recordSignupFingerprint(userId: string, fingerprint: string): Promise<number>;
 
+  createTrySession(s: NewTrySession): Promise<TrySession>;
+  getTrySession(id: string): Promise<TrySession | null>;
+  updateTrySession(id: string, patch: TrySessionPatch): Promise<TrySession | null>;
+  deleteTrySession(id: string): Promise<void>;
+  /** Rate limits: sessions started and stills made since a point in time, for one IP hash or (null) everyone. */
+  countTrySince(sinceIso: string, ipHash: string | null): Promise<{ sessions: number; stills: number }>;
+  /** Sessions older than `beforeIso`, claimed or not (cleanup: a claimed session's files were copied to the account). */
+  listStaleTrySessions(beforeIso: string, limit: number): Promise<TrySession[]>;
+
   uploadObject(bucket: "outputs" | "uploads", path: string, body: Uint8Array, contentType: string): Promise<void>;
+  downloadObject(bucket: "outputs" | "uploads", path: string): Promise<Uint8Array>;
+  removeObjects(bucket: "outputs" | "uploads", paths: string[]): Promise<void>;
   /** Public URL for outputs, short-lived signed URL for private uploads. */
   objectUrl(bucket: "outputs" | "uploads", path: string, expiresInSeconds?: number): Promise<string>;
 }

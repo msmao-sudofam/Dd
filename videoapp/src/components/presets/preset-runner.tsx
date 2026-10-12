@@ -15,12 +15,17 @@ import { JobCard } from "../create/job-card";
  */
 export function PresetRunner({
   presetId,
+  presetSlug,
+  carried = null,
   credits,
   requiresImage,
   requiresSubject,
   balance: initialBalance,
 }: {
   presetId: string;
+  presetSlug?: string;
+  /** The photo (or ad frame) the visitor previewed before signing up; one click animates it. */
+  carried?: { name: string; previewUrl: string } | null;
   credits: number;
   requiresImage: boolean;
   requiresSubject: boolean;
@@ -32,6 +37,7 @@ export function PresetRunner({
   const [consent, setConsent] = useState(false);
   const [subject, setSubject] = useState("");
   const [busy, setBusy] = useState<null | "upload" | "generate">(null);
+  const [useCarried, setUseCarried] = useState(!!carried);
   const [error, setError] = useState<string | null>(null);
   const job: Job | undefined = jobs[0];
   const short = balance < credits;
@@ -61,6 +67,27 @@ export function PresetRunner({
       const up = await fetch("/api/uploads", { method: "POST", body: fd });
       const data = await up.json();
       if (!up.ok) throw new Error(data.error ?? "Upload failed");
+      await generate(data.path);
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  /** Copies the previewed photo into the account (consent was given on the preview), then starts the clip. */
+  async function onGenerateCarried() {
+    setError(null);
+    if (requiresSubject && !subject.trim()) return setError("Describe your subject first.");
+    setBusy("upload");
+    try {
+      const res = await fetch("/api/try/claim", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ presetSlug }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Could not use that photo");
       await generate(data.path);
     } catch (e) {
       setError((e as Error).message);
@@ -105,6 +132,23 @@ export function PresetRunner({
         <div className="card p-4 text-sm">
           This preset costs {credits} credits — you have {balance}.{" "}
           <Link href="/billing" className="text-foreground underline">Get credits</Link>
+        </div>
+      ) : requiresImage && useCarried && carried ? (
+        <div className="space-y-3" data-testid="carried">
+          <div className="flex items-center gap-4">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={carried.previewUrl} alt={carried.name || "Your product"} className="h-28 w-[63px] shrink-0 rounded-xl bg-white object-cover" />
+            <div className="text-sm">
+              <p className="font-semibold">{carried.name || "Your product"}</p>
+              <p className="mt-1 text-xs text-muted">The photo from your preview. You confirmed it&apos;s yours to use.</p>
+            </div>
+          </div>
+          <button className="btn-primary btn-sheen w-full !py-3" disabled={!!busy} onClick={onGenerateCarried} data-testid="generate-carried">
+            {busy ? "Starting…" : `Generate · ${credits} credits`}
+          </button>
+          <button type="button" className="text-xs text-muted underline decoration-white/30 underline-offset-4 hover:text-foreground" onClick={() => setUseCarried(false)}>
+            Use a different photo
+          </button>
         </div>
       ) : requiresImage ? (
         <>

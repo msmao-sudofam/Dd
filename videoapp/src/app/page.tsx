@@ -5,12 +5,14 @@ import { ClipWall } from "@/components/landing/clip-wall";
 import { CreatorFan } from "@/components/landing/creator-fan";
 import { Faq, FAQ_ITEMS } from "@/components/landing/faq";
 import { ScrollFilm, type Beat } from "@/components/landing/scroll-film";
+import { TryStage } from "@/components/landing/try-stage";
 import { LazyVideo } from "@/components/lazy-video";
 import { PresetShowcase } from "@/components/presets/preset-showcase";
 import { PricingCards } from "@/components/pricing-cards";
 import { db } from "@/lib/db";
 import { SIGNUP_BONUS_CREDITS } from "@/lib/pricing";
 import { CATEGORIES, listPresetCards } from "@/lib/presets";
+import { currentTryView } from "@/lib/try/session";
 
 const FILM_FRAMES = 72; // public/film/manifest.json
 
@@ -39,8 +41,10 @@ const PROMISES: { k: string; v: string; icon: ReactNode }[] = [
 ];
 
 export default async function Home() {
-  const [cards, user, actors] = await Promise.all([listPresetCards(), getSessionUser(), db().listUgcActors(null)]);
-  const start = user ? "/presets" : "/signup";
+  const [cards, user, actors, mine] = await Promise.all([listPresetCards(), getSessionUser(), db().listUgcActors(null), currentTryView()]);
+  // A visitor who has put their own product in ("try" mode) is sent to the preset that animates it.
+  const mineTarget = mine ? `/presets/${mine.presetSlug}` : null;
+  const start = user ? (mineTarget ?? "/presets") : mineTarget ? `/signup?next=${encodeURIComponent(mineTarget)}` : "/signup";
   const faqLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -63,9 +67,12 @@ export default async function Home() {
             photo in.
           </h1>
           <p className="mt-4 max-w-md text-base text-white/75 md:mt-6 md:text-lg md:text-muted">The photo from your store listing is the whole brief. No studio, no editor, no prompts.</p>
-          <p className="mt-10 hidden items-center gap-2 text-xs text-subtle md:flex">
-            Scroll <span className="motion-safe:animate-[nudge-down_1.8s_ease-in-out_infinite]" aria-hidden>↓</span>
-          </p>
+          <div className="mt-8 hidden items-center gap-5 md:flex">
+            <Link href="#try" className="btn-ghost !py-2.5">{mine ? `Back to ${mine.shortName}` : "Try it on your product"}</Link>
+            <p className="flex items-center gap-2 text-xs text-subtle">
+              Scroll <span className="motion-safe:animate-[nudge-down_1.8s_ease-in-out_infinite]" aria-hidden>↓</span>
+            </p>
+          </div>
         </div>
       ),
     },
@@ -122,6 +129,10 @@ export default async function Home() {
         captions={{ start: "Listing photo", end: "Finished ad" }}
       />
 
+      <section className="mx-auto max-w-6xl scroll-mt-[calc(var(--hdr)+24px)] px-4 pt-16 sm:pt-24" id="try" aria-label="Try it on your product">
+        <TryStage initial={mine} loggedIn={!!user} />
+      </section>
+
       <section className="pt-20 sm:pt-24" aria-label="Preset showreel">
         <div className="relative z-10 mx-auto max-w-6xl px-4 text-center" data-reveal>
           <p className="text-sm text-muted">{cards.length} one-click looks</p>
@@ -129,6 +140,9 @@ export default async function Home() {
         </div>
         <div className="mt-2 sm:-mt-4">
           <ClipWall presets={cards} />
+        </div>
+        <div className="relative z-10 -mt-2 flex justify-center px-4" data-reveal>
+          <Link href="/feed" className="btn-ghost !py-3" data-testid="open-feed">Swipe through all {cards.length} →</Link>
         </div>
       </section>
 
@@ -138,12 +152,12 @@ export default async function Home() {
           <div className="mb-8 flex items-end justify-between gap-6" data-reveal>
             <div>
               <p className="text-sm text-muted">Presets</p>
-              <h2 className="display mt-2 max-w-2xl text-[clamp(36px,5vw,56px)]">Presets that sell.</h2>
+              <h2 className="display mt-2 max-w-2xl text-[clamp(36px,5vw,56px)]">{mine ? `Pick a look for ${mine.shortName}.` : "Presets that sell."}</h2>
             </div>
             <Link href="/presets" className="btn-ghost hidden shrink-0 sm:inline-flex">Browse all</Link>
           </div>
           <div data-reveal style={{ "--d": "90ms" } as React.CSSProperties}>
-            <PresetShowcase categories={CATEGORIES} presets={cards} />
+            <PresetShowcase categories={CATEGORIES} presets={cards} photoLabel={mine ? "Your photo" : undefined} />
           </div>
         </section>
       </div>

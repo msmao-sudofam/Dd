@@ -161,3 +161,22 @@ export interface UgcScript {
   cta: string;
   on_screen_hook: string;
 }
+
+/** Anonymous "try it on your product" session (see supabase/migrations/20261012000006_try.sql). */
+export interface TrySession {
+  id: string;
+  ip_hash: string;
+  product_name: string;
+  source_url: string | null;
+  upload_path: string;
+  consent_at: string;
+  look: string | null;
+  still_request_id: string | null;
+  still_provider: ProviderName | null;
+  still_status: "none" | "running" | "succeeded" | "failed";
+  still_path: string | null;
+  still_started_at: string | null;
+  stills_used: number;
+  claimed_by: string | null;
+  created_at: string;
+}

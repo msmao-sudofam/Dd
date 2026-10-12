@@ -12,6 +12,9 @@ const mockEnv = {
   ADMIN_EMAILS: "admin@example.com",
   STRIPE_WEBHOOK_SECRET: "whsec_e2e_test_secret",
   SIGNUP_MAX_PER_IP: "100000",
+  TRY_SESSIONS_PER_IP_DAY: "100000",
+  TRY_STILLS_PER_IP_DAY: "100000",
+  TRY_STILLS_PER_DAY: "100000",
   // Blank the real keys from .env.local (an empty value still wins over the file), so a mocked run can never
   // send email, analytics events or moderation calls to a real service.
   FAL_KEY: "",

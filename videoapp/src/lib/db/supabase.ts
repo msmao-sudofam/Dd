@@ -1,7 +1,7 @@
 import "server-only";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { env } from "@/lib/env";
-import type { Job, LedgerEntry, Model, Preset, Profile, UgcActor, UgcProject } from "@/lib/types";
+import type { Job, LedgerEntry, Model, Preset, Profile, TrySession, UgcActor, UgcProject } from "@/lib/types";
 import { InsufficientCreditsError, type Db } from "./types";
 
 let admin: SupabaseClient | null = null;
@@ -251,8 +251,45 @@ export const supabaseDb: Db = {
     return Number(data ?? 0);
   },
 
+  async createTrySession(n) {
+    return must(await supabaseAdmin().from("try_sessions").insert(n).select("*").single()) as TrySession;
+  },
+  async getTrySession(id) {
+    if (!isUuid(id)) return null;
+    return must(await supabaseAdmin().from("try_sessions").select("*").eq("id", id).maybeSingle()) as TrySession | null;
+  },
+  async updateTrySession(id, patch) {
+    return must(
+      await supabaseAdmin().from("try_sessions").update(patch).eq("id", id).select("*").maybeSingle(),
+    ) as TrySession | null;
+  },
+  async deleteTrySession(id) {
+    must(await supabaseAdmin().from("try_sessions").delete().eq("id", id));
+  },
+  async countTrySince(since, ipHash) {
+    let q = supabaseAdmin().from("try_sessions").select("stills_used").gte("created_at", since).limit(5000);
+    if (ipHash !== null) q = q.eq("ip_hash", ipHash);
+    const rows = must(await q) as { stills_used: number }[];
+    return { sessions: rows.length, stills: rows.reduce((n, r) => n + r.stills_used, 0) };
+  },
+  async listStaleTrySessions(before, limit) {
+    return must(
+      await supabaseAdmin().from("try_sessions").select("*").lt("created_at", before).limit(limit),
+    ) as TrySession[];
+  },
+
   async uploadObject(bucket, path, body, contentType) {
     const { error } = await supabaseAdmin().storage.from(bucket).upload(path, body, { contentType, upsert: true });
+    if (error) throw new Error(error.message);
+  },
+  async downloadObject(bucket, path) {
+    const { data, error } = await supabaseAdmin().storage.from(bucket).download(path);
+    if (error || !data) throw new Error(error?.message ?? "download failed");
+    return new Uint8Array(await data.arrayBuffer());
+  },
+  async removeObjects(bucket, paths) {
+    if (!paths.length) return;
+    const { error } = await supabaseAdmin().storage.from(bucket).remove(paths);
     if (error) throw new Error(error.message);
   },
   async objectUrl(bucket, path, expiresIn = 3600) {

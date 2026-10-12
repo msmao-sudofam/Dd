@@ -63,7 +63,8 @@ async function setMockSession(user: SessionUser) {
   });
 }
 
-export async function signUpWithPassword(email: string, password: string): Promise<AuthResult> {
+/** `next` is where the email confirmation link lands (a path on this site), so a sign-up started on a preset returns there. */
+export async function signUpWithPassword(email: string, password: string, next = "/dashboard"): Promise<AuthResult> {
   if (isDisposableEmail(email)) return { ok: false, error: "Please use a permanent email address." };
   if (isMockBackend()) {
     if (await mockFindUserByEmail(email)) return { ok: false, error: "An account with this email already exists." };
@@ -77,7 +78,7 @@ export async function signUpWithPassword(email: string, password: string): Promi
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
-    options: { emailRedirectTo: `${env.appUrl()}/auth/callback?next=/dashboard` },
+    options: { emailRedirectTo: `${env.appUrl()}/auth/callback?next=${encodeURIComponent(next)}` },
   });
   if (error) return { ok: false, error: error.message };
   // Fingerprint the device that signed up now; the bonus is claimed here or on email confirmation.

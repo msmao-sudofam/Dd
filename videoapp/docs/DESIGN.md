@@ -91,3 +91,10 @@ spill from the media itself**, never from flat colour. That replaces the earlier
 - `prefers-reduced-motion`: no reveals, no tilt, the wall stands still, clips stay on their posters.
 - Regenerate the small clips and the type strip with `python web_extras.py` in `~/Projects/reelforge-previews`.
 - Still rejected: custom cursors, particles, accent-coloured glows, lime anywhere but the primary action.
+
+## Surfaces added 2026-10-12 (mechanics first; open for restyling)
+- **Try stage** (`components/landing/try-stage.tsx`, section `#try` under the hero): link field, upload, consent, look
+  chips, a 9:16 card with a drag-to-compare slider. Lime only on the one primary action in each state.
+- **Try bar** (`components/try-bar.tsx`): a small fixed pill at the bottom while a visitor has a product in try mode.
+- **Feed** (`/feed`, `components/feed/feed.tsx`): full-screen snap feed of the preset clips, 460 px wide on desktop.
+- Their `data-testid`s are used by `tests/e2e/try-and-feed.spec.ts`; behaviour is described in PROGRESS.md.

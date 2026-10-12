@@ -1,10 +1,10 @@
 import "server-only";
 import { createHmac, randomBytes, randomUUID } from "node:crypto";
-import { mkdirSync, readFileSync, writeFileSync, renameSync, existsSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync, renameSync, existsSync, rmSync } from "node:fs";
 import path from "node:path";
 import { env } from "@/lib/env";
 import { SEED_MODELS, SEED_PRESETS, SEED_UGC_ACTORS } from "@/lib/seed-data";
-import type { Job, LedgerEntry, Model, Preset, Profile, UgcActor, UgcProject } from "@/lib/types";
+import type { Job, LedgerEntry, Model, Preset, Profile, TrySession, UgcActor, UgcProject } from "@/lib/types";
 import {
   InsufficientCreditsError,
   type ApplyCreditArgs,
@@ -35,6 +35,7 @@ interface Store {
   ugcActors?: UgcActor[];
   ugcProjects?: UgcProject[];
   consents?: Record<string, unknown>[];
+  trySessions?: TrySession[];
   ledgerSeq: number;
 }
 
@@ -356,11 +357,60 @@ export const mockDb: Db = {
       return prior;
     }),
 
+  createTrySession: (n) =>
+    tx((s) => {
+      const row: TrySession = {
+        ...n,
+        consent_at: now(),
+        look: null,
+        still_request_id: null,
+        still_provider: null,
+        still_status: "none",
+        still_path: null,
+        still_started_at: null,
+        stills_used: 0,
+        claimed_by: null,
+        created_at: now(),
+      };
+      (s.trySessions ??= []).push(row);
+      return clone(row);
+    }),
+  getTrySession: (id) => read((s) => clone((s.trySessions ?? []).find((t) => t.id === id) ?? null)),
+  updateTrySession: (id, patch) =>
+    tx((s) => {
+      const t = (s.trySessions ?? []).find((x) => x.id === id);
+      if (!t) return null;
+      Object.assign(t, patch);
+      return clone(t);
+    }),
+  deleteTrySession: (id) =>
+    tx((s) => {
+      s.trySessions = (s.trySessions ?? []).filter((t) => t.id !== id);
+    }),
+  countTrySince: (since, ipHash) =>
+    read((s) => {
+      const rows = (s.trySessions ?? []).filter((t) => t.created_at >= since && (ipHash === null || t.ip_hash === ipHash));
+      return { sessions: rows.length, stills: rows.reduce((n, t) => n + t.stills_used, 0) };
+    }),
+  listStaleTrySessions: (before, limit) =>
+    read((s) => clone((s.trySessions ?? []).filter((t) => t.created_at < before).slice(0, limit))),
+
   uploadObject: async (bucket, p, body) => {
     const file = path.join(storageDir(), bucket, p);
     if (!file.startsWith(path.join(storageDir(), bucket))) throw new Error("bad_path");
     mkdirSync(path.dirname(file), { recursive: true });
     writeFileSync(file, body);
+  },
+  downloadObject: async (bucket, p) => {
+    const file = path.join(storageDir(), bucket, p);
+    if (!file.startsWith(path.join(storageDir(), bucket))) throw new Error("bad_path");
+    return new Uint8Array(readFileSync(file));
+  },
+  removeObjects: async (bucket, paths) => {
+    for (const p of paths) {
+      const file = path.join(storageDir(), bucket, p);
+      if (file.startsWith(path.join(storageDir(), bucket))) rmSync(file, { force: true });
+    }
   },
   objectUrl: async (bucket, p, expiresIn = 3600) => {
     const base = `${env.appUrl()}/api/storage/${bucket}/${p}`;

@@ -3,7 +3,7 @@ import { LazyVideo } from "@/components/lazy-video";
 import type { PresetCard } from "@/lib/presets";
 
 /** Morphic "content thumbnail card": 10px radius, media first, overlaid title + black pill. */
-export function PresetTile({ preset, className = "" }: { preset: PresetCard; className?: string }) {
+export function PresetTile({ preset, className = "", photoLabel = "1 photo" }: { preset: PresetCard; className?: string; photoLabel?: string }) {
   return (
     <Link
       href={`/presets/${preset.slug}`}
@@ -25,7 +25,7 @@ export function PresetTile({ preset, className = "" }: { preset: PresetCard; cla
         <div className="absolute inset-x-0 bottom-0 p-3">
           <div className="text-[15px] font-semibold leading-tight tracking-[-0.02em]">{preset.name}</div>
           <div className="mt-0.5 flex items-center justify-between text-xs text-white/60">
-            <span>{preset.requires_image ? "1 photo" : "Text only"}</span>
+            <span>{preset.requires_image ? photoLabel : "Text only"}</span>
             <span className="translate-x-1 opacity-0 transition duration-300 group-hover:translate-x-0 group-hover:opacity-100" aria-hidden>Try it →</span>
           </div>
         </div>

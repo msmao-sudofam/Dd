@@ -7,6 +7,7 @@ export async function SiteHeader() {
   const profile = await getCurrentProfile();
   const links = [
     { href: "/presets", label: "Presets" },
+    { href: "/feed", label: "Feed" },
     { href: "/ugc", label: "UGC Ads" },
     { href: "/generate", label: "Create" },
     ...(profile ? [{ href: "/library", label: "Library" }] : []),

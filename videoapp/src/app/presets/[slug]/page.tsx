@@ -6,6 +6,8 @@ import { env } from "@/lib/env";
 import { CATEGORIES, getPresetCard, listPresetCards } from "@/lib/presets";
 import { PresetRunner } from "@/components/presets/preset-runner";
 import { PresetTile } from "@/components/presets/preset-tile";
+import { lookById } from "@/lib/try/looks";
+import { currentTryView } from "@/lib/try/session";
 
 export async function generateMetadata({ params }: PageProps<"/presets/[slug]">): Promise<Metadata> {
   const { slug } = await params;
@@ -29,8 +31,16 @@ export async function generateMetadata({ params }: PageProps<"/presets/[slug]">)
 
 export default async function PresetPage({ params }: PageProps<"/presets/[slug]">) {
   const { slug } = await params;
-  const [preset, profile, all] = await Promise.all([getPresetCard(slug), getCurrentProfile(), listPresetCards()]);
+  const [preset, profile, all, mine] = await Promise.all([getPresetCard(slug), getCurrentProfile(), listPresetCards(), currentTryView()]);
   if (!preset) notFound();
+  // The photo a visitor previewed before signing up: offered here so one click starts the clip.
+  const carried =
+    mine && preset.requires_image
+      ? {
+          name: mine.name,
+          previewUrl: (lookById(mine.look)?.presetSlug === preset.slug && mine.still.url) || mine.photoUrl,
+        }
+      : null;
   const category = CATEGORIES.find((c) => c.id === preset.category);
   const related = all.filter((p) => p.category === preset.category && p.slug !== preset.slug).slice(0, 5);
 
@@ -69,6 +79,8 @@ export default async function PresetPage({ params }: PageProps<"/presets/[slug]"
             {profile ? (
               <PresetRunner
                 presetId={preset.id}
+                presetSlug={preset.slug}
+                carried={carried}
                 credits={preset.credits}
                 requiresImage={preset.requires_image}
                 requiresSubject={preset.requires_subject}
@@ -76,7 +88,9 @@ export default async function PresetPage({ params }: PageProps<"/presets/[slug]"
               />
             ) : (
               <div className="text-center">
-                <p className="mb-4 text-sm text-muted">Sign up free — your welcome credits cover your first clip.</p>
+                <p className="mb-4 text-sm text-muted">
+                  {carried ? "Sign up free and your photo comes with you. Your welcome credits cover a Fast clip." : "Sign up free — your welcome credits cover your first clip."}
+                </p>
                 <Link href={`/signup?next=/presets/${preset.slug}`} className="btn-primary w-full">Try {preset.name} free</Link>
               </div>
             )}

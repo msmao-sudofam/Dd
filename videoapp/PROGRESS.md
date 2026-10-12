@@ -229,3 +229,53 @@ M chose local generation on MOMOBEAST instead of fal (the fal estimate was ≈ $
   unless the URL carries the bypass secret).
 - [ ] Remove `MOCK_PROVIDERS` from the preview env once Step 3 passes, and `MOCK_STRIPE` once the Stripe test key
   exists, then redeploy.
+
+---
+
+# STAND-OUT FEATURES (2026-10-12, asked for by M)
+
+Three things most AI-video sites don't do. All built, tested in mock mode and against the real Supabase project.
+
+## 1. Try it on your product, before sign-up  - [x]
+- Landing section `#try` (`components/landing/try-stage.tsx`): paste a store link or upload a photo → the photo shows
+  on the card → the page re-labels itself for that product ("Pick a look for …", "Your photo" on tiles) and a small
+  bar (`components/try-bar.tsx`) follows the visitor with "Make my ad free".
+- Link reader (`lib/try/net.ts`, `lib/try/product-page.ts`): reads schema.org Product data and Open Graph tags.
+  Checked on a real Shopify product page (siquemasupplements.com). It can only reach the public internet: http/https,
+  default port, no credentials, every resolved address checked at connect time, redirects re-checked, size and time
+  capped. Sites that block bots (Amazon often does) fall back to "upload the photo instead".
+- State: table `try_sessions` (migration `20261012000006_try.sql`, applied; service role only) + files in the private
+  `uploads` bucket under `try/<id>/`. The browser holds a signed cookie `rf_try`. Everything is deleted after 7 days
+  (swept when a new session starts); the Privacy text says so. Consent is required before either path and is logged
+  against the user id when the photo is carried into an account.
+- Hand-off: sign-up keeps `next=/presets/<slug>`; the preset page offers the previewed photo with one button showing
+  the cost (`data-testid="generate-carried"`). It does not start by itself: nothing is charged without a click.
+
+## 2. One free ad frame before sign-up  - [x] built; real output unverified until fal has balance
+- `POST /api/try/still` asks `fal-ai/nano-banana/edit` for one 9:16 frame of the visitor's product in one of three
+  looks (`lib/try/looks.ts`: Studio hero → hero-shot, Sunlit home → lifestyle-scene, Water splash → liquid-splash),
+  shown with a drag-to-compare slider. After sign-up that frame is what the preset animates.
+- Cost and limits (env, defaults): about $0.04 per frame; `TRY_STILLS_PER_SESSION=2`, `TRY_STILLS_PER_IP_DAY=4`,
+  `TRY_STILLS_PER_DAY=150` (site-wide ceiling, so at most about $6 a day), `TRY_SESSIONS_PER_IP_DAY=6`. A failed
+  frame does not use up a free preview.
+- With mocked providers (the preview today) the frame is the poster of the matching preset, labelled
+  "Sample frame (demo mode)". It is never presented as the visitor's product.
+
+## 3. The feed  - [x]
+- `/feed` (`components/feed/feed.tsx`): every preset clip full-screen, one per swipe, only the visible one plays;
+  each has "Make this with my product" (or the product's name in try mode). `/feed#<slug>` opens on that clip;
+  arrow keys work on desktop. Linked from the header and from under the clip wall ("Swipe through all 20").
+- The phone landing page keeps its hero (round 2 fixed it); the feed is one tap away instead of replacing it.
+
+## Tests
+- `tests/unit/try.test.ts` (48 cases: address rules, URL rules, capped fetching against a local server, product-page
+  parsing) and `tests/e2e/try-and-feed.spec.ts` (preview → sign-up → one-click clip; private links refused; feed).
+- Totals: 102 unit tests pass (9 SQL tests skipped locally), 24/24 end-to-end.
+
+## Open
+- [ ] Real frame quality and cost: run once fal has balance (`MOCK_PROVIDERS` off), check product fidelity per look.
+- Email confirmation: the confirmation link now returns to the page the sign-up started from (`next` is carried
+  into `emailRedirectTo`), so the previewed photo is waiting when the link is opened in the same browser. Opened
+  on another device, the account works but the preview photo is not there (it is tied to the browser cookie).
+- [ ] Looks and copy are first drafts; the design session can restyle `try-stage.tsx`, `try-bar.tsx` and `feed.tsx`
+  freely as long as the `data-testid`s stay.
