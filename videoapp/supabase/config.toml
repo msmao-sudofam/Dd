@@ -2,6 +2,15 @@
 # everything else on the project is left as it is. Preview with `supabase config diff`.
 project_id = "reelforge"
 
+# Where sign-in and email confirmation links may land. Pushed 2026-10-12 when the app went to production.
+[auth]
+site_url = "https://reelforge-phi-six.vercel.app"
+additional_redirect_urls = [
+  "https://reelforge-phi-six.vercel.app/**",
+  "https://reelforge-preview.vercel.app/**",
+  "http://localhost:3000/**",
+]
+
 # The confirmation link opens the app's /auth/confirm page (a button spends the token) instead of confirming
 # on GET, so mail scanners and "opened on another device" no longer burn the one-time link.
 # NOT PUSHED YET: Supabase rejects template changes on the free tier until custom SMTP (e.g. Resend) is set up.

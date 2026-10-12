@@ -283,3 +283,15 @@ Three things most AI-video sites don't do. All built, tested in mock mode and ag
   on another device, the account works but the preview photo is not there (it is tied to the browser cookie).
 - [ ] Looks and copy are first drafts; the design session can restyle `try-stage.tsx`, `try-bar.tsx` and `feed.tsx`
   freely as long as the `data-testid`s stay.
+
+## Production (2026-10-12)
+- Production URL: https://reelforge-phi-six.vercel.app (Vercel's default domain; no custom domain bought).
+- It runs in **demo mode** until two things exist: fal balance (then remove `MOCK_PROVIDERS`) and the Stripe key
+  (then remove `MOCK_STRIPE`). While either is on, a white line above the header says so (`components/demo-banner.tsx`)
+  and `robots.txt` disallows everything, so the demo is not indexed. Both switch off by themselves.
+- Production env: same keys as the preview, its own `SESSION_SECRET`, `NEXT_PUBLIC_APP_URL` = the production URL.
+- Deploy: `vercel deploy --prod --yes`. Preview: `vercel deploy --yes --target=preview` + `vercel alias set`.
+- Next for the subscription goal (M's call): whether to add monthly tiers above $19 / 250 credits. The code has one
+  plan (`MONTHLY_PLAN` in `lib/pricing.ts`); tiers need Stripe prices per tier and a margin check per tier.
+- Supabase auth: Site URL is now the production URL; allowed redirects are production, preview and localhost
+  (`supabase/config.toml` `[auth]`, pushed with `supabase config push`; email confirmations still on).
