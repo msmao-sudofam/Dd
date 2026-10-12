@@ -63,6 +63,8 @@ test("free-tier outputs are watermarked, paid ones aren't; Draft runs via the se
   await page.getByTestId("model-draft-self").click();
   await page.getByLabel("Prompt").fill("a blue sneaker on a pedestal");
   await page.getByTestId("generate").click();
+  // The free job's card is already "succeeded"; wait for the new card so .first() can't match the old one.
+  await expect(page.getByTestId("job-card")).toHaveCount(2);
   const paidCard = page.locator('[data-testid="job-card"]').first();
   await expect(paidCard).toHaveAttribute("data-status", "succeeded", { timeout: 30_000 });
   const paidBytes = await (await page.request.get((await paidCard.locator("video").getAttribute("src"))!)).body();

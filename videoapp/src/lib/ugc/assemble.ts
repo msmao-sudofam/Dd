@@ -22,6 +22,9 @@ async function ffmpegBin(): Promise<string> {
 
 const fontsDir = () => path.join(/*turbopackIgnore: true*/ process.cwd(), "assets", "fonts");
 
+/** A file path as a filter option value: forward slashes and an escaped drive colon, so Windows paths survive. */
+const filterPath = (p: string) => `'${p.replace(/\\/g, "/").replace(/:/g, "\\:")}'`;
+
 /** Duration from ffmpeg's own banner (ffmpeg-static ships without ffprobe). */
 export async function mediaDuration(file: string): Promise<number> {
   const bin = await ffmpegBin();
@@ -93,7 +96,7 @@ export async function assembleUgc(i: AssembleInput): Promise<Uint8Array> {
       }
     }
     graph += `[${last}]drawbox=x=0:y=0:w=iw:h=ih:color=black@0.55:t=fill:enable='gte(t,${spoken.toFixed(2)})',`;
-    graph += `subtitles=filename=${assFile.replace(/:/g, "\\:")}:fontsdir=${fontsDir().replace(/:/g, "\\:")},format=yuv420p[vout];`;
+    graph += `subtitles=filename=${filterPath(assFile)}:fontsdir=${filterPath(fontsDir())},format=yuv420p[vout];`;
     graph += `[0:a]apad=pad_dur=${endCard}[aout]`;
     const out = path.join(dir, "out.mp4");
     args.push(
