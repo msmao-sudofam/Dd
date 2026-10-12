@@ -1,0 +1,11 @@
+# Remote project settings kept in code. `supabase config push` only writes the properties declared here;
+# everything else on the project is left as it is. Preview with `supabase config diff`.
+project_id = "reelforge"
+
+# The confirmation link opens the app's /auth/confirm page (a button spends the token) instead of confirming
+# on GET, so mail scanners and "opened on another device" no longer burn the one-time link.
+# NOT PUSHED YET: Supabase rejects template changes on the free tier until custom SMTP (e.g. Resend) is set up.
+# After that: `supabase config push`. Until then the default email + /auth/callback flow stays in use.
+[auth.email.template.confirmation]
+subject = "Confirm your email address"
+content_path = "./supabase/templates/confirmation.html"

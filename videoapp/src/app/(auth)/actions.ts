@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { googleSignInUrl, signInWithPassword, signOut, signUpWithPassword } from "@/lib/auth";
+import { confirmEmail, googleSignInUrl, signInWithPassword, signOut, signUpWithPassword } from "@/lib/auth";
 
 export type AuthFormState = { error?: string; message?: string; email?: string } | undefined;
 
@@ -33,6 +33,11 @@ export async function loginAction(_: AuthFormState, form: FormData): Promise<Aut
   const res = await signInWithPassword(parsed.data.email, parsed.data.password);
   if (!res.ok) return { error: res.error, email };
   redirect(safeNext(form.get("next")));
+}
+
+export async function confirmEmailAction(form: FormData) {
+  const ok = await confirmEmail(String(form.get("token_hash") ?? ""));
+  redirect(ok ? safeNext(form.get("next")) : "/login?error=auth");
 }
 
 export async function googleAction(_: AuthFormState, form: FormData): Promise<AuthFormState> {

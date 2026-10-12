@@ -23,7 +23,10 @@ Then, in the Supabase dashboard:
   Supabase silently falls back to the Site URL and the confirmation link never logs the user in.
 - **Authentication → Providers → Google**: enable, paste the Google Cloud OAuth client id/secret
   (Google Cloud Console → Credentials → OAuth client → Web; authorized redirect URI = the callback URL Supabase shows).
-- **Authentication → Email**: keep "Confirm email" on.
+- **Authentication → Email**: keep "Confirm email" on. Set up custom SMTP (Resend) here before real users: the
+  built-in mailer only sends a couple of emails per hour, and without custom SMTP the free tier will not accept
+  the confirmation template in `supabase/templates/`. With SMTP in place run `supabase config push` so the emailed
+  link opens `/auth/confirm` (button) instead of confirming on GET, which mail scanners otherwise burn.
 - Storage buckets `outputs` (public) and `uploads` (private) are created by migration 2. Realtime on `jobs` by migration 1.
 - Make yourself admin: `update profiles set role = 'admin' where email = 'you@…';` (or set `ADMIN_EMAILS`).
 

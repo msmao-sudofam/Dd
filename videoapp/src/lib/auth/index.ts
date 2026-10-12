@@ -86,6 +86,16 @@ export async function signUpWithPassword(email: string, password: string): Promi
   return { ok: true, user: { id: data.user!.id, email: data.user!.email ?? email } };
 }
 
+/** Spend the one-time token from the confirmation email. Called from the confirm page's button, never on GET. */
+export async function confirmEmail(tokenHash: string): Promise<boolean> {
+  if (!tokenHash || isMockBackend()) return false;
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase.auth.verifyOtp({ type: "email", token_hash: tokenHash });
+  if (error || !data.user) return false;
+  await afterSignup(data.user.id).catch((e) => console.error("[afterSignup]", e));
+  return true;
+}
+
 export async function signInWithPassword(email: string, password: string): Promise<AuthResult> {
   if (isMockBackend()) {
     const u = await mockFindUserByEmail(email);

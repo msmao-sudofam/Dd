@@ -11,7 +11,7 @@
     "test": "vitest run",
     "test:e2e": "playwright test",
     "gen:seed": "node --no-warnings --experimental-strip-types scripts/gen-seed-sql.mts",
-    "dev:mock": "MOCK_BACKEND=true MOCK_PROVIDERS=true MOCK_STRIPE=true next dev",
+    "dev:mock": "node scripts/dev-mock.mjs",
     "film": "python3 scripts/extract_frames.py --input media/hero-film.mp4 --output public/film --frames 72 --quality 72 --desktop-res 720x1280 --mobile-res 432x768"
   },
   "dependencies": {

@@ -145,7 +145,9 @@ a domain; RunPod Draft hidden; never commit keys; commit "golive step N: …" af
 - [x] `.env.local` created (M said "do it all"): app URL, brand, session secret, admin email, Supabase URL + keys,
   `SUPABASE_DB_PASSWORD`. Still empty and only M can fill: `FAL_KEY`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`,
   `OPENAI_API_KEY` (copying API keys out of dashboards is blocked for Claude; fal.ai is not signed in at all)
-- Not fixed: `npm run dev:mock` uses POSIX `VAR=value` syntax, so it only works from Git Bash, not cmd/PowerShell.
+- [x] `npm run dev:mock` now runs `scripts/dev-mock.mjs`, so it works from cmd/PowerShell (was POSIX `VAR=value` syntax).
+- `npm audit`: 5 "high" findings are all one advisory in `braces`, pulled in only by `eslint-config-next` (lint tooling,
+  not shipped). The only offered fix is `--force` with breaking changes; left alone.
 
 ## Step 1 — Supabase  - [x] (Google sign-in still open)
 - Project `reelforge`, ref `slgadvjriexkanskzgva`, us-east-1, free plan, org "moquinmoreno@gmail.com's Org".
@@ -158,7 +160,11 @@ a domain; RunPod Draft hidden; never commit keys; commit "golive step N: …" af
   failure → exactly one refund. Real email signup also checked: user, both fingerprints and the 24-credit bonus land.
 - Finding: both confirmation emails to Gmail had their one-time link opened ~15 s after sending by something other
   than the test (mail link scanning), so the user's own click lands on `/login?error=auth` although the account IS
-  confirmed. The login page now says so. A sturdier fix is a confirm page with a button (token-hash flow) — not done.
+  confirmed. The login page now says so.
+- Sturdier fix is BUILT BUT NOT ACTIVE: `/auth/confirm` (a button spends the token, so scanners and other devices
+  can't burn it) + `supabase/templates/confirmation.html` + `supabase/config.toml`. Supabase refuses template changes
+  on the free tier with the built-in mailer ("configure a custom SMTP provider"). Once SMTP (Resend) is set up, run
+  `supabase config push` and the new flow is live; nothing else changes.
 - [ ] Google provider: needs a Google Cloud OAuth client id/secret pasted into Supabase → Authentication → Providers.
 - [ ] Built-in Supabase email is limited to a couple of messages per hour; set up custom SMTP (Resend) before real users.
 ## Step 2 — fal pricing (≥60% margin)  - [x]
