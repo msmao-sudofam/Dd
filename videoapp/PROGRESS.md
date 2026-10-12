@@ -219,6 +219,11 @@ M chose local generation on MOMOBEAST instead of fal (the fal estimate was ≈ $
   `outputFileTracingIncludes` (UGC caption fonts were not shipped with the functions).
 - Checked on the preview without logging in: landing page, 20 presets read from Supabase, real-auth signup page,
   `/api/me` → 401.
+- 2026-10-12, at M's request ("make the site live so I can see it"): Vercel Authentication switched off for the
+  project, so https://reelforge-preview.vercel.app opens for anyone without a Vercel login. It is still a preview
+  deployment on mocked providers and mocked Stripe; the production slot still holds the empty placeholder.
+  `robots.txt` disallows everything on Vercel previews. Turn the wall back on with
+  `vercel project protection enable reelforge --sso`.
 - [ ] Logged-in e2e on the preview (M runs it, or after keys): `LIVE_BASE_URL=https://reelforge-preview.vercel.app`.
 - [ ] Stripe test webhook endpoint on the preview (needs `STRIPE_SECRET_KEY`; Deployment Protection blocks webhooks
   unless the URL carries the bypass secret).
