@@ -110,14 +110,76 @@ p {
  */
 :root {
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  /* Height of the sticky site header (two rows on phones). <Fx/> replaces it with the measured value. */
+  --hdr: 86px;
+}
+@media (min-width: 640px) {
+  :root {
+    --hdr: 56px;
+  }
 }
 
-/* One-shot scroll reveals. Content is hidden only after <Fx/> has mounted, so no JS means everything is visible. */
+/*
+ * Hero film. The film opens on a plain white listing photo, so the card starts small and unlit and grows to
+ * full size while the photo becomes the ad. <ScrollFilm/> writes --grow (0 → 1) and --start (opening scale).
+ * Phones: the card grows down from the top, so the first headline sits on black below it, not on white.
+ */
+.film {
+  --grow: 0;
+  --start: 0.62;
+}
+.film-card {
+  transform: scale(calc(var(--start) + (1 - var(--start)) * var(--grow)));
+  transform-origin: 50% 0;
+  /* The white listing photo is dimmed a touch so it doesn't out-shine the headline on a black page. */
+  filter: brightness(calc(0.84 + 0.16 * var(--grow)));
+  will-change: transform;
+}
+.film-glow {
+  opacity: calc(0.05 + 0.37 * var(--grow));
+}
+.film-shade {
+  opacity: var(--grow);
+}
+/* Captions on the card stay at their real size while the card is scaled down. */
+.film-caption {
+  transform: scale(calc(1 / (var(--start) + (1 - var(--start)) * var(--grow))));
+  transform-origin: 0 0;
+}
+@media (min-width: 768px) {
+  .film {
+    --start: 0.84;
+  }
+  .film-card {
+    transform-origin: 50% 50%;
+  }
+}
+
+/*
+ * Preset strips run off the right edge of the screen on desktop instead of stopping at the content column,
+ * so the last visible tile reads as "more to scroll", not as a clipped card. The section that holds them
+ * uses overflow-x: clip, because 100vw includes the scrollbar.
+ */
+@media (min-width: 768px) {
+  .strip-bleed {
+    --gutter: calc((100vw - min(100vw, 72rem)) / 2 + 1rem);
+    margin-right: calc(-1 * var(--gutter));
+    padding-right: var(--gutter);
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 12px);
+    mask-image: linear-gradient(to right, transparent 0, #000 12px);
+  }
+}
+
+/*
+ * One-shot scroll reveals. Content is hidden only after <Fx/> has mounted, so no JS means everything is visible.
+ * Kept short and shallow (0.6s, 16px, 4px blur) and triggered as soon as an element enters the viewport, so a
+ * heading is readable by the time it is halfway up the screen even at a fast scroll.
+ */
 .fx-ready [data-reveal] {
   opacity: 0;
-  transform: translate3d(0, 28px, 0);
-  filter: blur(8px);
-  transition: opacity 0.9s var(--ease), transform 0.9s var(--ease), filter 0.9s var(--ease);
+  transform: translate3d(0, 16px, 0);
+  filter: blur(4px);
+  transition: opacity 0.6s var(--ease), transform 0.6s var(--ease), filter 0.5s var(--ease);
   transition-delay: var(--d, 0ms);
 }
 .fx-ready [data-reveal][data-in] {

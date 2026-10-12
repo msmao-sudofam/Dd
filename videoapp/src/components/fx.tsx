@@ -7,6 +7,7 @@ import { useEffect } from "react";
  *  - [data-reveal]  one-shot scroll reveal (styles in globals.css; `--d` on the element staggers it)
  *  - .spot          hairline highlight that follows the pointer
  *  - [data-tilt]    3D tilt + glare on clip tiles
+ *  - --hdr          the sticky header's measured height, used to pin the hero film just below it
  * State lives in data attributes and CSS variables, which React leaves alone on re-render.
  */
 export function Fx() {
@@ -15,6 +16,12 @@ export function Fx() {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let io: IntersectionObserver | undefined;
     let mo: MutationObserver | undefined;
+
+    const header = document.querySelector<HTMLElement>("[data-site-header]");
+    const headerRo = header
+      ? new ResizeObserver(() => root.style.setProperty("--hdr", `${header.offsetHeight}px`))
+      : undefined;
+    if (header) headerRo!.observe(header);
 
     if (!reduced && "IntersectionObserver" in window) {
       io = new IntersectionObserver(
@@ -25,7 +32,7 @@ export function Fx() {
             io!.unobserve(e.target);
           }
         },
-        { rootMargin: "0px 0px -6% 0px", threshold: 0.06 },
+        { rootMargin: "0px 0px -2% 0px", threshold: 0 },
       );
       const watch = (scope: ParentNode, initial: boolean) => {
         for (const el of scope.querySelectorAll<HTMLElement>("[data-reveal]:not([data-in])")) {
@@ -88,6 +95,8 @@ export function Fx() {
     return () => {
       io?.disconnect();
       mo?.disconnect();
+      headerRo?.disconnect();
+      root.style.removeProperty("--hdr");
       document.removeEventListener("pointermove", onMove);
       document.documentElement.removeEventListener("pointerleave", onLeave);
       root.classList.remove("fx-ready");

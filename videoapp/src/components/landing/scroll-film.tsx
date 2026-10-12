@@ -6,6 +6,10 @@ import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } fro
  * Scroll-scrubbed 9:16 film (animated-website technique): a sticky canvas plays a frame sequence as
  * the visitor scrolls, with a Gaussian "dwell" remap so the film nearly stops at each text beat.
  * Frames: public/film/{desktop,mobile}/frame-NNNN.webp (regenerate with `npm run film`).
+ *
+ * The film opens on a plain white listing photo, so the card starts small and unlit and only grows to
+ * full size, with its ambient glow, while the photo turns into the ad. The growth is one CSS variable,
+ * `--grow` (0 → 1), written on the section; the card, glow, overlay and captions read it in CSS.
  */
 
 export interface Beat {
@@ -19,6 +23,11 @@ const DWELL_WIDTH = 0.06;
 const DWELL_PEAK = 3;
 const REMAP_N = 1200;
 const LERP = 0.12;
+/** The card grows between these two points of (remapped) progress: after beat 0 has had its dwell. */
+const GROW_FROM = 0.3;
+const GROW_TO = 0.46;
+/** Starting scale on desktop; on phones it is measured so the card clears the first beat's text. */
+const START_SCALE_DESKTOP = 0.84;
 
 /** Scroll position → effective progress, slowing down around each dwell centre. */
 function buildRemap(centers: number[]) {
@@ -41,6 +50,11 @@ function buildRemap(centers: number[]) {
   };
 }
 
+const smoothstep = (a: number, b: number, x: number) => {
+  const t = Math.max(0, Math.min(1, (x - a) / (b - a)));
+  return t * t * (3 - 2 * t);
+};
+
 const pad = (n: number) => String(n).padStart(4, "0");
 
 const RM = "(prefers-reduced-motion: reduce)";
@@ -61,13 +75,18 @@ export function ScrollFilm({
   beats,
   poster,
   label,
+  captions,
 }: {
   frameCount: number;
   beats: Beat[];
   poster: string;
   label: string;
+  /** Short labels on the card for the film's first and last state, e.g. "Listing photo" / "Finished ad". */
+  captions?: { start: string; end: string };
 }) {
   const sectionRef = useRef<HTMLElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const glowRef = useRef<HTMLCanvasElement>(null);
   const [progress, setProgress] = useState(0);
@@ -76,11 +95,15 @@ export function ScrollFilm({
 
   useEffect(() => {
     if (reduced) return;
+    const section = sectionRef.current!;
+    const stage = stageRef.current!;
+    const card = cardRef.current!;
     const canvas = canvasRef.current!;
     const ctx = canvas.getContext("2d")!;
     // Ambient light: the current frame, 16 px wide, blurred up behind the card so the film lights the page.
     const glow = glowRef.current?.getContext("2d") ?? null;
-    const dir = window.innerWidth < 768 ? "mobile" : "desktop";
+    const desktopMq = window.matchMedia("(min-width: 768px)");
+    const dir = desktopMq.matches ? "desktop" : "mobile";
     const frames: (ImageBitmap | HTMLImageElement | null)[] = new Array(frameCount).fill(null);
     let count = 0;
     let stop = false;
@@ -115,46 +138,67 @@ export function ScrollFilm({
       return null;
     };
 
-    const resize = () => {
+    // The stage is pinned below the site header (its `top` is the header height), so the scroll
+    // distance is the section height minus the stage height, measured from where pinning starts.
+    let pinTop = 0;
+    let stageH = window.innerHeight;
+    const measure = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       canvas.width = canvas.clientWidth * dpr;
       canvas.height = canvas.clientHeight * dpr;
+      canvas.dataset.dirty = "1";
+      pinTop = parseFloat(getComputedStyle(stage).top) || 0;
+      stageH = stage.offsetHeight;
+      let start = START_SCALE_DESKTOP;
+      if (!desktopMq.matches) {
+        // Phones: shrink the card until it sits above the first beat's text (12 px inset, 16 px gap).
+        const first = section.querySelector<HTMLElement>('[data-beat="0"]');
+        const textH = (first?.offsetHeight ?? 220) + 20 + 12;
+        start = Math.max(0.42, Math.min(0.72, (stageH - textH - 12 - 16) / Math.max(1, card.offsetHeight)));
+      }
+      section.style.setProperty("--start", start.toFixed(3));
     };
-    resize();
-    window.addEventListener("resize", resize);
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(stage);
+    desktopMq.addEventListener("change", measure);
 
     const centers = beats.map((b) => (b.from + b.to) / 2);
     const remap = buildRemap(centers);
     let current = 0;
     let lastDrawn = -1;
     let lastP = -1;
+    let lastGrow = -1;
     let raf = 0;
 
     const tick = () => {
-      const s = sectionRef.current;
-      if (s) {
-        const rect = s.getBoundingClientRect();
-        const raw = Math.max(0, Math.min(1, -rect.top / Math.max(1, rect.height - window.innerHeight)));
-        const p = remap(raw);
-        if (Math.abs(p - lastP) > 0.002) {
-          lastP = p;
-          setProgress(p);
-        }
-        current += (p * (frameCount - 1) - current) * LERP;
-        const idx = Math.round(current);
-        const img = nearest(idx);
-        if (img && (idx !== lastDrawn || canvas.dataset.dirty)) {
-          // object-fit: cover
-          const iw = img.width;
-          const ih = img.height;
-          const scale = Math.max(canvas.width / iw, canvas.height / ih);
-          const w = iw * scale;
-          const h = ih * scale;
-          ctx.drawImage(img, (canvas.width - w) / 2, (canvas.height - h) / 2, w, h);
-          glow?.drawImage(img, 0, 0, 16, 28);
-          lastDrawn = idx;
-          delete canvas.dataset.dirty;
-        }
+      const rect = section.getBoundingClientRect();
+      const raw = Math.max(0, Math.min(1, (pinTop - rect.top) / Math.max(1, rect.height - stageH)));
+      const p = remap(raw);
+      if (Math.abs(p - lastP) > 0.002) {
+        lastP = p;
+        setProgress(p);
+      }
+      current += (p * (frameCount - 1) - current) * LERP;
+      // Grow follows the eased frame position, not the raw scroll, so the card moves as smoothly as the film.
+      const grow = smoothstep(GROW_FROM, GROW_TO, current / (frameCount - 1));
+      if (Math.abs(grow - lastGrow) > 0.001) {
+        lastGrow = grow;
+        section.style.setProperty("--grow", grow.toFixed(4));
+      }
+      const idx = Math.round(current);
+      const img = nearest(idx);
+      if (img && (idx !== lastDrawn || canvas.dataset.dirty)) {
+        // object-fit: cover
+        const iw = img.width;
+        const ih = img.height;
+        const scale = Math.max(canvas.width / iw, canvas.height / ih);
+        const w = iw * scale;
+        const h = ih * scale;
+        ctx.drawImage(img, (canvas.width - w) / 2, (canvas.height - h) / 2, w, h);
+        glow?.drawImage(img, 0, 0, 16, 28);
+        lastDrawn = idx;
+        delete canvas.dataset.dirty;
       }
       raf = requestAnimationFrame(tick);
     };
@@ -162,7 +206,8 @@ export function ScrollFilm({
     return () => {
       stop = true;
       cancelAnimationFrame(raf);
-      window.removeEventListener("resize", resize);
+      ro.disconnect();
+      desktopMq.removeEventListener("change", measure);
     };
   }, [frameCount, beats, reduced]);
 
@@ -177,12 +222,13 @@ export function ScrollFilm({
     );
   }
 
+  const last = beats[beats.length - 1];
   return (
-    <section ref={sectionRef} className="relative h-[320vh]" data-testid="scroll-film" aria-label={label}>
-      <div className="sticky top-0 h-[100svh] overflow-hidden">
+    <section ref={sectionRef} className="film relative h-[320vh]" data-testid="scroll-film" aria-label={label}>
+      <div ref={stageRef} className="sticky top-[var(--hdr)] h-[calc(100svh-var(--hdr))] overflow-hidden">
         <div className="relative mx-auto h-full max-w-6xl px-4 md:grid md:grid-cols-[1fr_auto] md:items-center md:gap-10">
-          {/* Text beats: one grid cell, cross-faded by progress. Overlaid on the film on mobile. */}
-          <div className="absolute inset-x-4 bottom-4 z-10 grid p-5 md:static md:p-0">
+          {/* Text beats: one grid cell, cross-faded by progress. Overlaid on the film's lower edge on phones. */}
+          <div className="absolute inset-x-4 bottom-3 z-10 grid p-5 md:static md:p-0">
             {beats.map((b, i) => {
               const on = progress >= b.from && (progress < b.to || (i === beats.length - 1 && progress >= b.from));
               return (
@@ -200,22 +246,22 @@ export function ScrollFilm({
           </div>
 
           {/* The film: 9:16 hero card (Morphic 32px radius) with story-style progress bars. */}
-          <div className="absolute inset-x-4 top-[100px] bottom-4 md:relative md:inset-auto md:w-[min(400px,42svh)]">
+          <div className="absolute inset-x-4 top-3 bottom-3 md:relative md:inset-auto md:w-[min(400px,42svh)]">
             <canvas
               ref={glowRef}
               width={16}
               height={28}
               aria-hidden
-              className="pointer-events-none absolute -inset-[20%] hidden h-[140%] w-[140%] opacity-40 blur-[56px] saturate-150 [mask-image:radial-gradient(closest-side,#000_25%,transparent_100%)] md:block"
+              className="film-glow pointer-events-none absolute -inset-[20%] hidden h-[140%] w-[140%] blur-[56px] saturate-150 [mask-image:radial-gradient(closest-side,#000_25%,transparent_100%)] md:block"
             />
-            <div className="relative h-full overflow-hidden rounded-[32px] border border-border bg-surface md:aspect-[9/16] md:h-auto">
+            <div ref={cardRef} className="film-card relative h-full overflow-hidden rounded-[32px] border border-border bg-surface md:aspect-[9/16] md:h-auto">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={poster} alt="" className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${loaded > 0 ? "opacity-0" : ""}`} />
               <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" role="img" aria-label={label} />
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent md:hidden" />
-              <div className="absolute inset-x-4 top-4 flex gap-1.5" aria-hidden>
+              <div className="film-shade absolute inset-0 bg-gradient-to-t from-black via-black/55 via-45% to-transparent md:hidden" />
+              <div className="absolute inset-x-4 top-4 flex gap-1.5 mix-blend-difference" aria-hidden>
                 {beats.map((b, i) => (
-                  <span key={i} className="h-[3px] flex-1 overflow-hidden rounded-full bg-white/25">
+                  <span key={i} className="h-[3px] flex-1 overflow-hidden rounded-full bg-white/35">
                     <span
                       className="block h-full bg-white"
                       style={{ width: `${Math.max(0, Math.min(1, (progress - b.from) / (b.to - b.from))) * 100}%` }}
@@ -223,6 +269,12 @@ export function ScrollFilm({
                   </span>
                 ))}
               </div>
+              {captions && (
+                <div className="film-caption absolute top-9 left-4 grid" aria-hidden>
+                  <span className={`pill col-start-1 row-start-1 transition-opacity duration-300 ${progress < GROW_FROM ? "opacity-100" : "opacity-0"}`}>{captions.start}</span>
+                  <span className={`pill col-start-1 row-start-1 transition-opacity duration-300 ${progress >= last.from ? "opacity-100" : "opacity-0"}`}>{captions.end}</span>
+                </div>
+              )}
             </div>
           </div>
         </div>

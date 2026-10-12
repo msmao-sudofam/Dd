@@ -12,7 +12,7 @@ export async function generateMetadata({ params }: PageProps<"/presets/[slug]">)
   const p = await getPresetCard(slug);
   if (!p) return {};
   const title = `${p.name} AI video preset`;
-  const description = `${p.description} Upload one photo and get a 9:16 ${p.name.toLowerCase()} video for TikTok, Reels and Shorts in seconds.`;
+  const description = `${p.description} Upload one photo and get a 9:16 ${p.name.toLowerCase()} video for TikTok, Reels and Shorts.`;
   return {
     title,
     description,

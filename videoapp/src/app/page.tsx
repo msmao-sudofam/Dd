@@ -1,11 +1,12 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { getSessionUser } from "@/lib/auth";
 import { ClipWall } from "@/components/landing/clip-wall";
 import { CreatorFan } from "@/components/landing/creator-fan";
 import { Faq, FAQ_ITEMS } from "@/components/landing/faq";
 import { ScrollFilm, type Beat } from "@/components/landing/scroll-film";
 import { LazyVideo } from "@/components/lazy-video";
-import { PresetRows } from "@/components/presets/preset-rows";
+import { PresetShowcase } from "@/components/presets/preset-showcase";
 import { PricingCards } from "@/components/pricing-cards";
 import { db } from "@/lib/db";
 import { SIGNUP_BONUS_CREDITS } from "@/lib/pricing";
@@ -13,15 +14,32 @@ import { CATEGORIES, listPresetCards } from "@/lib/presets";
 
 const FILM_FRAMES = 72; // public/film/manifest.json
 
-const PROOF = [
-  { k: "Cost before you click", v: "Every generation shows its credit price up front. Failed clips are refunded automatically." },
-  { k: "Yours to run as ads", v: "Commercial use included. Built for TikTok Shop, Shopify and Meta placements." },
-  { k: "Safe by design", v: "No celebrities, no deepfakes, no minors. Consent is logged for every photo of a person." },
+/** Only promises the product keeps today. No durations: generation time isn't measured yet. */
+const PROMISES: { k: string; v: string; icon: ReactNode }[] = [
+  {
+    k: "See the price first",
+    v: "Every preset shows its credit cost before you press generate. Credits are only charged when a generation starts.",
+    icon: <path d="M3 7.5V4a1 1 0 0 1 1-1h3.5l8.5 8.5-4.5 4.5L3 7.5Zm3.25-1.25h.01" />,
+  },
+  {
+    k: "Failed clips refund themselves",
+    v: "If a generation fails, its credits go back to your balance automatically. No support ticket needed.",
+    icon: <path d="M3.5 10a6.5 6.5 0 1 0 2-4.7M3.5 3v3.5H7" />,
+  },
+  {
+    k: "Commercial use included",
+    v: "Run your clips as paid ads on TikTok, Meta and YouTube. Label them as AI-generated where a platform asks.",
+    icon: <path d="M10 2.75 12 4.5l2.6-.2.5 2.55 2.15 1.5-1.05 2.4 1.05 2.4-2.15 1.5-.5 2.55-2.6-.2L10 17.25 8 15.5l-2.6.2-.5-2.55-2.15-1.5 1.05-2.4L2.75 8.85 4.9 7.35l.5-2.55L8 5l2-2.25Zm-2.5 7.5 1.75 1.75 3.25-3.5" />,
+  },
+  {
+    k: "Consent on record",
+    v: "Photos of people need a yes: it's you, or someone who agreed. Consent is logged for every photo of a person.",
+    icon: <path d="M8 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-5 8a5 5 0 0 1 8.2-3.85M12.5 15.25l1.75 1.75 3.25-3.5" />,
+  },
 ];
 
 export default async function Home() {
   const [cards, user, actors] = await Promise.all([listPresetCards(), getSessionUser(), db().listUgcActors(null)]);
-  const showcase = cards.find((c) => c.slug === "hero-shot" && c.preview_video_url);
   const start = user ? "/presets" : "/signup";
   const faqLd = {
     "@context": "https://schema.org",
@@ -79,7 +97,7 @@ export default async function Home() {
             <br />
             stopping ad.
           </h2>
-          <p className="mt-4 max-w-md text-base text-white/75 md:mt-6 md:text-lg md:text-muted">A vertical 9:16 clip in about a minute — ready for TikTok, Reels and Shorts.</p>
+          <p className="mt-4 max-w-md text-base text-white/75 md:mt-6 md:text-lg md:text-muted">A vertical 9:16 clip, ready for TikTok, Reels and Shorts.</p>
           <div className="mt-6 flex flex-wrap gap-3 md:mt-8">
             <Link href={start} className="btn-primary btn-sheen !px-5 !py-3 !text-[15px]" data-testid="hero-cta">
               {user ? "Make a video" : "Make your first ad free"}
@@ -96,9 +114,15 @@ export default async function Home() {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }} />
 
-      <ScrollFilm frameCount={FILM_FRAMES} beats={beats} poster="/film/desktop/frame-0001.webp" label="A product photo turning into a finished vertical video ad" />
+      <ScrollFilm
+        frameCount={FILM_FRAMES}
+        beats={beats}
+        poster="/film/desktop/frame-0001.webp"
+        label="A product photo turning into a finished vertical video ad"
+        captions={{ start: "Listing photo", end: "Finished ad" }}
+      />
 
-      <section className="pt-24 sm:pt-32" aria-label="Preset showreel">
+      <section className="pt-20 sm:pt-24" aria-label="Preset showreel">
         <div className="relative z-10 mx-auto max-w-6xl px-4 text-center" data-reveal>
           <p className="text-sm text-muted">{cards.length} one-click looks</p>
           <h2 className="display mx-auto mt-3 max-w-4xl text-[clamp(40px,6.4vw,88px)]">Every clip here started as one photo.</h2>
@@ -108,13 +132,21 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 pt-10 sm:pt-4" id="presets">
-        <div className="mb-12 flex items-end justify-between gap-6" data-reveal>
-          <h2 className="display max-w-2xl text-[clamp(36px,5vw,56px)]">Presets that sell.</h2>
-          <Link href="/presets" className="btn-ghost hidden shrink-0 sm:inline-flex">All presets</Link>
-        </div>
-        <PresetRows categories={CATEGORIES} presets={cards} />
-      </section>
+      {/* overflow-x: clip lets the preset strips bleed to the screen edge without a sideways scrollbar. */}
+      <div className="overflow-x-clip">
+        <section className="mx-auto max-w-6xl px-4 pt-10 sm:pt-4" id="presets">
+          <div className="mb-8 flex items-end justify-between gap-6" data-reveal>
+            <div>
+              <p className="text-sm text-muted">Presets</p>
+              <h2 className="display mt-2 max-w-2xl text-[clamp(36px,5vw,56px)]">Presets that sell.</h2>
+            </div>
+            <Link href="/presets" className="btn-ghost hidden shrink-0 sm:inline-flex">Browse all</Link>
+          </div>
+          <div data-reveal style={{ "--d": "90ms" } as React.CSSProperties}>
+            <PresetShowcase categories={CATEGORIES} presets={cards} />
+          </div>
+        </section>
+      </div>
 
       <section className="mx-auto max-w-6xl px-4 pt-24">
         <Link
@@ -133,44 +165,47 @@ export default async function Home() {
         </Link>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 pt-24">
-        <div className="spot grid items-center gap-10 overflow-hidden rounded-[32px] bg-wash p-8 md:grid-cols-[1fr_auto] md:p-12" data-reveal>
+      <section className="mx-auto max-w-6xl px-4 pt-28" id="pricing">
+        <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-3" data-reveal>
           <div>
-            <h2 className="display max-w-xl text-[clamp(32px,4vw,48px)]">Brands pay $2k for this ad. It takes 30 seconds here.</h2>
-            <div className="mt-10 grid gap-8 sm:grid-cols-3">
-              {PROOF.map((p) => (
-                <div key={p.k}>
-                  <h3 className="font-semibold tracking-[-0.02em]">{p.k}</h3>
-                  <p className="mt-2 text-sm text-muted">{p.v}</p>
-                </div>
-              ))}
-            </div>
+            <p className="text-sm text-muted">Pricing</p>
+            <h2 className="display mt-2 text-[clamp(36px,5vw,56px)]">Pay for what you make.</h2>
           </div>
-          {showcase && (
-            <div className="relative mx-auto hidden w-[210px] rotate-[4deg] md:mr-4 md:block" aria-hidden>
-              <div className="aspect-[9/16] overflow-hidden rounded-[24px] bg-surface shadow-[0_30px_80px_rgba(0,0,0,0.7)] ring-1 ring-white/15">
-                <LazyVideo src={showcase.preview_video_url!} poster={showcase.thumbnail_url ?? undefined} className="h-full w-full object-cover" />
-              </div>
-              <span className="pill absolute -left-6 bottom-10 -rotate-[4deg] !bg-white !px-3 !py-1.5 !text-[12px] !font-semibold !text-black shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
-                {showcase.name} · {showcase.credits} credits
-              </span>
-            </div>
-          )}
+          <p className="max-w-sm text-muted md:pb-1.5">
+            Credit packs or a monthly plan. {SIGNUP_BONUS_CREDITS} free credits to start, no card required.
+          </p>
         </div>
-      </section>
-
-      <section className="mx-auto max-w-6xl px-4 pt-24" id="pricing">
-        <div data-reveal>
-          <h2 className="display text-[clamp(36px,5vw,56px)]">Pricing</h2>
-          <p className="mt-3 mb-10 text-muted">Pay for what you make. Credits never expire.</p>
-        </div>
-        <div data-reveal style={{ "--d": "90ms" } as React.CSSProperties}>
+        <div className="mt-10" data-reveal style={{ "--d": "90ms" } as React.CSSProperties}>
           <PricingCards loggedIn={!!user} />
         </div>
+        {/* The fine print, set under the prices it qualifies: only promises the product keeps today. */}
+        <ul
+          className="mt-3 grid overflow-hidden rounded-[20px] border border-border sm:grid-cols-2 lg:grid-cols-4"
+          data-testid="home-promises"
+          data-reveal
+          style={{ "--d": "160ms" } as React.CSSProperties}
+        >
+          {PROMISES.map((p) => (
+            <li key={p.k} className="border-border p-6 not-last:border-b sm:[&:nth-child(odd)]:border-r lg:border-b-0 lg:not-last:border-r">
+              <svg viewBox="0 0 20 20" className="h-5 w-5 fill-none stroke-white/70 stroke-[1.5] [stroke-linecap:round] [stroke-linejoin:round]" aria-hidden>
+                {p.icon}
+              </svg>
+              <h3 className="mt-4 font-semibold tracking-[-0.02em]">{p.k}</h3>
+              <p className="mt-1.5 text-sm text-muted">{p.v}</p>
+            </li>
+          ))}
+        </ul>
       </section>
 
-      <section className="mx-auto max-w-3xl px-4 pt-24" id="faq">
-        <h2 className="display mb-8 text-[clamp(36px,5vw,56px)]" data-reveal>Questions</h2>
+      <section className="mx-auto grid max-w-6xl gap-10 px-4 pt-28 md:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)] md:gap-16" id="faq">
+        <div className="md:sticky md:top-[calc(var(--hdr)+32px)] md:self-start" data-reveal>
+          <p className="text-sm text-muted">Questions</p>
+          <h2 className="display mt-2 text-[clamp(36px,5vw,56px)]">Before you start.</h2>
+          <p className="mt-4 max-w-xs text-muted">
+            The full rules are in the <Link href="/legal/terms" className="text-soft underline decoration-white/30 underline-offset-4 hover:decoration-white">Terms</Link> and{" "}
+            <Link href="/legal/refunds" className="text-soft underline decoration-white/30 underline-offset-4 hover:decoration-white">Refund policy</Link>.
+          </p>
+        </div>
         <div data-reveal style={{ "--d": "90ms" } as React.CSSProperties}>
           <Faq />
         </div>

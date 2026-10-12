@@ -41,11 +41,22 @@ Chosen by M from three reference-locked directions (A Midnight Studio / B Neon P
 | Lime instead of Morphic blue | Existing brand + role rule | Keeps brand equity; still used only as the CTA colour |
 | Scroll-scrubbed 9:16 film hero, 3 dwell beats (photo → look → ad) | animated-website skill | Shows the product promise as motion instead of describing it |
 | Story-style progress bars on the film | Instagram/TikTok story chrome | Native to the audience; doubles as scroll progress |
-| Mobile: text overlaid on the film with a bottom gradient | animated-website overlay pattern | Stacked layout overflowed 844px viewports |
-| Category rows with horizontal strips | Runway Watch screen | 20 presets scan faster by category; strips keep the page short |
+| Mobile: first beat sits on black under a shrunken card; later beats overlay the full card with a bottom gradient | animated-website overlay pattern + 2026-10-12 fix | The stage used to pin at `top: 0` under an 86 px header, so the first headline and subtitle fell below the fold |
+| Hero card opens small, dim and unlit, then grows into the ad | Krea "no high-key imagery on a dark page" + Apple-style scale-up | The film's first frame is a white listing photo; it was the brightest thing on screen |
+| Preset showcase: filter chips over one edge-to-edge strip (was five category rows) | fal explore quick chips + Runway Watch strip | Rows with 2 tiles left dead black space and made the page read like a catalog; one strip is ~1,700 px shorter. Active chip = white fill (role rule). All 20 tiles stay in the DOM, filtered with `hidden` |
+| Pricing cards: name, scale line, price, per-credit, hairline, 3-item "included" list | Epidemic Sound / JetBrains pricing | Each list item is backed by the Terms or the watermark rule; no invented plan perks or "most popular" badge |
+| Fine print as a hairline 4-up row directly under the prices | Morphic hairline surfaces | Promises sit next to the prices they qualify, and two rounded panels no longer stack back to back |
+| FAQ: two columns, sticky heading left | Fourthwall / JetBrains FAQ | Uses the 6xl width instead of a narrow centred column floating in black |
+| Section eyebrows (Presets, Pricing, Questions) above display headings | Morphic / Krea compact labels | Consistent rhythm between sections |
 | Clips play only when on screen | Craft (performance) | 20+ videos on one page |
-| Feature-highlight panel "Brands pay $2k…" with 3 proof points | Morphic feature card + BUILD_PLAN §5 hook | Objection handling (cost, rights, safety) in one sparse block |
+| Feature-highlight panel "The fine print, up front." with 4 promises | Morphic feature card + honesty rule | Objection handling (price, refunds, rights, consent) using only things the product does today. Replaced "Brands pay $2k… 30 seconds", which wasn't a fact about Reelforge |
 | Reduced motion: no pinning, static poster, beats in flow | Craft (accessibility) | No scroll-jacking for users who opt out |
+
+## Copy rules
+- **No durations.** Generation time hasn't been measured on real providers yet, so no page states one (no "seconds",
+  "about a minute", "instantly"). Add real per-model timings only after the smoke test runs.
+- **Every number must be true of the product.** Credit counts and prices come from the catalog and pricing code; no
+  market-price comparisons, customer counts, reviews or scarcity.
 
 ## Media
 - `public/film/` holds the hero film (72 frames, 1.9 MB desktop / 1.1 MB mobile): a plain listing photo of a skincare
@@ -69,7 +80,10 @@ spill from the media itself**, never from flat colour. That replaces the earlier
 | Creator fan | `landing/creator-fan.tsx`, `.fan` | Five library creators as a fanned hand of cards that spreads on hover; back cards are dimmed for depth. |
 | Video through type | `.type-fill` | The closing headline is white-on-black text multiplied over `public/media/type-fill.mp4` (six clips side by side), so footage plays inside the letters. |
 | Pointer hairline | `.spot` | Card borders brighten under the cursor (pricing, UGC and proof panels). |
-| Scroll reveals | `[data-reveal]` + `components/fx.tsx` | One-shot rise-and-unblur, easing `cubic-bezier(.2,.7,.2,1)`. Hidden only after the controller mounts, so the page is complete without JavaScript. |
+| Scroll reveals | `[data-reveal]` + `components/fx.tsx` | One-shot rise-and-unblur (0.6 s, 16 px, 4 px blur), easing `cubic-bezier(.2,.7,.2,1)`, triggered as soon as an element enters the viewport so headings are sharp mid-scroll. Hidden only after the controller mounts, so the page is complete without JavaScript. |
+| Hero growth | `scroll-film.tsx`, `.film*` | The card starts at `--start` scale (0.84 desktop; measured on phones so it clears the first headline) and grows with `--grow` between 30% and 46% of the film. Glow, brightness and the phone text-shade follow `--grow`. Captions "Listing photo" / "Finished ad" are counter-scaled so they stay readable. |
+| Header offset | `--hdr`, measured by `fx.tsx` | The film stage pins just below the sticky header (86 px on phones, 56 px from 640 px). |
+| Preset strip bleed | `preset-rows.tsx`, `.strip-bleed` | On desktop the strips run to the right edge of the screen; the wrapper uses `overflow-x: clip` because 100vw includes the scrollbar. |
 | CTA sheen | `.btn-sheen` | A single light sweep across the lime button on hover. |
 
 - One controller (`components/fx.tsx`, mounted in the root layout) drives reveals, hairlines and tilt with a single
