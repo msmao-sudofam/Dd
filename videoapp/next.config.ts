@@ -8,7 +8,7 @@ const nextConfig: NextConfig = {
   experimental: { serverActions: { bodySizeLimit: "4mb" } },
   // Files read at runtime by path (not import), so the tracer must be told to ship them with the functions.
   outputFileTracingIncludes: {
-    "/api/**": ["./node_modules/ffmpeg-static/ffmpeg", "./public/watermark.png", "./public/mock/**"],
+    "/api/**": ["./node_modules/ffmpeg-static/ffmpeg", "./public/watermark.png", "./public/mock/**", "./assets/fonts/**"],
   },
   turbopack: {
     // The repo root has its own package-lock.json; pin the app root explicitly.

@@ -17,8 +17,10 @@ psql "$(supabase db url)" -f supabase/seed.sql   # or paste seed.sql into the SQ
 ```
 Then, in the Supabase dashboard:
 - **Settings → API Keys**: copy the publishable key (`sb_publishable_…`) and a secret key (`sb_secret_…`).
-- **Authentication → URL Configuration**: Site URL = your Vercel URL; add `https://<vercel-url>/auth/callback`
-  and `http://localhost:3000/auth/callback` to Redirect URLs.
+- **Authentication → URL Configuration**: Site URL = your Vercel URL; add `https://<vercel-url>/**` and
+  `http://localhost:3000/**` to Redirect URLs. The wildcard matters: the app redirects to
+  `/auth/callback?next=…`, and an exact `/auth/callback` entry does not match once the query is added, so
+  Supabase silently falls back to the Site URL and the confirmation link never logs the user in.
 - **Authentication → Providers → Google**: enable, paste the Google Cloud OAuth client id/secret
   (Google Cloud Console → Credentials → OAuth client → Web; authorized redirect URI = the callback URL Supabase shows).
 - **Authentication → Email**: keep "Confirm email" on.
@@ -36,8 +38,14 @@ Minimum for a real preview: `NEXT_PUBLIC_APP_URL` (the preview URL), `SESSION_SE
 Leave `MOCK_*` empty.
 
 ```bash
-vercel deploy          # preview deployment — NOT --prod
+vercel deploy --target=preview     # preview deployment — NOT --prod
+vercel alias set <deployment-url> <name>.vercel.app   # stable preview URL = NEXT_PUBLIC_APP_URL
 ```
+- **Vercel always promotes a project's first deployment to production**, even with `--target=preview`.
+  Deploy an empty static page first so the production slot never holds the app, then deploy the app as a preview.
+- `vercel.json` pins `"framework": "nextjs"`. A project created with `vercel project add` has the "Other"
+  preset, which builds fine but serves every route as 404.
+- `NEXT_PUBLIC_*` values are baked in at build time: redeploy after changing them.
 
 Function settings: the webhook/jobs routes declare `maxDuration = 300` (downloading + watermarking clips). That needs
 Vercel Fluid compute (default on new projects). `ffmpeg-static` (~80 MB) ships with the API functions via

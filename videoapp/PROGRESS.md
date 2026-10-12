@@ -140,11 +140,27 @@ a domain; RunPod Draft hidden; never commit keys; commit "golive step N: …" af
   race in the phase 5 watermark e2e (it could read the earlier free job's card)
 - [x] Logins: vercel (moquinmoreno-1021, team "kom's projects"), stripe CLI (account `elegantad.carrd.co` — M to confirm
   it is the right account; test mode only)
-- [ ] `supabase login` — waiting on M (browser flow needs a real terminal)
-- [ ] `.env.local` — M creates it and pastes keys (Claude's settings deny reading/writing `.env*`)
+- [x] `supabase login` — browser flow, approved in M's signed-in Chrome (the CLI needs `--output-format text` and a
+  pseudo-terminal when launched from an agent session; it silently refuses to prompt otherwise)
+- [x] `.env.local` created (M said "do it all"): app URL, brand, session secret, admin email, Supabase URL + keys,
+  `SUPABASE_DB_PASSWORD`. Still empty and only M can fill: `FAL_KEY`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`,
+  `OPENAI_API_KEY` (copying API keys out of dashboards is blocked for Claude; fal.ai is not signed in at all)
 - Not fixed: `npm run dev:mock` uses POSIX `VAR=value` syntax, so it only works from Git Bash, not cmd/PowerShell.
 
-## Step 1 — Supabase  - [ ] (blocked on `supabase login`)
+## Step 1 — Supabase  - [x] (Google sign-in still open)
+- Project `reelforge`, ref `slgadvjriexkanskzgva`, us-east-1, free plan, org "moquinmoreno@gmail.com's Org".
+- All 5 migrations applied with `supabase db push`; `seed.sql` applied (9 models, 20 presets, 8 UGC actors); buckets
+  `outputs` (public) + `uploads` (private) exist; realtime on `jobs`.
+- Auth: Site URL = https://reelforge-preview.vercel.app; redirect URLs `https://reelforge-preview.vercel.app/**` and
+  `http://localhost:3000/**` (exact `/auth/callback` entries do NOT match `?next=…` — see DEPLOY.md). Confirm email is on.
+- Verified against the real project (`npx playwright test -c playwright.live.config.ts`, providers + Stripe mocked):
+  auth trigger → profile, login, purchase → ledger RPC, generation → job row → output in the public bucket, forced
+  failure → exactly one refund. Real email signup also checked: user, both fingerprints and the 24-credit bonus land.
+- Finding: both confirmation emails to Gmail had their one-time link opened ~15 s after sending by something other
+  than the test (mail link scanning), so the user's own click lands on `/login?error=auth` although the account IS
+  confirmed. The login page now says so. A sturdier fix is a confirm page with a button (token-hash flow) — not done.
+- [ ] Google provider: needs a Google Cloud OAuth client id/secret pasted into Supabase → Authentication → Providers.
+- [ ] Built-in Supabase email is limited to a couple of messages per hour; set up custom SMTP (Resend) before real users.
 ## Step 2 — fal pricing (≥60% margin)  - [x]
 Prices re-read from fal.ai model pages 2026-10-12; table in docs/PROVIDER_REFERENCE.md. Worst-case margin (credit at $0.076):
 ltx-fast / ltx-i2v 80%, wan-26 74%, kling-3 / kling-3-i2v 86%, veo-31 67%, flux 92–96%, UGC standard 71%, UGC premium 67%.
@@ -161,4 +177,18 @@ kling-3-i2v 5s $0.42, flux $0.003, one ~10 s standard UGC ad without b-roll ≈ 
 Estimate for one take each, no retries: 20 presets $7.68 (11 ltx-i2v, 8 kling-3-i2v, 1 ltx-fast) + 19 source photos and
 8 creator portraits ≈ $0.45 + hero film ≈ $0.46 → ≈ $8.60 (≈ $11.10 if Kling bills $0.14/s). Not started; needs M's approval.
 ## Step 5 — CI on PRs + pushes  - [x] (green on PR #3: lint/typecheck/unit+SQL and Playwright e2e)
-## Step 6 — Vercel preview + webhooks + e2e against preview  - [ ]
+## Step 6 — Vercel preview + webhooks + e2e against preview  - [ ] (preview is up; webhooks + logged-in e2e open)
+- Vercel project `reelforge` (team "kom's projects", Hobby). Preview: https://reelforge-preview.vercel.app (stable alias,
+  behind Vercel login). Preview env: Supabase keys, app URL, session secret, admin email, `MOCK_PROVIDERS=true`,
+  `MOCK_STRIPE=true` (until the fal and Stripe keys exist). No production env vars are set.
+- INCIDENT: Vercel auto-promoted the project's first deployment to production (twice, the second time despite
+  `--target=preview`). Both were removed within about a minute; they had no env vars and, because of the framework
+  preset, served only 404s. The production slot now holds an empty "Nothing here" page so app deploys stay previews.
+- Fixed for Vercel: `vercel.json` pins the Next.js preset (was "Other" → every route 404); `assets/fonts/**` added to
+  `outputFileTracingIncludes` (UGC caption fonts were not shipped with the functions).
+- Checked on the preview without logging in: landing page, 20 presets read from Supabase, real-auth signup page,
+  `/api/me` → 401.
+- [ ] Logged-in e2e on the preview (M runs it, or after keys): `LIVE_BASE_URL=https://reelforge-preview.vercel.app`.
+- [ ] Stripe test webhook endpoint on the preview (needs `STRIPE_SECRET_KEY`; Deployment Protection blocks webhooks
+  unless the URL carries the bypass secret).
+- [ ] Remove `MOCK_PROVIDERS` / `MOCK_STRIPE` from the preview env once real keys are added, then redeploy.

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useActionState } from "react";
 import { googleAction, loginAction, signupAction, type AuthFormState } from "./actions";
 
-export function AuthForm({ mode, next, mock }: { mode: "login" | "signup"; next: string; mock: boolean }) {
+export function AuthForm({ mode, next, mock, notice }: { mode: "login" | "signup"; next: string; mock: boolean; notice?: string }) {
   const [state, action, pending] = useActionState<AuthFormState, FormData>(
     mode === "login" ? loginAction : signupAction,
     undefined,
@@ -50,6 +50,7 @@ export function AuthForm({ mode, next, mock }: { mode: "login" | "signup"; next:
             required
           />
         </div>
+        {notice && !err && <p className="text-sm text-foreground" data-testid="auth-notice">{notice}</p>}
         {err && <p className="text-sm text-danger" role="alert" data-testid="auth-error">{err}</p>}
         {state?.message && <p className="text-sm text-foreground">{state.message}</p>}
         <button className="btn-primary w-full" disabled={pending}>
