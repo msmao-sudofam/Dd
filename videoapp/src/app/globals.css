@@ -103,3 +103,193 @@ p {
     display: none;
   }
 }
+
+/*
+ * Motion layer (docs/DESIGN.md → "Motion and light"). The lock still holds: black canvas, lime only on CTAs.
+ * What moved: light may now spill from the media itself (hero glow, pointer highlights), never from flat colour.
+ */
+:root {
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+/* One-shot scroll reveals. Content is hidden only after <Fx/> has mounted, so no JS means everything is visible. */
+.fx-ready [data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, 28px, 0);
+  filter: blur(8px);
+  transition: opacity 0.9s var(--ease), transform 0.9s var(--ease), filter 0.9s var(--ease);
+  transition-delay: var(--d, 0ms);
+}
+.fx-ready [data-reveal][data-in] {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+/* Pointer spotlight: a hairline that brightens under the cursor (set --mx/--my from <Fx/>). */
+.spot {
+  position: relative;
+}
+.spot::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  padding: 1px;
+  background: radial-gradient(380px circle at var(--mx, 50%) var(--my, -30%), rgba(255, 255, 255, 0.6), transparent 62%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.45s var(--ease);
+}
+.spot:hover::before {
+  opacity: 1;
+}
+
+/* 3D tilt + glare for clip tiles (angles come from <Fx/>). */
+.tilt {
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform 0.6s var(--ease);
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+.tilt[data-tilting] {
+  transition-duration: 0.12s;
+}
+.tilt .glare {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: radial-gradient(circle at var(--gx, 50%) var(--gy, 0%), rgba(255, 255, 255, 0.32), transparent 55%);
+  mix-blend-mode: soft-light;
+  opacity: 0;
+  transition: opacity 0.4s var(--ease);
+}
+.tilt[data-tilting] .glare {
+  opacity: 1;
+}
+
+/* Moving wall of clips: rows drift sideways on a tilted plane and fade out at the edges. */
+@keyframes wall-x {
+  to {
+    transform: translate3d(-25%, 0, 0);
+  }
+}
+.wall {
+  perspective: 1400px;
+  overflow: hidden;
+  -webkit-mask-image: radial-gradient(ellipse 78% 58% at 50% 54%, #000 50%, transparent 100%);
+  mask-image: radial-gradient(ellipse 78% 58% at 50% 54%, #000 50%, transparent 100%);
+}
+.wall-plane {
+  transform: rotateX(24deg) rotateZ(-7deg) scale(1.12);
+  transform-origin: 50% 50%;
+}
+.wall-row {
+  display: flex;
+  width: max-content;
+  animation: wall-x var(--dur, 80s) linear infinite;
+}
+.wall-row[data-rev] {
+  animation-direction: reverse;
+}
+.wall:hover .wall-row {
+  animation-play-state: paused;
+}
+
+/* Video through type: white glyphs on black, multiplied over footage, so the clip only shows inside the letters. */
+.type-fill {
+  position: relative;
+  isolation: isolate;
+  background: #9a9a9a;
+}
+.type-fill > video,
+.type-fill > img {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  opacity: 0.88;
+  filter: saturate(1.25) brightness(1.15);
+}
+.type-fill > .type-fill-text {
+  background: #000;
+  color: #fff;
+  mix-blend-mode: multiply;
+}
+
+/* Fanned creator cards: spread on hover. */
+.fan {
+  position: relative;
+  --a: 7deg;
+}
+@media (min-width: 640px) {
+  .fan {
+    --a: 9deg;
+  }
+}
+.fan > * {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform-origin: 50% 130%;
+  transform: translateX(-50%) rotate(calc(var(--i) * var(--a)));
+  transition: transform 0.7s var(--ease);
+}
+.fan:hover > * {
+  transform: translateX(-50%) rotate(calc(var(--i) * var(--a) * 1.3));
+}
+.fan > *:hover {
+  z-index: 20 !important;
+  transform: translateX(-50%) rotate(calc(var(--i) * var(--a) * 1.3)) translateY(-14px) scale(1.04);
+}
+
+/* Cards behind the front one are dimmed for depth; the one under the pointer comes back to full brightness. */
+.fan > *:hover img {
+  filter: none !important;
+}
+
+@keyframes nudge-down {
+  0%, 100% { transform: translateY(0); opacity: 0.55; }
+  50% { transform: translateY(5px); opacity: 1; }
+}
+@keyframes live-dot {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.45); }
+  60% { box-shadow: 0 0 0 7px rgba(255, 255, 255, 0); }
+}
+@keyframes sheen {
+  to { transform: translateX(260%) skewX(-18deg); }
+}
+.btn-sheen {
+  position: relative;
+  overflow: hidden;
+}
+.btn-sheen::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 -60%;
+  width: 45%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  transform: translateX(0) skewX(-18deg);
+  pointer-events: none;
+}
+.btn-sheen:hover::after {
+  animation: sheen 0.9s var(--ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wall-row,
+  .btn-sheen:hover::after {
+    animation: none;
+  }
+  .tilt,
+  .fan > * {
+    transition: none;
+  }
+}

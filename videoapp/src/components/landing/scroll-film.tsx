@@ -69,6 +69,7 @@ export function ScrollFilm({
 }) {
   const sectionRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const glowRef = useRef<HTMLCanvasElement>(null);
   const [progress, setProgress] = useState(0);
   const [loaded, setLoaded] = useState(0);
   const reduced = useReducedMotion();
@@ -77,6 +78,8 @@ export function ScrollFilm({
     if (reduced) return;
     const canvas = canvasRef.current!;
     const ctx = canvas.getContext("2d")!;
+    // Ambient light: the current frame, 16 px wide, blurred up behind the card so the film lights the page.
+    const glow = glowRef.current?.getContext("2d") ?? null;
     const dir = window.innerWidth < 768 ? "mobile" : "desktop";
     const frames: (ImageBitmap | HTMLImageElement | null)[] = new Array(frameCount).fill(null);
     let count = 0;
@@ -148,6 +151,7 @@ export function ScrollFilm({
           const w = iw * scale;
           const h = ih * scale;
           ctx.drawImage(img, (canvas.width - w) / 2, (canvas.height - h) / 2, w, h);
+          glow?.drawImage(img, 0, 0, 16, 28);
           lastDrawn = idx;
           delete canvas.dataset.dirty;
         }
@@ -196,7 +200,14 @@ export function ScrollFilm({
           </div>
 
           {/* The film: 9:16 hero card (Morphic 32px radius) with story-style progress bars. */}
-          <div className="absolute inset-x-4 top-[100px] bottom-4 md:static md:w-[min(400px,42svh)]">
+          <div className="absolute inset-x-4 top-[100px] bottom-4 md:relative md:inset-auto md:w-[min(400px,42svh)]">
+            <canvas
+              ref={glowRef}
+              width={16}
+              height={28}
+              aria-hidden
+              className="pointer-events-none absolute -inset-[20%] hidden h-[140%] w-[140%] opacity-40 blur-[56px] saturate-150 [mask-image:radial-gradient(closest-side,#000_25%,transparent_100%)] md:block"
+            />
             <div className="relative h-full overflow-hidden rounded-[32px] border border-border bg-surface md:aspect-[9/16] md:h-auto">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={poster} alt="" className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${loaded > 0 ? "opacity-0" : ""}`} />

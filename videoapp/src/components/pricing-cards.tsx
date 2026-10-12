@@ -20,7 +20,7 @@ export function PricingCards({ loggedIn, currentPlan }: { loggedIn: boolean; cur
   return (
     <div className="grid gap-4 md:grid-cols-4">
       {CREDIT_PACKS.map((p, i) => (
-        <div key={p.id} className={`card flex flex-col rounded-[20px] p-6 ${i === 1 ? "!border-white/30" : ""}`}>
+        <div key={p.id} className={`card spot flex flex-col rounded-[20px] p-6 ${i === 1 ? "!border-white/30 bg-gradient-to-b from-white/[0.09] to-white/[0.03]" : ""}`}>
           <div className="text-sm font-semibold text-muted">{p.name}</div>
           <div className="display mt-3 text-5xl">${p.priceUsd}</div>
           <div className="mt-1 text-sm">{p.credits} credits</div>
@@ -29,7 +29,7 @@ export function PricingCards({ loggedIn, currentPlan }: { loggedIn: boolean; cur
           {cta(p.id, `Buy ${p.name}`, i === 1)}
         </div>
       ))}
-      <div className="card flex flex-col rounded-[20px] p-6">
+      <div className="card spot flex flex-col rounded-[20px] p-6">
         <div className="text-sm font-semibold text-muted">{MONTHLY_PLAN.name}</div>
         <div className="display mt-3 text-5xl">
           ${MONTHLY_PLAN.priceUsd}

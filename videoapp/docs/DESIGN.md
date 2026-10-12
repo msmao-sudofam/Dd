@@ -56,3 +56,24 @@ Chosen by M from three reference-locked directions (A Midnight Studio / B Neon P
 - Preset previews: one 576×1024, 5 s, silent H.264 clip per preset in `public/presets/<slug>.mp4`, with its first
   frame as the poster (`<slug>.jpg`) so tiles don't jump when the clip starts. The five `placeholder-*` files are
   no longer referenced by the seed catalog.
+
+## Motion and light (added 2026-10-12, at M's request for more "wow")
+The lock still holds: black canvas, Inter, lime only on primary actions. One rule was relaxed on purpose: **light may
+spill from the media itself**, never from flat colour. That replaces the earlier "no glows" line for these cases only.
+
+| Piece | Where | How it works |
+|---|---|---|
+| Ambient hero glow | `scroll-film.tsx` | The current film frame is drawn 16 px wide into a second canvas, blurred and masked behind the card, so the page is lit by the film (white at the listing photo, green by the finished ad). Desktop only. |
+| Clip wall | `landing/clip-wall.tsx`, `.wall*` | All 20 previews drift in three rows on a tilted plane, edges faded by a mask; pauses on hover. Uses the 288 px twins in `public/presets/sm/` (1.8 MB for all 20). Third row is hidden on phones. |
+| Tile tilt + glare | `preset-tile.tsx`, `.tilt` | Tiles lean toward the pointer with a soft-light highlight and a "Try it →" cue. Mouse only. |
+| Creator fan | `landing/creator-fan.tsx`, `.fan` | Five library creators as a fanned hand of cards that spreads on hover; back cards are dimmed for depth. |
+| Video through type | `.type-fill` | The closing headline is white-on-black text multiplied over `public/media/type-fill.mp4` (six clips side by side), so footage plays inside the letters. |
+| Pointer hairline | `.spot` | Card borders brighten under the cursor (pricing, UGC and proof panels). |
+| Scroll reveals | `[data-reveal]` + `components/fx.tsx` | One-shot rise-and-unblur, easing `cubic-bezier(.2,.7,.2,1)`. Hidden only after the controller mounts, so the page is complete without JavaScript. |
+| CTA sheen | `.btn-sheen` | A single light sweep across the lime button on hover. |
+
+- One controller (`components/fx.tsx`, mounted in the root layout) drives reveals, hairlines and tilt with a single
+  pointer listener; state lives in data attributes and CSS variables.
+- `prefers-reduced-motion`: no reveals, no tilt, the wall stands still, clips stay on their posters.
+- Regenerate the small clips and the type strip with `python web_extras.py` in `~/Projects/reelforge-previews`.
+- Still rejected: custom cursors, particles, accent-coloured glows, lime anywhere but the primary action.

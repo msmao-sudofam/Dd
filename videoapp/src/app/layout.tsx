@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { Fx } from "@/components/fx";
 import { env } from "@/lib/env";
 import "@fontsource-variable/inter";
 import "./globals.css";
@@ -18,6 +19,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <SiteHeader />
         <main className="flex-1">{children}</main>
         <SiteFooter />
+        <Fx />
       </body>
     </html>
   );

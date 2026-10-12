@@ -37,7 +37,7 @@ export async function SiteHeader() {
             ) : (
               <>
                 <Link href="/login" className="btn-ghost !px-3.5 !py-1.5">Log in</Link>
-                <Link href="/signup" className="btn-primary !py-1.5">Start free</Link>
+                <Link href="/signup" className="btn-primary btn-sheen !py-1.5">Start free</Link>
               </>
             )}
           </div>
