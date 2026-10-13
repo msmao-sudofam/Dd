@@ -318,9 +318,19 @@ M's goal is monthly subscriptions, and asked for tiers ("Just do it" to the $19 
 - **State.** `profiles.subscription_plan` (migration `20261012000007_plans.sql`, applied to the Supabase project).
   `profiles.plan` is still `monthly` for any subscriber.
 - **Stripe.** Each plan bills against a fixed product id (`videoapp_plan_monthly`, `..._growth`, `..._studio`), created
-  on first use, so an invoice says which plan it charged. NOT yet run against real Stripe (no `sk_test_` key): the
-  whole flow is tested through the mock events only. First thing to test when the key exists: subscribe, upgrade
-  (check the `invoice.paid` for the upgrade carries the new product and credits once), downgrade, renew with a test clock.
+  on first use, so an invoice says which plan it charged.
+- **Verified against real Stripe (test mode) on 2026-10-13**, with `scripts/stripe-real-check.mjs`: local dev server
+  on the mock DB, real Stripe Checkout (test card 4242), real webhooks through `stripe listen`. 16 of 17 checks pass:
+  subscribe to Solo (+250, product `videoapp_plan_monthly`, $19); the confirm step changes nothing by itself; upgrade
+  to Growth (one subscription, $49 invoice in full with `billing_reason=subscription_update`, +700 once, billing
+  anchor reset); switch down to Solo (no invoice, no credits, next renewal previews at $19); customer portal opens;
+  cancel at Stripe drops the plan and keeps credits; Starter pack (+100).
+  NOT verified: an actual monthly renewal. It needs a Stripe test clock, and the key used could not create one.
+- The key was a throwaway sandbox from `stripe sandbox create` (CLI profile `reelforge-sandbox`, account
+  `acct_1UPtcDFPadOlhmYs`, expires 2026-10-20 unless claimed). It is NOT in `.env.local` or on Vercel: preview and
+  production still run `MOCK_STRIPE`. M's own Stripe login in the CLI (`elegantad.carrd.co`) is live-mode only and
+  was not used. To finish: a real `sk_test_` key from the account M wants, then re-run the script (it also does the
+  renewal step) and wire the deployed webhook.
 - Pricing UI: three plan cards first (Growth highlighted, the only lime button), packs as a quieter row below. The
   "Save N% per credit" tags are computed from the numbers, against Solo.
 
