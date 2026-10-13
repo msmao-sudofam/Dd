@@ -201,7 +201,7 @@ M chose local generation on MOMOBEAST instead of fal (the fal estimate was ≈ $
   `<slug>.jpg` (the teaser's poster is its lit last frame). Source photos: Krea 2 Turbo; motion: MiniMax H3 FL2VA
   pruned PDD in Wan2GP, with each preset's own prompt. About 4 minutes per clip on the RTX 5080.
 - 8 UGC creator portraits: `public/ugc/actors/<slug>.jpg` (576×1024), fictional adults matching each creator's
-  listed age range and setting.
+  listed age range and setting. Replaced on 2026-10-13, see "MEDIA ROUND 2" below.
 - Hero film: `media/hero-film.mp4` (plain listing photo → finished ad, 4.5 s) → 72 frames in `public/film/`.
 - Catalog: `src/lib/seed-data.ts` points every preset at its own files; `supabase/seed.sql` regenerated and applied.
 - Everything shown is fictional and unbranded. Retaken for that reason or for a weak effect: Crash Zoom (the
@@ -353,4 +353,29 @@ M's goal is monthly subscriptions, and asked for tiers ("Just do it" to the $19 
   open for hours fails with Google's own "400 malformed" page; a fresh click on "Continue with Google" fixes it.
 - Known limit: Google's screen says "continue to slgadvjriexkanskzgva.supabase.co" until there is an own domain
   (then: brand verification, or a Supabase custom domain).
+
+## MEDIA ROUND 2 (2026-10-13)
+M: "we need better videos especially for the ugc one, the people need to be super attractive". Local models, $0.
+
+- **New cast.** All 8 library creators redrawn with model-level looks (same names, vibes, voices and settings):
+  `public/ugc/actors/<slug>.jpg`, 704×1280. Fictional adults, fully clothed. Priya and Marcus now read about thirty,
+  so their `age_range` is `25-34`. Order changed (`sort_order`): Maya, Jordan, Sofia, Marcus, Ava, Priya, Leo, Sam,
+  so the landing page's fan of five and the three examples on `/ugc` lead with the strongest cards.
+- **Creator talking clips.** Each creator has a 7.3 s clip saying one generic line in their own voice (checked with
+  Whisper: all eight say the scripted line word for word). Two files per creator:
+  `public/ugc/actors/<slug>.mp4` (432×768, silent, about 400 KB) is `preview_video_url` and plays as a muted loop on
+  the creator cards (`components/ugc/creator-media.tsx`: `/ugc`, the landing fan);
+  `public/mock/ugc-avatar-<slug>.mp4` (720×1280 with the voice) is the demo-mode ad footage, below.
+- **UGC presets.** New previews for Creator Holding Product and Talking-Head Intro. The other 18 are unchanged.
+- **Demo mode shows real clips.** While `MOCK_PROVIDERS` is on, a vertical preset video returns that preset's own
+  preview clip, and a UGC ad is built on the chosen creator's talking clip (their line, not the user's script; the
+  captions do follow the user's script). Everything else gets a generic sample, now a labelled cut of real preview
+  clips ("Sample clip (demo mode)") instead of a test pattern and a placeholder box. Code: `providers/mock.ts`
+  (`sample` hint on the request), `generation.ts`, `ugc/pipeline.ts`; tests in `tests/unit/providers.test.ts`.
+- Caveat, same as Step 4: these come from a local model, not from the hosted models customers get. Real UGC ads use
+  the portrait as the avatar's start image, so the faces carry over; the motion and voice will be the hosted
+  model's (Kling AI Avatar / OmniHuman + ElevenLabs), unverified until fal has balance (Step 3).
+- Not checked: nobody has listened to the clips for voice quality (only the words were transcribed), and the
+  creator cards were not looked at in a browser on the live site while the PC was out of memory.
+- Prompts, scripts, picks and raw renders: `~/Projects/reelforge-previews` (README "Round 2").
 
