@@ -39,9 +39,12 @@ export async function watermark(file: OutputFile): Promise<OutputFile> {
   const output = path.join(dir, isVideo ? "out.mp4" : "out.jpg");
   try {
     await writeFile(input, file.bytes);
+    // Images: loop both inputs and take one frame. With a single-frame base and shortest=1, the base can hit EOF
+    // before the logo's first frame reaches overlay, and ffmpeg then encodes nothing (seen intermittently on CI).
     const filter =
-      "[1:v][0:v]scale2ref=w=main_w*0.3:h=-1[wm][base];[base][wm]overlay=x=main_w-overlay_w-main_w*0.03:y=main_h-overlay_h-main_h*0.03:shortest=1";
-    const args = ["-y", "-loglevel", "warning", "-i", input, "-loop", "1", "-i", watermarkPng(), "-filter_complex", filter];
+      "[1:v][0:v]scale2ref=w=main_w*0.3:h=-1[wm][base];[base][wm]overlay=x=main_w-overlay_w-main_w*0.03:y=main_h-overlay_h-main_h*0.03" +
+      (isVideo ? ":shortest=1" : "");
+    const args = ["-y", "-loglevel", "warning", ...(isVideo ? [] : ["-loop", "1"]), "-i", input, "-loop", "1", "-i", watermarkPng(), "-filter_complex", filter];
     if (isVideo) args.push("-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-pix_fmt", "yuv420p", "-c:a", "copy", "-movflags", "+faststart");
     else args.push("-frames:v", "1", "-q:v", "2");
     args.push(output);
