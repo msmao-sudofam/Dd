@@ -324,3 +324,21 @@ M's goal is monthly subscriptions, and asked for tiers ("Just do it" to the $19 
 - Pricing UI: three plan cards first (Growth highlighted, the only lime button), packs as a quieter row below. The
   "Save N% per credit" tags are computed from the numbers, against Solo.
 
+## GOOGLE SIGN-IN (2026-10-13)
+- M hit Supabase's "Unsupported provider: provider is not enabled" from the "Continue with Google" button, then asked
+  for Google sign-in to be set up.
+- App: the button is shown only while the Supabase project reports Google as enabled (`googleSignInEnabled()` in
+  `src/lib/auth/index.ts`, reads `/auth/v1/settings`, cached 5 minutes). No env flag.
+- Google Cloud (M's account): project "Reelforge" (`flawless-age-511507-u6`); consent screen "Reelforge", External,
+  published ("In production"), home / privacy / terms links on the production URL, authorized domain
+  `reelforge-phi-six.vercel.app`; web client "Reelforge web (Supabase)" with redirect URI
+  `https://slgadvjriexkanskzgva.supabase.co/auth/v1/callback`. Scopes are only email + profile, so no verification
+  is required.
+- Supabase: `[auth.external.google]` enabled with that client (`supabase/config.toml`; id and secret come from
+  `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` in `.env.local`).
+- Checked: the button is back on production `/signup` and `/login`, and clicking it reaches Google's account
+  chooser with no error. NOT checked: completing a sign-in (choosing an account is M's to do), so the
+  `/auth/callback` leg with a Google user is unverified.
+- Known limit: Google's screen says "continue to slgadvjriexkanskzgva.supabase.co" until there is an own domain
+  (then: brand verification, or a Supabase custom domain).
+

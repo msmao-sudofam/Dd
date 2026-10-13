@@ -11,6 +11,16 @@ additional_redirect_urls = [
   "http://localhost:3000/**",
 ]
 
+# Google sign-in, switched on 2026-10-13. The OAuth client lives in the Google Cloud project "Reelforge"
+# (flawless-age-511507-u6), client "Reelforge web (Supabase)"; its only redirect URI is this project's
+# /auth/v1/callback. `supabase config push` needs GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in the environment
+# (they are in .env.local, which the app itself does not read them from).
+[auth.external.google]
+enabled = true
+client_id = "env(GOOGLE_CLIENT_ID)"
+secret = "env(GOOGLE_CLIENT_SECRET)"
+skip_nonce_check = false
+
 # The confirmation link opens the app's /auth/confirm page (a button spends the token) instead of confirming
 # on GET, so mail scanners and "opened on another device" no longer burn the one-time link.
 # NOT PUSHED YET: Supabase rejects template changes on the free tier until custom SMTP (e.g. Resend) is set up.
