@@ -110,6 +110,8 @@ p {
  */
 :root {
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  /* Expo-out: the curve the display type rises on. */
+  --ease-type: cubic-bezier(0.16, 1, 0.3, 1);
   /* Height of the sticky site header (two rows on phones). <Fx/> replaces it with the measured value. */
   --hdr: 86px;
   /* Height of anything above the header (the demo-mode line). Set by <DemoBanner/>, refined by <Fx/>. */
@@ -250,6 +252,7 @@ p {
 .beat > * > :nth-child(3) { --n: 2; }
 .beat > * > :nth-child(4) { --n: 3; }
 .beat > * > :nth-child(5) { --n: 4; }
+.beat > * > :nth-child(6) { --n: 5; }
 .beat[data-active="false"] {
   pointer-events: none;
 }
@@ -263,8 +266,8 @@ p {
 @keyframes hero-rise {
   from { opacity: 0; transform: translate3d(0, 22px, 0); filter: blur(8px); }
 }
-@keyframes hero-word {
-  from { opacity: 0; transform: translate3d(0, 0.45em, 0) rotate(2.5deg); filter: blur(12px); }
+@keyframes hero-char {
+  from { opacity: 0; transform: translate3d(0, 108%, 0) rotate(4deg); }
 }
 @keyframes hero-card {
   from { opacity: 0; transform: translate3d(0, 44px, 0) scale(0.96); }
@@ -272,16 +275,173 @@ p {
 @keyframes deck-in {
   from { opacity: 0; transform: translate3d(var(--tuck), 5%, 0) rotate(0deg) scale(0.86); }
 }
-.hero-words .w {
+/*
+ * Split type: each word is a mask and each letter rises from below its baseline with a small tilt, in a fast
+ * ripple from left to right. The padding and the equal negative margin give ascenders, descenders and the
+ * tight tracking room inside the mask without moving the text.
+ */
+.split .w {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  margin: -0.08em -0.06em -0.22em;
+  padding: 0.08em 0.06em 0.22em;
+}
+.split .ch {
   display: inline-block;
   transform-origin: 0 100%;
 }
+.fx-ready [data-reveal="split"] {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+.fx-ready [data-reveal="split"] .ch {
+  opacity: 0;
+  transform: translate3d(0, 108%, 0) rotate(4deg);
+  transition: transform 1.15s var(--ease-type), opacity 0.9s var(--ease-type);
+  transition-delay: calc(var(--d, 0ms) + var(--i) * 20ms);
+}
+.fx-ready [data-reveal="split"][data-in] .ch {
+  opacity: 1;
+  transform: none;
+}
+/* Inside a staggered group the heading does not fade as a block: its letters do the entering. */
+.fx-ready [data-reveal="kids"] > [data-reveal="split"] {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+/* Words that sharpen with the scroll (<Fx/> writes the inline styles; without it they are simply there). */
+[data-scrub-words] .sw {
+  display: inline-block;
+  will-change: opacity, filter, transform;
+}
+
+/*
+ * "Like <look>": the name rolls over letter by letter. The new word is in the flow and sets the width;
+ * the old one is lifted out and leaves upward, blurred. Each arriving letter flickers once, like a
+ * split-flap settling.
+ */
+.look-slot {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  /* Wider than the word on the right, so a longer name is not cut off while it leaves. */
+  margin: -0.08em -4em -0.24em -0.06em;
+  padding: 0.08em 4em 0.24em 0.06em;
+  white-space: nowrap;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 16%, #000 80%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0, #000 16%, #000 80%, transparent 100%);
+}
+.look-word {
+  display: inline-block;
+}
+.look-word[data-out] {
+  position: absolute;
+  top: 0.08em;
+  left: 0.06em;
+}
+.look-word .ch {
+  display: inline-block;
+  transform-origin: 0 100%;
+}
+@keyframes look-in {
+  from { opacity: 0; transform: translate3d(0, 108%, 0) rotate(5deg); }
+}
+@keyframes look-out {
+  to { opacity: 0; transform: translate3d(0, -104%, 0) rotate(-3deg); filter: blur(2px); }
+}
+@keyframes look-flap {
+  0% { filter: brightness(2.2); }
+  30% { filter: brightness(0.35); }
+  55% { filter: brightness(1.7); }
+  100% { filter: none; }
+}
 @media (prefers-reduced-motion: no-preference) {
-  .film .beat[data-beat="0"] > * > :not(.hero-words) {
-    animation: hero-rise 0.9s var(--ease) calc(240ms + var(--n, 0) * 90ms) backwards;
+  .look-word:not([data-out]) .ch {
+    animation:
+      look-in 1.1s var(--ease-type) calc(var(--lead, 0ms) + var(--j) * 34ms) backwards,
+      look-flap 0.5s ease calc(var(--lead, 0ms) + var(--j) * 34ms + 420ms) backwards;
   }
-  .film .hero-words .w {
-    animation: hero-word 0.95s var(--ease) calc(80ms + var(--w, 0) * 60ms) backwards;
+  /* The first name waits for the headline above it. */
+  .look-word[data-first] {
+    --lead: 950ms;
+  }
+  .look-word[data-out] .ch {
+    animation: look-out 0.75s cubic-bezier(0.6, 0, 0.3, 1) calc(var(--j) * 20ms) forwards;
+  }
+}
+
+/* The deck card whose look is named by the rotator comes forward: full brightness, a touch larger. */
+.film-deck-card {
+  transition: filter 0.9s var(--ease), scale 1.1s var(--ease-type), box-shadow 0.9s var(--ease);
+}
+.film[data-look="0"] .film-deck-item:nth-child(1) .film-deck-card,
+.film[data-look="1"] .film-deck-item:nth-child(2) .film-deck-card,
+.film[data-look="2"] .film-deck-item:nth-child(3) .film-deck-card,
+.film[data-look="3"] .film-deck-item:nth-child(4) .film-deck-card {
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.5), 0 26px 70px rgba(0, 0, 0, 0.75);
+  filter: brightness(1.06);
+  scale: 1.07;
+}
+
+/*
+ * Look band: the looks' names in display type, every second one outlined, drifting sideways.
+ * <LookBand/> moves the track, faster and leaning with the scroll speed.
+ */
+.band {
+  overflow: hidden;
+  padding-block: clamp(20px, 4vw, 48px);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.band-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+.band-item {
+  display: flex;
+  align-items: center;
+  gap: 0.34em;
+  padding-right: 0.34em;
+  font-size: clamp(44px, 8.4vw, 124px);
+  font-weight: 700;
+  letter-spacing: -0.05em;
+  line-height: 1.05;
+  white-space: nowrap;
+}
+.band-item::after {
+  content: "";
+  width: 0.13em;
+  height: 0.13em;
+  flex: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+}
+.band-item:nth-child(even) {
+  color: transparent;
+  -webkit-text-stroke: 1.2px rgba(255, 255, 255, 0.42);
+}
+
+/* Buttons that lean toward the pointer (<Fx/> sets the transform while the pointer is over them). */
+[data-magnetic] {
+  transition-property: transform, filter, scale;
+  transition-duration: 0.25s;
+  transition-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .film .beat[data-beat="0"] > * > :not(.hero-words, .look-rot) {
+    animation: hero-rise 0.9s var(--ease) calc(420ms + var(--n, 0) * 90ms) backwards;
+  }
+  .film .beat[data-beat="0"] .look-rot > span:first-child {
+    animation: hero-rise 0.9s var(--ease) 900ms backwards;
+  }
+  .film .hero-words .ch {
+    animation: hero-char 1.25s var(--ease-type) calc(60ms + var(--i, 0) * 22ms) backwards;
   }
   .film .film-in {
     animation: hero-card 1.1s var(--ease) 120ms backwards;

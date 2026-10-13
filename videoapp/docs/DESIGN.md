@@ -88,7 +88,13 @@ spill from the media itself**, never from flat colour. That replaces the earlier
 | Hero growth | `scroll-film.tsx`, `.film*` | The card starts at `--start` scale (0.84 desktop; measured on phones so it clears the first headline) and grows with `--grow` (eased scroll) between 30% and 46% of the film. Glow and brightness follow `--lit` (the frame on screen), the phone text-shade follows `--grow`. Captions "Listing photo" / "Finished ad" follow the frame and are counter-scaled so they stay readable. |
 | Self-playing film | `scroll-film.tsx` (`AUTO`, `autoPos`) | While the page rests at the top and all 72 frames are loaded, the film plays by itself: photo, 2.8 s to the ad, hold 3.4 s, rewind, repeat. The story bars fill with it (`--bar`). Scrolling past 1.2% of the section hands the film back to the scroll position; returning to the top restarts the loop from the photo. |
 | Deck | `scroll-film.tsx` (`DECK_SLOTS`), `.film-deck*`, `HERO_DECK` in `app/page.tsx` | Four finished preset clips (the 288 px twins) float behind the film card, dimmed, each with its look's name from 1024 px up. They share the card's box and scale, drift on their own clocks, lean with the pointer by their depth (`--px`/`--py`, eased in the frame loop, mouse only) and tuck behind the film as it grows; their videos are paused while hidden. |
-| Hero load-in | `.hero-words`, `hero-*` and `deck-in` keyframes | Headline words rise and unblur one after another (60 ms apart), then the lines under it, while the card rises and the deck fans out from behind it. Pure CSS with `backwards` fill, so it runs before any script and leaves the scroll transitions alone afterwards. |
+| Hero load-in | `.hero-words`, `.split`, `hero-*` and `deck-in` keyframes | Headline letters rise out of per-word masks (108% + 4° tilt, 1.25 s expo-out, 22 ms apart), then the lines under it, while the card rises and the deck fans out from behind it. Pure CSS with `backwards` fill, so it runs before any script and leaves the scroll transitions alone afterwards. |
+| Split headings | `components/split-text.tsx`, `[data-reveal="split"]` | The Presets, Pricing and Questions headings use the same letter rise when they scroll into view (20 ms apart). The letters are server-rendered spans; the heading carries the sentence in `aria-label`. |
+| Look rotator | `landing/look-rotator.tsx`, `.look-*` | "Like ⟨look⟩" under the headline: the name rolls over letter by letter every 2.6 s (in from below, out upward and blurred, one brightness flicker per letter) and links to that preset. It sets `data-look` on the film, which brings the matching deck card forward. |
+| Look band | `landing/look-band.tsx`, `.band*` | All preset names in display type under the hero, every second one outlined. Drifts sideways, and speeds up and leans (up to 10°) with the scroll speed. Runs only while on screen. |
+| Scroll-sharpened words | `ScrubWords`, `[data-scrub-words]`, `fx.tsx` | The showreel heading's words go from 14% opacity and 7 px blur to sharp, one after another, as the heading travels up the screen. |
+| Magnetic buttons | `[data-magnetic]`, `fx.tsx` | The hero and closing primary buttons lean toward the pointer (22% / 32% of the offset). Mouse only. |
+| Smooth scroll | `components/smooth-scroll.tsx` (Lenis 1.3, MIT) | Eased wheel scrolling on the landing page only, lerp 0.09, for mouse and trackpad. Touch screens and reduced motion keep native scrolling. |
 | Beat changes | `.beat` | Each beat's lines enter one after another (70 ms apart, rise + unblur) and leave together in 0.28 s. |
 | Staggered groups | `[data-reveal="kids"]` | The container stays put and its children come in 80 ms apart (the four promises under the prices). |
 | Accordions | `details::details-content` | FAQ answers slide open where the browser can animate to an auto height (`interpolate-size`); elsewhere they snap as before. |
@@ -102,7 +108,12 @@ spill from the media itself**, never from flat colour. That replaces the earlier
 - `prefers-reduced-motion`: no reveals, no tilt, the wall stands still, clips stay on their posters; the hero has no
   load-in, no self-playing film and no deck.
 - Regenerate the small clips and the type strip with `python web_extras.py` in `~/Projects/reelforge-previews`.
-- Still rejected: custom cursors, particles, accent-coloured glows, lime anywhere but the primary action.
+- Still rejected: custom cursors, particles, accent-coloured glows, lime anywhere but the primary action, and a
+  loading screen before the page (M's agency sites have one; here it would delay the sign-up button).
+- **Where the type motion comes from (2026-10-13):** M asked for the motion of his own sites. Letter rise out of word
+  masks, the rolling rotator synced to media and the expo-out curve `cubic-bezier(.16,1,.3,1)` are Sealed Occasion's;
+  the scroll-speed band with outlined words is That Food Guy's; the scroll-sharpened words are NOCTURNE's manifesto;
+  magnetic buttons are on all three. Rebuilt here in plain CSS and small client components (no GSAP).
 
 ## Surfaces added 2026-10-12 (mechanics first; open for restyling)
 - **Try stage** (`components/landing/try-stage.tsx`, section `#try` under the hero): link field, upload, consent, look

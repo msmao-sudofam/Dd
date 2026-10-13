@@ -403,3 +403,22 @@ M: "for the intro header we need to make the hook better", "also add fluid anima
   production build; screenshots at 1440, 1280, 1024, 768, 390 and 360 px wide; load-in frames frozen at four moments;
   loop, pointer and scroll states read back from the page; reduced-motion render.
 - Not checked: frame rate on a real phone (only a desktop browser at phone size), and Safari.
+
+## TYPE MOTION FROM M'S OWN SITES (2026-10-13, later)
+M: "its good but refer to my other sites ive built to make it amazing with good text that moves and is fluid and wow
+factor". Two read-only surveys (his sites under `~/Projects`, and his motion kits and skills) found his signature
+moves; these were rebuilt here without adding GSAP:
+
+- Hero headline: letters rise out of word masks (Sealed Occasion).
+- "Like ⟨look⟩" line under the headline: a per-letter rolling name synced to the floating clips, each a link to its
+  preset (Sealed Occasion's hero rotator).
+- A band of all preset names under the hero, solid and outlined, that speeds up and leans with the scroll (That Food Guy).
+- The showreel heading's words sharpen as it scrolls up the screen (NOCTURNE manifesto).
+- Presets, Pricing and Questions headings use the same letter rise.
+- Magnetic primary buttons, and Lenis smooth scrolling on the landing page for mouse and trackpad (new dependency
+  `lenis`, MIT).
+- Left out on purpose: a loading screen, a custom cursor and WebGL. Table and sources in `docs/DESIGN.md`.
+- Checked: tsc, eslint, vitest (130 passed, 9 skipped), Playwright `phase6-launch` and `try-and-feed` (6 passed) on a
+  production build with Lenis on; screenshots at 1440, 1024, 390 and 360 px; the rotator caught mid-roll; scroll
+  values of the sharpened heading read back from the page.
+- Not checked: a real phone, Safari, and how Lenis feels on a trackpad (only scripted wheel events).
