@@ -347,8 +347,10 @@ M's goal is monthly subscriptions, and asked for tiers ("Just do it" to the $19 
 - Supabase: `[auth.external.google]` enabled with that client (`supabase/config.toml`; id and secret come from
   `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` in `.env.local`).
 - Checked: the button is back on production `/signup` and `/login`, and clicking it reaches Google's account
-  chooser with no error. NOT checked: completing a sign-in (choosing an account is M's to do), so the
-  `/auth/callback` leg with a Google user is unverified.
+  chooser with no error.
+- 2026-10-13: M completed a Google sign-in on production. `/dashboard` then showed M's Gmail address, 24 credits,
+  Free plan, and the Admin link, so the `/auth/callback` leg works with a Google user. A Google sign-in page left
+  open for hours fails with Google's own "400 malformed" page; a fresh click on "Continue with Google" fixes it.
 - Known limit: Google's screen says "continue to slgadvjriexkanskzgva.supabase.co" until there is an own domain
   (then: brand verification, or a Supabase custom domain).
 
