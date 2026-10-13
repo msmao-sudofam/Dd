@@ -8,7 +8,7 @@ const nextConfig: NextConfig = {
   experimental: { serverActions: { bodySizeLimit: "4mb" } },
   // Files read at runtime by path (not import), so the tracer must be told to ship them with the functions.
   outputFileTracingIncludes: {
-    "/api/**": ["./node_modules/ffmpeg-static/ffmpeg", "./public/watermark.png", "./public/mock/**", "./assets/fonts/**",
+    "/api/**": ["./node_modules/ffmpeg-static/ffmpeg", "./public/watermark.png", "./public/mock/**", "./public/presets/*.mp4", "./assets/fonts/**",
       // demo-mode sample frames for the free "try it" preview (lib/try/session.ts)
       "./public/presets/hero-shot.jpg", "./public/presets/lifestyle-scene.jpg", "./public/presets/liquid-splash.jpg"],
   },

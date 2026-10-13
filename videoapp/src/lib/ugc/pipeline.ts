@@ -127,7 +127,7 @@ async function submitStage(job: Job, stage: UgcStage, d: StageData): Promise<Job
   if (stage === "assemble" || stage === "done") return runAssemble(job, d, project);
   const { endpoint, input } = await stageInput(stage, d, actor, project);
   const adapter = adapterForModel("fal");
-  const { requestId } = await adapter.submitRaw!(endpoint, input, webhookUrlFor(adapter.name), { forceFail: d.spec.failAt === stage });
+  const { requestId } = await adapter.submitRaw!(endpoint, input, webhookUrlFor(adapter.name), { forceFail: d.spec.failAt === stage, sample: actor.slug });
   return db().updateJob(job.id, {
     stage,
     provider: adapter.name,

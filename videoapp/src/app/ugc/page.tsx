@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CreatorMedia } from "@/components/ugc/creator-media";
 import { getSessionUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { estimateUgcCost, scriptText } from "@/lib/ugc/config";
@@ -54,8 +55,7 @@ export default async function UgcLanding() {
         <div className="grid grid-cols-3 gap-3" aria-label="Example ad layouts">
           {examples.map(({ a, s }, i) => (
             <figure key={a.id} className={`relative aspect-[9/16] overflow-hidden rounded-[20px] bg-surface ${i === 1 ? "translate-y-8" : ""}`}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              {a.portrait_url && <img src={a.portrait_url} alt={`${a.name}, AI creator`} className="absolute inset-0 h-full w-full object-cover" />}
+              <CreatorMedia actor={a} className="absolute inset-0 h-full w-full object-cover" />
               <span className="absolute top-2 left-2 rounded bg-black/60 px-1 py-0.5 text-[8px] font-semibold">AI-generated</span>
               <span className="absolute top-[12%] left-1/2 -translate-x-1/2 bg-white px-1.5 py-0.5 text-[10px] font-extrabold whitespace-nowrap text-black">{s.on_screen_hook}</span>
               <span className="absolute top-[64%] left-1/2 w-[92%] -translate-x-1/2 text-center text-[13px] leading-tight font-extrabold uppercase [text-shadow:0_0_3px_#000,0_0_3px_#000]">
@@ -98,8 +98,7 @@ export default async function UgcLanding() {
         <div className="no-scrollbar -mx-4 flex snap-x gap-3 overflow-x-auto px-4 md:mx-0 md:px-0">
           {actors.map((a) => (
             <div key={a.id} className="relative w-[40vw] shrink-0 snap-start overflow-hidden rounded-[10px] bg-surface sm:w-[180px]" data-testid="ugc-landing-actor">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              {a.portrait_url && <img src={a.portrait_url} alt={`${a.name}, AI creator`} className="aspect-[9/16] w-full object-cover" />}
+              <CreatorMedia actor={a} className="aspect-[9/16] w-full object-cover" />
               <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 to-transparent p-2.5">
                 <div className="text-sm font-semibold">{a.name}</div>
                 <div className="text-[11px] text-white/65">{a.vibe}</div>

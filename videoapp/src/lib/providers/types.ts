@@ -7,6 +7,8 @@ export interface GenerationRequest {
   aspectRatio?: string | null;
   /** Mock-only: force the job to fail (used to test refunds). */
   forceFail?: boolean;
+  /** Mock-only: slug of the preset whose sample clip stands in for the result (demo mode). */
+  sample?: string | null;
 }
 
 export type ProviderState = "queued" | "running" | "succeeded" | "failed";
@@ -35,7 +37,7 @@ export interface ProviderAdapter {
   /** Returns null if the signature is missing/invalid. */
   verifyWebhook(headers: Headers, rawBody: string, url: URL): Promise<WebhookEvent | null>;
   /** Pipeline stages (UGC studio) call endpoints directly with a ready-made input. */
-  submitRaw?(endpointId: string, input: Record<string, unknown>, webhookUrl: string, opts?: { forceFail?: boolean }): Promise<{ requestId: string }>;
+  submitRaw?(endpointId: string, input: Record<string, unknown>, webhookUrl: string, opts?: { forceFail?: boolean; sample?: string | null }): Promise<{ requestId: string }>;
   statusRaw?(endpointId: string, requestId: string): Promise<ProviderResult>;
 }
 

@@ -1,3 +1,4 @@
+import { CreatorMedia } from "@/components/ugc/creator-media";
 import type { UgcActor } from "@/lib/types";
 
 /** Five library creators as a fanned hand of phone cards that spreads on hover (styles: `.fan` in globals.css). */
@@ -13,14 +14,9 @@ export function CreatorFan({ actors }: { actors: UgcActor[] }) {
           className="aspect-[9/16] w-[132px] overflow-hidden rounded-[18px] bg-surface shadow-[0_18px_50px_rgba(0,0,0,0.65)] ring-1 ring-white/15 sm:w-[158px]"
           style={{ "--i": i - mid, zIndex: 10 - Math.abs(i - mid) } as React.CSSProperties}
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={a.portrait_url!}
-            alt={`${a.name}, AI creator`}
-            loading="lazy"
-            className="h-full w-full object-cover transition duration-500"
-            style={{ filter: `brightness(${1 - Math.abs(i - mid) * 0.14})` }}
-          />
+          <div className="h-full w-full transition duration-500" style={{ filter: `brightness(${1 - Math.abs(i - mid) * 0.14})` }}>
+            <CreatorMedia actor={a} className="h-full w-full object-cover" />
+          </div>
           <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 to-transparent px-3 pt-8 pb-2.5">
             <span className="block text-[13px] font-semibold tracking-[-0.02em]">{a.name}</span>
             <span className="block truncate text-[10px] text-white/65">{a.vibe}</span>

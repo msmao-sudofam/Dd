@@ -143,6 +143,7 @@ export async function startGeneration(profile: Profile, input: GenerateInput): P
         duration: r.duration,
         aspectRatio: r.aspect,
         forceFail: adapter.name === "mock" && !!input.forceFail,
+        sample: r.preset?.slug ?? null,
       },
       webhookUrlFor(adapter.name),
     );
@@ -162,9 +163,10 @@ export async function startGeneration(profile: Profile, input: GenerateInput): P
 }
 
 async function downloadOutput(url: string): Promise<{ bytes: Uint8Array; contentType: string }> {
-  const mockPrefix = `${env.appUrl()}/mock/`;
-  if (url.startsWith(mockPrefix)) {
-    const file = path.join(/*turbopackIgnore: true*/ process.cwd(), "public", "mock", path.basename(url));
+  // Demo-mode samples are our own files (public/mock, or a preset's preview clip): read them from disk.
+  const sampleDir = ["mock", "presets"].find((d) => url.startsWith(`${env.appUrl()}/${d}/`));
+  if (sampleDir) {
+    const file = path.join(/*turbopackIgnore: true*/ process.cwd(), "public", sampleDir, path.basename(url));
     const bytes = new Uint8Array(await readFile(file));
     return { bytes, contentType: file.endsWith(".mp4") ? "video/mp4" : "image/jpeg" };
   }

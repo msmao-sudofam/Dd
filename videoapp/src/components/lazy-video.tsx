@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 
 /** Muted looping clip that only downloads/plays while on screen (rows of 20 previews stay light). */
-export function LazyVideo({ src, poster, className }: { src: string; poster?: string; className?: string }) {
+export function LazyVideo({ src, poster, className, label }: { src: string; poster?: string; className?: string; label?: string }) {
   const ref = useRef<HTMLVideoElement>(null);
   useEffect(() => {
     const v = ref.current!;
@@ -20,5 +20,5 @@ export function LazyVideo({ src, poster, className }: { src: string; poster?: st
     io.observe(v);
     return () => io.disconnect();
   }, [src]);
-  return <video ref={ref} poster={poster} className={className} muted loop playsInline preload="none" />;
+  return <video ref={ref} poster={poster} className={className} aria-label={label} muted loop playsInline preload="none" />;
 }

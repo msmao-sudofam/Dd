@@ -1,8 +1,9 @@
 import { createHash, createHmac, generateKeyPairSync, sign } from "node:crypto";
 import { describe, expect, it } from "vitest";
-import { SEED_MODELS } from "@/lib/seed-data";
+import { SEED_MODELS, SEED_UGC_ACTORS } from "@/lib/seed-data";
 import { buildProviderInput, extractOutputUrl } from "@/lib/providers/input";
 import { falAdapter, falAppRoot, verifyFalSignature } from "@/lib/providers/fal";
+import { mockAdapter } from "@/lib/providers/mock";
 import { replicateAdapter, verifyReplicateSignature } from "@/lib/providers/replicate";
 import { selfAdapter } from "@/lib/providers/self";
 import type { Model } from "@/lib/types";
@@ -84,5 +85,38 @@ describe("webhook signatures", () => {
     expect(verifyReplicateSignature(h, body, secret)).toBe(true);
     expect(verifyReplicateSignature(h, body.replace("p1", "p2"), secret)).toBe(false);
     expect(verifyReplicateSignature(h, body, "")).toBe(false);
+  });
+});
+
+describe("demo-mode samples (mock provider)", () => {
+  process.env.MOCK_PROVIDER_WEBHOOKS = "false";
+  process.env.MOCK_PROVIDER_DELAY_MS = "0";
+  const hook = "http://localhost/hook";
+  const video = async (req: { aspectRatio?: string; sample?: string | null }, slug = "ltx-i2v") => {
+    const { requestId } = await mockAdapter.submit(model(slug), { prompt: "p", ...req }, hook);
+    return (await mockAdapter.status(model(slug), requestId)).outputUrl!;
+  };
+  const avatar = async (sample?: string) => {
+    const { requestId } = await mockAdapter.submitRaw!("fal-ai/kling-video/ai-avatar/v2/standard", {}, hook, { sample });
+    return (await mockAdapter.statusRaw!("", requestId)).outputUrl!;
+  };
+
+  it("a vertical preset video gets that preset's own preview clip", async () => {
+    expect(await video({ aspectRatio: "9:16", sample: "hero-shot" })).toMatch(/\/presets\/hero-shot\.mp4$/);
+  });
+
+  it("falls back to the generic sample for other aspects, unknown presets, unsafe slugs and images", async () => {
+    expect(await video({ aspectRatio: "16:9", sample: "hero-shot" })).toMatch(/\/mock\/sample-16x9\.mp4$/);
+    expect(await video({ aspectRatio: "9:16", sample: "no-such-preset" })).toMatch(/\/mock\/sample-9x16\.mp4$/);
+    expect(await video({ aspectRatio: "9:16", sample: "../hero_shot" })).toMatch(/\/mock\/sample-9x16\.mp4$/);
+    expect(await video({ aspectRatio: "9:16" })).toMatch(/\/mock\/sample-9x16\.mp4$/);
+    expect(await video({ aspectRatio: "9:16", sample: "hero-shot" }, "flux-schnell")).toMatch(/\/mock\/sample-9x16\.jpg$/);
+  });
+
+  it("a UGC ad gets the chosen creator's talking clip, or the generic one for an uploaded creator", async () => {
+    const withClip = SEED_UGC_ACTORS.filter((a) => a.preview_video_url);
+    for (const a of withClip) expect(await avatar(a.slug)).toMatch(new RegExp(`/mock/ugc-avatar-${a.slug}\\.mp4$`));
+    expect(await avatar("my-own-face")).toMatch(/\/mock\/ugc-avatar-9x16\.mp4$/);
+    expect(await avatar()).toMatch(/\/mock\/ugc-avatar-9x16\.mp4$/);
   });
 });
