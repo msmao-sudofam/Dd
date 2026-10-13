@@ -4,7 +4,7 @@ import { getSessionUser } from "@/lib/auth";
 import { ClipWall } from "@/components/landing/clip-wall";
 import { CreatorFan } from "@/components/landing/creator-fan";
 import { Faq, FAQ_ITEMS } from "@/components/landing/faq";
-import { ScrollFilm, type Beat } from "@/components/landing/scroll-film";
+import { ScrollFilm, type Beat, type DeckClip } from "@/components/landing/scroll-film";
 import { TryStage } from "@/components/landing/try-stage";
 import { LazyVideo } from "@/components/lazy-video";
 import { PresetShowcase } from "@/components/presets/preset-showcase";
@@ -15,6 +15,26 @@ import { CATEGORIES, listPresetCards } from "@/lib/presets";
 import { currentTryView } from "@/lib/try/session";
 
 const FILM_FRAMES = 72; // public/film/manifest.json
+
+/**
+ * Looks shown floating behind the hero film: upper left, upper right, lower left, lower right.
+ * The lower-left card is the narrowest, so it gets the shortest name. Missing presets are skipped.
+ */
+const HERO_DECK: { slug: string; label?: string }[] = [
+  { slug: "liquid-splash" },
+  { slug: "holding-product", label: "Creator UGC" }, // "Creator Holding Product" does not fit the card
+  { slug: "bullet-time" },
+  { slug: "unboxing-reveal" },
+];
+
+/** Headline words as separate inline blocks, so they can rise in one after another (`.hero-words` in globals.css). */
+function Words({ text, from = 0 }: { text: string; from?: number }) {
+  return text.split(" ").map((w, i) => (
+    <span key={i}>
+      <span className="w" style={{ "--w": from + i } as React.CSSProperties}>{w}</span>{" "}
+    </span>
+  ));
+}
 
 /** Only promises the product keeps today. No durations: generation time isn't measured yet. */
 const PROMISES: { k: string; v: string; icon: ReactNode }[] = [
@@ -51,6 +71,14 @@ export default async function Home() {
     mainEntity: FAQ_ITEMS.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
   };
 
+  // The small wall clips (public/presets/sm) when the preset still uses its seeded preview.
+  const deck: DeckClip[] = HERO_DECK.flatMap(({ slug, label }) => {
+    const p = cards.find((c) => c.slug === slug);
+    if (!p?.preview_video_url) return [];
+    const seeded = p.preview_video_url === `/presets/${p.slug}.mp4`;
+    return [{ src: seeded ? `/presets/sm/${p.slug}.mp4` : p.preview_video_url, poster: p.thumbnail_url ?? undefined, name: label ?? p.name }];
+  });
+
   const beats: Beat[] = [
     {
       from: 0,
@@ -61,18 +89,30 @@ export default async function Home() {
             <span className="h-1.5 w-1.5 rounded-full bg-white motion-safe:animate-[live-dot_2.4s_ease-out_infinite]" aria-hidden />
             AI video ads for small brands
           </p>
-          <h1 className="display text-[clamp(40px,7.2vw,96px)]">
-            One product
+          {/* Sized so the middle line always fits its column: the breaks are fixed, the words are animated. */}
+          <h1 className="display hero-words text-[clamp(34px,10vw,46px)] md:text-[clamp(40px,5.2vw,76px)]">
+            <Words text="One photo." />
             <br />
-            photo in.
+            <Words text={`${cards.length} ways to stop`} from={2} />
+            <br />
+            <Words text="the scroll." from={6} />
           </h1>
-          <p className="mt-4 max-w-md text-base text-white/75 md:mt-6 md:text-lg md:text-muted">The photo from your store listing is the whole brief. No studio, no editor, no prompts.</p>
-          <div className="mt-8 hidden items-center gap-5 md:flex">
-            <Link href="#try" className="btn-ghost !py-2.5">{mine ? `Back to ${mine.shortName}` : "Try it on your product"}</Link>
-            <p className="flex items-center gap-2 text-xs text-subtle">
-              Scroll <span className="motion-safe:animate-[nudge-down_1.8s_ease-in-out_infinite]" aria-hidden>↓</span>
-            </p>
+          <p className="mt-4 max-w-md text-base text-white/75 md:mt-6 md:text-lg md:text-muted">
+            Drop in the photo from your store listing and pick a look. Out comes a vertical video ad
+            <span className="hidden sm:inline"> for TikTok, Reels and Shorts. No studio, no editor, no prompts</span>.
+          </p>
+          <div className="mt-5 flex flex-wrap items-center gap-3 md:mt-8">
+            <Link href={start} className="btn-primary btn-sheen !px-5 !py-3 !text-[15px]" data-testid="hero-cta-top">
+              {user ? "Make a video" : "Make your first ad free"}
+            </Link>
+            <Link href="#try" className="btn-ghost hidden !py-3 sm:inline-flex">{mine ? `Back to ${mine.shortName}` : "Try it on your product"}</Link>
           </div>
+          <p className="mt-3 flex items-center gap-4 text-xs text-subtle md:mt-4">
+            {!user && <span>{SIGNUP_BONUS_CREDITS} free credits · no card required</span>}
+            <span className="hidden items-center gap-2 md:flex">
+              Scroll to see how <span className="motion-safe:animate-[nudge-down_1.8s_ease-in-out_infinite]" aria-hidden>↓</span>
+            </span>
+          </p>
         </div>
       ),
     },
@@ -100,9 +140,9 @@ export default async function Home() {
       content: (
         <div>
           <h2 className="display text-[clamp(36px,6vw,80px)]">
-            Post a scroll-
+            Post it where
             <br />
-            stopping ad.
+            they scroll.
           </h2>
           <p className="mt-4 max-w-md text-base text-white/75 md:mt-6 md:text-lg md:text-muted">A vertical 9:16 clip, ready for TikTok, Reels and Shorts.</p>
           <div className="mt-6 flex flex-wrap gap-3 md:mt-8">
@@ -127,6 +167,7 @@ export default async function Home() {
         poster="/film/desktop/frame-0001.webp"
         label="A product photo turning into a finished vertical video ad"
         captions={{ start: "Listing photo", end: "Finished ad" }}
+        deck={deck}
       />
 
       <section className="mx-auto max-w-6xl scroll-mt-[calc(var(--hdr)+24px)] px-4 pt-16 sm:pt-24" id="try" aria-label="Try it on your product">
@@ -197,7 +238,7 @@ export default async function Home() {
         <ul
           className="mt-3 grid overflow-hidden rounded-[20px] border border-border sm:grid-cols-2 lg:grid-cols-4"
           data-testid="home-promises"
-          data-reveal
+          data-reveal="kids"
           style={{ "--d": "160ms" } as React.CSSProperties}
         >
           {PROMISES.map((p) => (

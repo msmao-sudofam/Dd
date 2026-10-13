@@ -1,16 +1,37 @@
 "use client";
 
 import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
+import { LazyVideo } from "@/components/lazy-video";
 
 /**
  * Scroll-scrubbed 9:16 film (animated-website technique): a sticky canvas plays a frame sequence as
  * the visitor scrolls, with a Gaussian "dwell" remap so the film nearly stops at each text beat.
  * Frames: public/film/{desktop,mobile}/frame-NNNN.webp (regenerate with `npm run film`).
  *
- * The film opens on a plain white listing photo, so the card starts small and unlit and only grows to
- * full size, with its ambient glow, while the photo turns into the ad. The growth is one CSS variable,
- * `--grow` (0 → 1), written on the section; the card, glow, overlay and captions read it in CSS.
+ * The film opens on a plain white listing photo, so the card starts small and only grows to full size
+ * as the visitor scrolls into the second beat. The growth is one CSS variable, `--grow` (0 → 1), written
+ * on the section; the card, the deck behind it and the phone overlay read it in CSS.
+ *
+ * While the page rests at the top the film plays by itself (photo → ad → back), so the first screen shows
+ * the result without a scroll. `--lit` (0 → 1) follows the frame on screen and drives the card's light;
+ * `--bar` fills the story bars; `--px` / `--py` are the eased pointer position for the deck's parallax.
+ * As soon as the visitor scrolls, the scroll position takes the film over again.
  */
+
+/** A finished clip floating behind the film card: one of the looks the same photo could become. */
+export interface DeckClip {
+  src: string;
+  poster?: string;
+  name: string;
+}
+
+/** Where each deck card sits, as a share of the film card's box (the deck scales with the card). */
+const DECK_SLOTS = [
+  { x: "-40%", y: "7%", w: "44%", r: "-9deg", depth: 16, tuck: "70%" },
+  { x: "97%", y: "15%", w: "40%", r: "8deg", depth: 24, tuck: "-80%" },
+  { x: "-31%", y: "55%", w: "38%", r: "6deg", depth: 30, tuck: "60%" },
+  { x: "95%", y: "58%", w: "44%", r: "-6deg", depth: 20, tuck: "-75%" },
+];
 
 export interface Beat {
   /** progress window (0..1) in which this beat is visible */
@@ -28,6 +49,23 @@ const GROW_FROM = 0.3;
 const GROW_TO = 0.46;
 /** Starting scale on desktop; on phones it is measured so the card clears the first beat's text. */
 const START_SCALE_DESKTOP = 0.84;
+/** Self-playing loop at the top of the page, in seconds: wait, play, hold on the ad, rewind, rest on the photo. */
+const AUTO = { lead: 0.9, play: 2.8, hold: 3.4, back: 0.8, rest: 1.3 };
+/** Scrolled further than this share of the section, the scroll position drives the film. */
+const AUTO_BELOW = 0.012;
+const CAPTION_END = 0.6;
+
+function autoPos(t: number) {
+  t -= AUTO.lead;
+  if (t < 0) return 0;
+  t %= AUTO.play + AUTO.hold + AUTO.back + AUTO.rest;
+  if (t < AUTO.play) return smoothstep(0, 1, t / AUTO.play);
+  t -= AUTO.play;
+  if (t < AUTO.hold) return 1;
+  t -= AUTO.hold;
+  if (t < AUTO.back) return 1 - smoothstep(0, 1, t / AUTO.back);
+  return 0;
+}
 
 /** Scroll position → effective progress, slowing down around each dwell centre. */
 function buildRemap(centers: number[]) {
@@ -76,6 +114,7 @@ export function ScrollFilm({
   poster,
   label,
   captions,
+  deck = [],
 }: {
   frameCount: number;
   beats: Beat[];
@@ -83,14 +122,19 @@ export function ScrollFilm({
   label: string;
   /** Short labels on the card for the film's first and last state, e.g. "Listing photo" / "Finished ad". */
   captions?: { start: string; end: string };
+  /** Up to four finished clips that float behind the card until it grows. */
+  deck?: DeckClip[];
 }) {
   const sectionRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const glowRef = useRef<HTMLCanvasElement>(null);
+  const deckRef = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0);
   const [loaded, setLoaded] = useState(0);
+  /** Which caption the card shows: follows the frame on screen, not the scroll. */
+  const [phase, setPhase] = useState<"start" | "mid" | "end">("start");
   const reduced = useReducedMotion();
 
   useEffect(() => {
@@ -166,10 +210,29 @@ export function ScrollFilm({
     const centers = beats.map((b) => (b.from + b.to) / 2);
     const remap = buildRemap(centers);
     let current = 0;
+    let eased = 0;
     let lastDrawn = -1;
     let lastP = -1;
     let lastGrow = -1;
+    let lastLit = -1;
+    let lastBar = -1;
+    let lastPhase = "start";
+    let auto = false;
+    let autoT0 = 0;
+    let deckOff = false;
     let raf = 0;
+
+    // Pointer position, -1..1 from the middle of the window, eased in the frame loop (mouse only).
+    let tx = 0;
+    let ty = 0;
+    let px = 0;
+    let py = 0;
+    const onPointer = (e: PointerEvent) => {
+      if (e.pointerType !== "mouse") return;
+      tx = (e.clientX / window.innerWidth) * 2 - 1;
+      ty = (e.clientY / window.innerHeight) * 2 - 1;
+    };
+    window.addEventListener("pointermove", onPointer, { passive: true });
 
     const tick = () => {
       const rect = section.getBoundingClientRect();
@@ -179,12 +242,49 @@ export function ScrollFilm({
         lastP = p;
         setProgress(p);
       }
-      current += (p * (frameCount - 1) - current) * LERP;
-      // Grow follows the eased frame position, not the raw scroll, so the card moves as smoothly as the film.
-      const grow = smoothstep(GROW_FROM, GROW_TO, current / (frameCount - 1));
+      // Resting at the top with every frame in memory: the film plays by itself, starting from the photo.
+      const now = performance.now();
+      const wantAuto = raw < AUTO_BELOW && count === frameCount && !document.hidden;
+      if (wantAuto && !auto) autoT0 = now;
+      auto = wantAuto;
+      const pos = auto ? autoPos((now - autoT0) / 1000) : p;
+      current += (pos * (frameCount - 1) - current) * (auto ? 0.2 : LERP);
+      const at = current / (frameCount - 1);
+      // Grow follows the eased scroll, not the raw one, so the card moves as smoothly as the film.
+      eased += (p - eased) * LERP;
+      const grow = smoothstep(GROW_FROM, GROW_TO, eased);
       if (Math.abs(grow - lastGrow) > 0.001) {
         lastGrow = grow;
         section.style.setProperty("--grow", grow.toFixed(4));
+      }
+      // Once the film has grown over the deck, its clips are invisible: stop decoding them until it shrinks again.
+      if (grow > 0.98 !== deckOff) {
+        deckOff = !deckOff;
+        for (const v of deckRef.current?.querySelectorAll("video") ?? []) {
+          if (deckOff) v.pause();
+          else if (v.src) v.play().catch(() => {});
+        }
+      }
+      const lit = smoothstep(GROW_FROM, GROW_TO, at);
+      if (Math.abs(lit - lastLit) > 0.001) {
+        lastLit = lit;
+        section.style.setProperty("--lit", lit.toFixed(4));
+      }
+      const bar = auto ? at : p;
+      if (Math.abs(bar - lastBar) > 0.001) {
+        lastBar = bar;
+        section.style.setProperty("--bar", bar.toFixed(4));
+      }
+      const ph = at < GROW_FROM ? "start" : at >= CAPTION_END ? "end" : "mid";
+      if (ph !== lastPhase) {
+        lastPhase = ph;
+        setPhase(ph);
+      }
+      if (Math.abs(tx - px) > 0.001 || Math.abs(ty - py) > 0.001) {
+        px += (tx - px) * 0.06;
+        py += (ty - py) * 0.06;
+        section.style.setProperty("--px", px.toFixed(4));
+        section.style.setProperty("--py", py.toFixed(4));
       }
       const idx = Math.round(current);
       const img = nearest(idx);
@@ -208,6 +308,7 @@ export function ScrollFilm({
       cancelAnimationFrame(raf);
       ro.disconnect();
       desktopMq.removeEventListener("change", measure);
+      window.removeEventListener("pointermove", onPointer);
     };
   }, [frameCount, beats, reduced]);
 
@@ -222,19 +323,18 @@ export function ScrollFilm({
     );
   }
 
-  const last = beats[beats.length - 1];
   return (
     <section ref={sectionRef} className="film relative h-[320vh]" data-testid="scroll-film" aria-label={label}>
-      <div ref={stageRef} className="sticky top-[var(--hdr)] h-[calc(100svh-var(--hdr))] overflow-hidden">
+      <div ref={stageRef} className="sticky top-[var(--hdr)] h-[calc(100svh-var(--hdr)-var(--pre,0px))] overflow-hidden">
         <div className="relative mx-auto h-full max-w-6xl px-4 md:grid md:grid-cols-[1fr_auto] md:items-center md:gap-10">
           {/* Text beats: one grid cell, cross-faded by progress. Overlaid on the film's lower edge on phones. */}
-          <div className="absolute inset-x-4 bottom-3 z-10 grid p-5 md:static md:p-0">
+          <div className="absolute inset-x-4 bottom-3 z-10 grid p-5 md:static md:p-0 md:pr-[clamp(24px,5vw,72px)]">
             {beats.map((b, i) => {
               const on = progress >= b.from && (progress < b.to || (i === beats.length - 1 && progress >= b.from));
               return (
                 <div
                   key={i}
-                  className={`col-start-1 row-start-1 self-end transition-[opacity,transform,filter] duration-500 ease-out md:self-center ${on ? "opacity-100" : "pointer-events-none translate-y-3 opacity-0 blur-[6px]"}`}
+                  className="beat col-start-1 row-start-1 self-end md:self-center"
                   aria-hidden={!on}
                   data-beat={i}
                   data-active={on}
@@ -246,7 +346,7 @@ export function ScrollFilm({
           </div>
 
           {/* The film: 9:16 hero card (Morphic 32px radius) with story-style progress bars. */}
-          <div className="absolute inset-x-4 top-3 bottom-3 md:relative md:inset-auto md:w-[min(400px,42svh)]">
+          <div className="film-in absolute inset-x-4 top-3 bottom-3 md:relative md:inset-auto md:mr-[72px] md:w-[min(400px,42svh,32vw)] lg:mr-[clamp(40px,4vw,56px)]">
             <canvas
               ref={glowRef}
               width={16}
@@ -254,6 +354,25 @@ export function ScrollFilm({
               aria-hidden
               className="film-glow pointer-events-none absolute -inset-[20%] hidden h-[140%] w-[140%] blur-[56px] saturate-150 [mask-image:radial-gradient(closest-side,#000_25%,transparent_100%)] md:block"
             />
+            {deck.length > 0 && (
+              <div ref={deckRef} className="film-deck pointer-events-none absolute inset-0" aria-hidden>
+                {deck.slice(0, DECK_SLOTS.length).map((c, i) => {
+                  const slot = DECK_SLOTS[i];
+                  return (
+                    <div
+                      key={c.src}
+                      className="film-deck-item"
+                      style={{ "--x": slot.x, "--y": slot.y, "--w": slot.w, "--r": slot.r, "--depth": slot.depth, "--tuck": slot.tuck, "--i": i } as React.CSSProperties}
+                    >
+                      <div className="film-deck-card">
+                        <LazyVideo src={c.src} poster={c.poster} className="h-full w-full object-cover" />
+                        <span className="film-deck-name" data-side={i % 2 ? "right" : undefined}>{c.name}</span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
             <div ref={cardRef} className="film-card relative h-full overflow-hidden rounded-[32px] border border-border bg-surface md:aspect-[9/16] md:h-auto">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={poster} alt="" className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${loaded > 0 ? "opacity-0" : ""}`} />
@@ -262,17 +381,14 @@ export function ScrollFilm({
               <div className="absolute inset-x-4 top-4 flex gap-1.5 mix-blend-difference" aria-hidden>
                 {beats.map((b, i) => (
                   <span key={i} className="h-[3px] flex-1 overflow-hidden rounded-full bg-white/35">
-                    <span
-                      className="block h-full bg-white"
-                      style={{ width: `${Math.max(0, Math.min(1, (progress - b.from) / (b.to - b.from))) * 100}%` }}
-                    />
+                    <span className="film-bar block h-full bg-white" style={{ "--from": b.from, "--span": b.to - b.from } as React.CSSProperties} />
                   </span>
                 ))}
               </div>
               {captions && (
                 <div className="film-caption absolute top-9 left-4 grid" aria-hidden>
-                  <span className={`pill col-start-1 row-start-1 transition-opacity duration-300 ${progress < GROW_FROM ? "opacity-100" : "opacity-0"}`}>{captions.start}</span>
-                  <span className={`pill col-start-1 row-start-1 transition-opacity duration-300 ${progress >= last.from ? "opacity-100" : "opacity-0"}`}>{captions.end}</span>
+                  <span className={`pill col-start-1 row-start-1 transition-opacity duration-300 ${phase === "start" ? "opacity-100" : "opacity-0"}`}>{captions.start}</span>
+                  <span className={`pill col-start-1 row-start-1 transition-opacity duration-300 ${phase === "end" ? "opacity-100" : "opacity-0"}`}>{captions.end}</span>
                 </div>
               )}
             </div>

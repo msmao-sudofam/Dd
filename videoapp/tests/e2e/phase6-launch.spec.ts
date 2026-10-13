@@ -2,7 +2,9 @@ import { expect, test } from "@playwright/test";
 
 test("landing page: scroll film, presets, pricing, FAQ, CTA", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("photo in.");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("One photo.");
+  // The first screen carries the primary action; the film's last beat repeats it.
+  await expect(page.getByTestId("hero-cta-top")).toBeVisible();
   const film = page.getByTestId("scroll-film");
   const canvas = film.locator('canvas[role="img"]'); // the film itself; a second, decorative canvas is its glow
   await expect(canvas).toBeVisible();

@@ -382,3 +382,24 @@ M: "we need better videos especially for the ugc one, the people need to be supe
   functions there; if they do not, demo mode falls back to the labelled generic sample.
 - Prompts, scripts, picks and raw renders: `~/Projects/reelforge-previews` (README "Round 2").
 
+## HERO HOOK AND FLUID MOTION (2026-10-13)
+M: "for the intro header we need to make the hook better", "also add fluid animations".
+
+- **What was wrong.** The first screen said "One product photo in." next to a grey listing photo. The result (the
+  finished ad) and the sign-up button were two screens of scrolling away.
+- **New first screen.** Headline "One photo. 20 ways to stop the scroll." (the number is the preset count from the
+  catalog), one line of how it works, the lime "Make your first ad free" button (`hero-cta-top`) and the free-credits
+  line. The hero film now plays by itself while the page rests at the top (listing photo → finished ad → back), and
+  four real preset clips float behind it (Liquid Splash, Creator UGC, Bullet Time, Unboxing Reveal).
+- **Scroll story** is unchanged in structure: the same pinned film, three beats. Beat three now reads "Post it where
+  they scroll." so the headline's phrase is not repeated.
+- **Motion added:** word-by-word headline load-in, card rise, deck fan-out, deck drift and pointer parallax, staggered
+  beat changes, staggered promises row, smooth FAQ open, button press. Table in `docs/DESIGN.md` → "Motion and light".
+- **Demo-mode line and the hero height.** The hero is now sized to the first screen minus the header and the demo-mode
+  line (`--pre`), so the button is not pushed under the fold on phones while the line is showing.
+- Research for this round: Refero styles Suno and Affinity (floating media cards around a hero), on top of the
+  existing Morphic lock. Nothing in the lock changed: black canvas, Inter, lime only on primary actions.
+- Checked: tsc, eslint, vitest (130 passed, 9 skipped), Playwright `phase6-launch` and `try-and-feed` (6 passed) on a
+  production build; screenshots at 1440, 1280, 1024, 768, 390 and 360 px wide; load-in frames frozen at four moments;
+  loop, pointer and scroll states read back from the page; reduced-motion render.
+- Not checked: frame rate on a real phone (only a desktop browser at phone size), and Safari.

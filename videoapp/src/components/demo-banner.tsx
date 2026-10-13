@@ -21,8 +21,12 @@ export function DemoBanner() {
     demo.payments ? "payments are simulated and nothing is charged" : null,
   ].filter(Boolean);
   return (
-    <p className="bg-white px-4 py-1.5 text-center text-xs font-medium text-black" role="status" data-testid="demo-banner">
-      Demo mode: {parts.join("; ")}.
-    </p>
+    <>
+      {/* The hero is sized to the first screen, so it needs this line's height before any script runs (<Fx/> then measures it). */}
+      <style>{":root{--pre:44px}@media (min-width:768px){:root{--pre:28px}}"}</style>
+      <p className="bg-white px-4 py-1.5 text-center text-xs font-medium text-black" role="status" data-testid="demo-banner" data-site-banner>
+        Demo mode: {parts.join("; ")}.
+      </p>
+    </>
   );
 }

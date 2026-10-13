@@ -8,6 +8,7 @@ import { useEffect } from "react";
  *  - .spot          hairline highlight that follows the pointer
  *  - [data-tilt]    3D tilt + glare on clip tiles
  *  - --hdr          the sticky header's measured height, used to pin the hero film just below it
+ *  - --pre          the height of the line above the header (demo mode), so the hero fits the first screen
  * State lives in data attributes and CSS variables, which React leaves alone on re-render.
  */
 export function Fx() {
@@ -22,6 +23,11 @@ export function Fx() {
       ? new ResizeObserver(() => root.style.setProperty("--hdr", `${header.offsetHeight}px`))
       : undefined;
     if (header) headerRo!.observe(header);
+    const banner = document.querySelector<HTMLElement>("[data-site-banner]");
+    const bannerRo = banner
+      ? new ResizeObserver(() => root.style.setProperty("--pre", `${banner.offsetHeight}px`))
+      : undefined;
+    if (banner) bannerRo!.observe(banner);
 
     if (!reduced && "IntersectionObserver" in window) {
       io = new IntersectionObserver(
@@ -96,7 +102,9 @@ export function Fx() {
       io?.disconnect();
       mo?.disconnect();
       headerRo?.disconnect();
+      bannerRo?.disconnect();
       root.style.removeProperty("--hdr");
+      root.style.removeProperty("--pre");
       document.removeEventListener("pointermove", onMove);
       document.documentElement.removeEventListener("pointerleave", onLeave);
       root.classList.remove("fx-ready");

@@ -43,6 +43,7 @@ Chosen by M from three reference-locked directions (A Midnight Studio / B Neon P
 | Story-style progress bars on the film | Instagram/TikTok story chrome | Native to the audience; doubles as scroll progress |
 | Mobile: first beat sits on black under a shrunken card; later beats overlay the full card with a bottom gradient | animated-website overlay pattern + 2026-10-12 fix | The stage used to pin at `top: 0` under an 86 px header, so the first headline and subtitle fell below the fold |
 | Hero card opens small, dim and unlit, then grows into the ad | Krea "no high-key imagery on a dark page" + Apple-style scale-up | The film's first frame is a white listing photo; it was the brightest thing on screen |
+| First screen is the whole pitch: full headline, lime action, the film playing by itself, four finished clips floating behind it (2026-10-13) | Suno / Affinity floating media cards; M: "we need to make the hook better" | The old first screen was half a sentence ("One product photo in.") next to a grey listing photo, with the result and the sign-up button two screens of scrolling away |
 | Preset showcase: filter chips over one edge-to-edge strip (was five category rows) | fal explore quick chips + Runway Watch strip | Rows with 2 tiles left dead black space and made the page read like a catalog; one strip is ~1,700 px shorter. Active chip = white fill (role rule). All 20 tiles stay in the DOM, filtered with `hidden` |
 | Pricing cards: name, scale line, price, per-credit, hairline, 3-item "included" list | Epidemic Sound / JetBrains pricing | Each list item is backed by the Terms or the watermark rule; no invented plan perks or "most popular" badge |
 | Fine print as a hairline 4-up row directly under the prices | Morphic hairline surfaces | Promises sit next to the prices they qualify, and two rounded panels no longer stack back to back |
@@ -53,6 +54,9 @@ Chosen by M from three reference-locked directions (A Midnight Studio / B Neon P
 | Reduced motion: no pinning, static poster, beats in flow | Craft (accessibility) | No scroll-jacking for users who opt out |
 
 ## Copy rules
+- **Hero headline:** "One photo. {n} ways to stop the scroll." `{n}` is the number of presets on the page, read from
+  the catalog, so it stays true when presets are added or hidden. The line breaks are fixed and the type is sized so
+  the middle line fits its column at every width; change the words and the sizes together.
 - **No durations.** Generation time hasn't been measured on real providers yet, so no page states one (no "seconds",
   "about a minute", "instantly"). Add real per-model timings only after the smoke test runs.
 - **Every number must be true of the product.** Credit counts and prices come from the catalog and pricing code; no
@@ -81,14 +85,22 @@ spill from the media itself**, never from flat colour. That replaces the earlier
 | Video through type | `.type-fill` | The closing headline is white-on-black text multiplied over `public/media/type-fill.mp4` (six clips side by side), so footage plays inside the letters. |
 | Pointer hairline | `.spot` | Card borders brighten under the cursor (pricing, UGC and proof panels). |
 | Scroll reveals | `[data-reveal]` + `components/fx.tsx` | One-shot rise-and-unblur (0.6 s, 16 px, 4 px blur), easing `cubic-bezier(.2,.7,.2,1)`, triggered as soon as an element enters the viewport so headings are sharp mid-scroll. Hidden only after the controller mounts, so the page is complete without JavaScript. |
-| Hero growth | `scroll-film.tsx`, `.film*` | The card starts at `--start` scale (0.84 desktop; measured on phones so it clears the first headline) and grows with `--grow` between 30% and 46% of the film. Glow, brightness and the phone text-shade follow `--grow`. Captions "Listing photo" / "Finished ad" are counter-scaled so they stay readable. |
+| Hero growth | `scroll-film.tsx`, `.film*` | The card starts at `--start` scale (0.84 desktop; measured on phones so it clears the first headline) and grows with `--grow` (eased scroll) between 30% and 46% of the film. Glow and brightness follow `--lit` (the frame on screen), the phone text-shade follows `--grow`. Captions "Listing photo" / "Finished ad" follow the frame and are counter-scaled so they stay readable. |
+| Self-playing film | `scroll-film.tsx` (`AUTO`, `autoPos`) | While the page rests at the top and all 72 frames are loaded, the film plays by itself: photo, 2.8 s to the ad, hold 3.4 s, rewind, repeat. The story bars fill with it (`--bar`). Scrolling past 1.2% of the section hands the film back to the scroll position; returning to the top restarts the loop from the photo. |
+| Deck | `scroll-film.tsx` (`DECK_SLOTS`), `.film-deck*`, `HERO_DECK` in `app/page.tsx` | Four finished preset clips (the 288 px twins) float behind the film card, dimmed, each with its look's name from 1024 px up. They share the card's box and scale, drift on their own clocks, lean with the pointer by their depth (`--px`/`--py`, eased in the frame loop, mouse only) and tuck behind the film as it grows; their videos are paused while hidden. |
+| Hero load-in | `.hero-words`, `hero-*` and `deck-in` keyframes | Headline words rise and unblur one after another (60 ms apart), then the lines under it, while the card rises and the deck fans out from behind it. Pure CSS with `backwards` fill, so it runs before any script and leaves the scroll transitions alone afterwards. |
+| Beat changes | `.beat` | Each beat's lines enter one after another (70 ms apart, rise + unblur) and leave together in 0.28 s. |
+| Staggered groups | `[data-reveal="kids"]` | The container stays put and its children come in 80 ms apart (the four promises under the prices). |
+| Accordions | `details::details-content` | FAQ answers slide open where the browser can animate to an auto height (`interpolate-size`); elsewhere they snap as before. |
+| Press | `btn` utility | Every button dips to 97% while pressed. |
 | Header offset | `--hdr`, measured by `fx.tsx` | The film stage pins just below the sticky header (86 px on phones, 56 px from 640 px). |
 | Preset strip bleed | `preset-rows.tsx`, `.strip-bleed` | On desktop the strips run to the right edge of the screen; the wrapper uses `overflow-x: clip` because 100vw includes the scrollbar. |
 | CTA sheen | `.btn-sheen` | A single light sweep across the lime button on hover. |
 
 - One controller (`components/fx.tsx`, mounted in the root layout) drives reveals, hairlines and tilt with a single
   pointer listener; state lives in data attributes and CSS variables.
-- `prefers-reduced-motion`: no reveals, no tilt, the wall stands still, clips stay on their posters.
+- `prefers-reduced-motion`: no reveals, no tilt, the wall stands still, clips stay on their posters; the hero has no
+  load-in, no self-playing film and no deck.
 - Regenerate the small clips and the type strip with `python web_extras.py` in `~/Projects/reelforge-previews`.
 - Still rejected: custom cursors, particles, accent-coloured glows, lime anywhere but the primary action.
 
