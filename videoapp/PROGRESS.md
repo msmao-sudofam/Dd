@@ -375,7 +375,10 @@ M: "we need better videos especially for the ugc one, the people need to be supe
 - Caveat, same as Step 4: these come from a local model, not from the hosted models customers get. Real UGC ads use
   the portrait as the avatar's start image, so the faces carry over; the motion and voice will be the hosted
   model's (Kling AI Avatar / OmniHuman + ElevenLabs), unverified until fal has balance (Step 3).
-- Not checked: nobody has listened to the clips for voice quality (only the words were transcribed), and the
-  creator cards were not looked at in a browser on the live site while the PC was out of memory.
+- Checked on production: the creator cards on `/ugc` load and play their clips (the last two start when scrolled
+  into view). CI (unit + Playwright, including the UGC studio flow on the new samples) is green.
+- Not checked: nobody has listened to the clips for voice quality (only the words were transcribed). A logged-in
+  demo generation on Vercel was not run, so it is unconfirmed that the preset clips ship inside the server
+  functions there; if they do not, demo mode falls back to the labelled generic sample.
 - Prompts, scripts, picks and raw renders: `~/Projects/reelforge-previews` (README "Round 2").
 
