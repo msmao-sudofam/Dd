@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useActionState } from "react";
 import { googleAction, loginAction, signupAction, type AuthFormState } from "./actions";
 
-export function AuthForm({ mode, next, mock, notice }: { mode: "login" | "signup"; next: string; mock: boolean; notice?: string }) {
+export function AuthForm({ mode, next, google, notice }: { mode: "login" | "signup"; next: string; google: boolean; notice?: string }) {
   const [state, action, pending] = useActionState<AuthFormState, FormData>(
     mode === "login" ? loginAction : signupAction,
     undefined,
@@ -19,20 +19,25 @@ export function AuthForm({ mode, next, mock, notice }: { mode: "login" | "signup
         {mode === "signup" ? "Free credits on signup — enough for your first clip." : "Log in to keep creating."}
       </p>
 
-      <form action={gAction} className="mt-8">
-        <input type="hidden" name="next" value={next} />
-        <button className="btn-ghost w-full" disabled={gPending || mock} title={mock ? "Needs Supabase keys" : undefined}>
-          Continue with Google
-        </button>
-      </form>
+      {/* Shown only while the Supabase project has Google sign-in enabled (googleSignInEnabled). */}
+      {google && (
+        <>
+          <form action={gAction} className="mt-8">
+            <input type="hidden" name="next" value={next} />
+            <button className="btn-ghost w-full" disabled={gPending} data-testid="google-sign-in">
+              Continue with Google
+            </button>
+          </form>
 
-      <div className="my-6 flex items-center gap-3 text-xs text-muted">
-        <span className="h-px flex-1 bg-border" />
-        or with email
-        <span className="h-px flex-1 bg-border" />
-      </div>
+          <div className="my-6 flex items-center gap-3 text-xs text-muted">
+            <span className="h-px flex-1 bg-border" />
+            or with email
+            <span className="h-px flex-1 bg-border" />
+          </div>
+        </>
+      )}
 
-      <form action={action} className="space-y-4">
+      <form action={action} className={google ? "space-y-4" : "mt-8 space-y-4"}>
         <input type="hidden" name="next" value={next} />
         <div>
           <label className="label" htmlFor="email">Email</label>

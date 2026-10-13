@@ -113,6 +113,24 @@ export async function signInWithPassword(email: string, password: string): Promi
   return { ok: true, user: { id: data.user.id, email: data.user.email ?? email } };
 }
 
+/**
+ * Whether the Supabase project has Google sign-in switched on (its public auth settings, cached 5 minutes).
+ * The button is only shown when this is true, so it appears by itself once Google is enabled in Supabase.
+ */
+export async function googleSignInEnabled(): Promise<boolean> {
+  if (isMockBackend()) return false;
+  try {
+    const res = await fetch(`${env.supabaseUrl()}/auth/v1/settings`, {
+      headers: { apikey: env.supabasePublishableKey() },
+      next: { revalidate: 300 },
+    });
+    if (!res.ok) return false;
+    return (await res.json())?.external?.google === true;
+  } catch {
+    return false;
+  }
+}
+
 /** Returns the provider URL to redirect to, or an error. */
 export async function googleSignInUrl(next: string): Promise<{ url: string } | { error: string }> {
   if (isMockBackend()) return { error: "Google sign-in needs Supabase keys (mock mode is on)." };
