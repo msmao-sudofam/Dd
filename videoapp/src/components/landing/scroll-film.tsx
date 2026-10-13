@@ -198,7 +198,7 @@ export function ScrollFilm({
         // Phones: shrink the card until it sits above the first beat's text (12 px inset, 16 px gap).
         const first = section.querySelector<HTMLElement>('[data-beat="0"]');
         const textH = (first?.offsetHeight ?? 220) + 20 + 12;
-        start = Math.max(0.42, Math.min(0.72, (stageH - textH - 12 - 16) / Math.max(1, card.offsetHeight)));
+        start = Math.max(0.3, Math.min(0.72, (stageH - textH - 12 - 16) / Math.max(1, card.offsetHeight)));
       }
       section.style.setProperty("--start", start.toFixed(3));
     };
