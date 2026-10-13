@@ -1,7 +1,7 @@
 // UGC Ad Studio — fal endpoints and cost model.
 // Endpoint ids and input schemas verified against @fal-ai/client@1.10.1 types (src/types/endpoints.d.ts).
 // Prices read from each endpoint's fal.ai model page on 2026-10-12 (go-live Step 2), see docs/PROVIDER_REFERENCE.md.
-import { CREDIT_FLOOR_USD, MARKUP } from "@/lib/pricing";
+import { CREDIT_BASIS_USD, MARKUP } from "@/lib/pricing";
 
 export type UgcQuality = "standard" | "premium";
 export type UgcAspect = "9:16" | "4:5" | "1:1";
@@ -44,7 +44,7 @@ export function estimateSeconds(text: string): number {
   return Math.max(6, Math.ceil(words / WORDS_PER_SECOND) + 1);
 }
 
-/** Provider cost + credits for one ad. Credits use the same markup rule as every model (≥ 3x, worst-case credit price). */
+/** Provider cost + credits for one ad. Credits use the same markup rule as every model (≥ 3x at the basis credit price). */
 export function estimateUgcCost(text: string, opts: { quality: UgcQuality; broll: boolean; hasProductImage: boolean }) {
   const seconds = estimateSeconds(text);
   const usd =
@@ -52,6 +52,6 @@ export function estimateUgcCost(text: string, opts: { quality: UgcQuality; broll
     (opts.hasProductImage ? UGC_COST.composite : 0) +
     seconds * UGC_COST.avatarPerSecond[opts.quality] +
     (opts.broll && opts.hasProductImage ? UGC_COST.brollClip : 0);
-  const credits = Math.max(1, Math.ceil((usd * MARKUP[opts.quality === "premium" ? "premium" : "mid"]) / CREDIT_FLOOR_USD));
+  const credits = Math.max(1, Math.ceil((usd * MARKUP[opts.quality === "premium" ? "premium" : "mid"]) / CREDIT_BASIS_USD));
   return { seconds, usd: Math.round(usd * 1000) / 1000, credits };
 }

@@ -18,7 +18,8 @@ packages (`@fal-ai/client@1.10.1`, `stripe@23.0.0`, `@supabase/ssr@0.12.7`, `ope
 
 ## Seeded fal models
 Prices below were read from each endpoint's own fal.ai model page on 2026-10-12 (go-live Step 2) and replace the
-search-sourced numbers. Margin = at the worst-case credit price ($0.076, the monthly plan) for the seeded credit cost.
+search-sourced numbers. Margin = at the basis credit price ($0.076, the entry monthly plan) for the seeded credit cost; the bigger monthly
+plans sell credits for less ($0.070 and $0.066), so their margin is lower (tests/unit/pricing.test.ts holds it at 60% or more).
 
 | slug | endpoint | type | fal price | we send | credits | margin | notes |
 |---|---|---|---|---|---|---|---|

@@ -66,7 +66,7 @@ export interface Db {
   getProfileByReferralCode(code: string): Promise<Profile | null>;
   updateProfile(
     id: string,
-    patch: Partial<Pick<Profile, "plan" | "role" | "referred_by" | "stripe_customer_id" | "stripe_subscription_id">>,
+    patch: Partial<Pick<Profile, "plan" | "role" | "referred_by" | "stripe_customer_id" | "stripe_subscription_id" | "subscription_plan">>,
   ): Promise<void>;
   getProfileByStripeCustomer(customerId: string): Promise<Profile | null>;
   /** Returns false if this Stripe event id was already recorded. */

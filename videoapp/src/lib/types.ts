@@ -11,6 +11,8 @@ export interface Profile {
   referred_by: string | null;
   stripe_customer_id?: string | null;
   stripe_subscription_id?: string | null;
+  /** Product id of the active monthly plan (lib/pricing.ts MONTHLY_PLANS); null when not subscribed. */
+  subscription_plan?: string | null;
   created_at: string;
 }
 

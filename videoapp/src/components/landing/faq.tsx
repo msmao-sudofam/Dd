@@ -25,7 +25,7 @@ export const FAQ_ITEMS: { q: string; a: string }[] = [
   },
   {
     q: "Can I get a refund?",
-    a: "Unused credit packs can be refunded within 14 days of purchase. Credits that have been used are non-refundable. Monthly plans can be cancelled anytime from Billing.",
+    a: "Unused credit packs can be refunded within 14 days of purchase. Credits that have been used are non-refundable. Monthly plans can be changed or cancelled anytime from Billing.",
   },
 ];
 

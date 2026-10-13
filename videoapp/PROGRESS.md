@@ -291,7 +291,36 @@ Three things most AI-video sites don't do. All built, tested in mock mode and ag
   and `robots.txt` disallows everything, so the demo is not indexed. Both switch off by themselves.
 - Production env: same keys as the preview, its own `SESSION_SECRET`, `NEXT_PUBLIC_APP_URL` = the production URL.
 - Deploy: `vercel deploy --prod --yes`. Preview: `vercel deploy --yes --target=preview` + `vercel alias set`.
-- Next for the subscription goal (M's call): whether to add monthly tiers above $19 / 250 credits. The code has one
-  plan (`MONTHLY_PLAN` in `lib/pricing.ts`); tiers need Stripe prices per tier and a margin check per tier.
+- Monthly tiers: built on 2026-10-12, see "MONTHLY PLAN TIERS" below.
 - Supabase auth: Site URL is now the production URL; allowed redirects are production, preview and localhost
   (`supabase/config.toml` `[auth]`, pushed with `supabase config push`; email confirmations still on).
+
+## MONTHLY PLAN TIERS (2026-10-12)
+M's goal is monthly subscriptions, and asked for tiers ("Just do it" to the $19 / $49 / $99 suggestion).
+
+| plan | id | price | credits / month | per credit | worst-case margin |
+|---|---|---|---|---|---|
+| Solo | `monthly` | $19 | 250 | $0.076 | 67% |
+| Growth | `monthly-growth` | $49 | 700 | $0.070 | 64% |
+| Studio | `monthly-studio` | $99 | 1,500 | $0.066 | 62% |
+
+- All numbers live in `MONTHLY_PLANS` (`src/lib/pricing.ts`). The entry plan keeps the id `monthly`.
+- **Margin check.** Bigger plans cost less per credit, and that discount comes out of margin: credit costs did NOT go
+  up. Credit costs are still set against `CREDIT_BASIS_USD` ($0.076, the entry plan); `CREDIT_FLOOR_USD` is now the
+  cheapest price anyone can pay (Studio). `tests/unit/pricing.test.ts` fails the build if any pack or plan leaves less
+  than `MIN_MARGIN` (60%, before Stripe fees) on any seeded model at any duration, or on any UGC ad. Worst case in the
+  table is Veo 3.1 (128 credits for $3.20 of API cost). Stripe's fee (2.9% + 30c) takes Studio to about 60%.
+  The API costs behind this are still the published fal prices; Step 3 has not measured them.
+- **Changing plan** (`changePlan` in `src/lib/billing.ts`, confirm step on `/billing?change=<id>`): every invoice is a
+  full plan price for a full plan's credits, so credits can't be bought below a plan's rate by hopping plans.
+  Upgrade = charged the new price now, billing month restarts, new credits arrive with that invoice, nothing prorated.
+  Downgrade = nothing charged now, applies from the next renewal. Terms and Refund policy say the same.
+- **State.** `profiles.subscription_plan` (migration `20261012000007_plans.sql`, applied to the Supabase project).
+  `profiles.plan` is still `monthly` for any subscriber.
+- **Stripe.** Each plan bills against a fixed product id (`videoapp_plan_monthly`, `..._growth`, `..._studio`), created
+  on first use, so an invoice says which plan it charged. NOT yet run against real Stripe (no `sk_test_` key): the
+  whole flow is tested through the mock events only. First thing to test when the key exists: subscribe, upgrade
+  (check the `invoice.paid` for the upgrade carries the new product and credits once), downgrade, renew with a test clock.
+- Pricing UI: three plan cards first (Growth highlighted, the only lime button), packs as a quieter row below. The
+  "Save N% per credit" tags are computed from the numbers, against Solo.
+

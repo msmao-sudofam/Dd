@@ -186,7 +186,7 @@ export default async function Home() {
             <h2 className="display mt-2 text-[clamp(36px,5vw,56px)]">Fresh credits every month.</h2>
           </div>
           <p className="max-w-sm text-muted md:pb-1.5">
-            ${MONTHLY_PLAN.priceUsd} a month for {MONTHLY_PLAN.creditsPerCycle} credits, or a one-off pack when you need a burst.{" "}
+            Monthly plans from ${MONTHLY_PLAN.priceUsd} for {MONTHLY_PLAN.creditsPerCycle} credits, or a one-off pack when you need a burst.{" "}
             {SIGNUP_BONUS_CREDITS} free credits to start, no card required.
           </p>
         </div>

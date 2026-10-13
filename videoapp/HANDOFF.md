@@ -17,7 +17,7 @@ The brand name is a placeholder: set `NEXT_PUBLIC_BRAND_NAME` and replace `publi
 | Generation engine: validate → balance → moderation → debit → submit; webhook or poll → re-upload → succeed, or fail + refund | `src/lib/generation.ts`, `src/app/api/{generate,jobs,uploads,webhooks}` |
 | Moderation: local rules (NSFW, minors, public figures, trademarked IP) + OpenAI omni-moderation (text + images); consent checkbox logged per upload | `src/lib/moderation.ts` |
 | 8 models (Draft/self-hosted, LTX Fast, Wan 2.6, Kling 3, Veo 3.1, 2× image-to-video, FLUX) | `src/lib/seed-data.ts`, pricing notes in `docs/PROVIDER_REFERENCE.md` |
-| Stripe: 3 credit packs + monthly plan, idempotent webhook, customer portal, mock checkout | `src/lib/billing.ts`, `src/app/api/billing`, `src/app/api/webhooks/stripe` |
+| Stripe: 3 credit packs + 3 monthly plans (upgrade / downgrade), idempotent webhook, customer portal, mock checkout | `src/lib/billing.ts`, `src/app/api/billing`, `src/app/api/webhooks/stripe` |
 | 20 launch presets, gallery with categories, 3-click runner, SEO pages `/presets/[slug]` | `src/app/presets`, `src/components/presets` |
 | Admin (role-gated): presets + models CRUD (with uploads), integration status, margin dashboard | `src/app/admin` |
 | Growth: referrals (credited on first purchase), free-tier watermark (ffmpeg), 1 bonus per device / 3 per IP, disposable-email block, rate limits | `src/lib/{referrals,postprocess,signup,abuse,disposable-domains}.ts` |

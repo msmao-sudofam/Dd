@@ -1,22 +1,22 @@
 import { getSessionUser } from "@/lib/auth";
 import { PricingCards } from "@/components/pricing-cards";
 import { db } from "@/lib/db";
-import { MONTHLY_PLAN } from "@/lib/pricing";
+import { MONTHLY_PLAN, MONTHLY_PLANS } from "@/lib/pricing";
 import { modelAvailable } from "@/lib/providers";
 
 export const metadata = {
   title: "Pricing",
-  description: `A monthly plan with ${MONTHLY_PLAN.creditsPerCycle} credits for $${MONTHLY_PLAN.priceUsd}, or one-off credit packs. You see the cost before every generation.`,
+  description: `Monthly plans from $${MONTHLY_PLAN.priceUsd} for ${MONTHLY_PLAN.creditsPerCycle} credits, or one-off credit packs. You see the cost before every generation.`,
 };
 
 export default async function PricingPage() {
   const [user, models] = await Promise.all([getSessionUser(), db().listModels()]);
   return (
     <div className="mx-auto max-w-6xl px-4 py-14">
-      <h1 className="text-4xl font-black tracking-tight">One monthly plan, or a pack when you need one</h1>
+      <h1 className="text-4xl font-black tracking-tight">A monthly plan, or a pack when you need one</h1>
       <p className="mt-3 max-w-2xl text-muted">
-        The monthly plan adds {MONTHLY_PLAN.creditsPerCycle} credits every month for ${MONTHLY_PLAN.priceUsd} and can be cancelled anytime. Packs are one-off and never expire.
-        Spend credits on any preset or model: you always see the cost before you generate, and failed generations are refunded automatically.
+        {MONTHLY_PLANS.length} monthly plans from ${MONTHLY_PLAN.priceUsd}: each adds its credits every month, bigger plans cost less per credit, and you can change plan or cancel anytime.
+        Packs are one-off. Credits never expire and work on any preset or model: you always see the cost before you generate, and failed generations are refunded automatically.
       </p>
       <div className="mt-10"><PricingCards loggedIn={!!user} /></div>
       <h2 className="mt-14 mb-4 text-xl font-bold">What things cost</h2>
