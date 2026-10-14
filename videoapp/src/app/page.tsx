@@ -90,7 +90,7 @@ export default async function Home() {
       content: (
         <div>
           <p className="mb-4 inline-flex items-center gap-2.5 text-sm text-muted md:mb-5">
-            <span className="h-1.5 w-1.5 rounded-full bg-white motion-safe:animate-[live-dot_2.4s_ease-out_infinite]" aria-hidden />
+            <span className="live-dot h-1.5 w-1.5 rounded-full bg-white" aria-hidden />
             AI video ads for small brands
           </p>
           {/* Sized so the middle line always fits its column: the breaks are fixed, the letters are animated. */}

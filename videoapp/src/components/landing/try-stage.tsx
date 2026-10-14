@@ -225,7 +225,7 @@ export function TryStage({ initial, loggedIn }: { initial: TryView | null; logge
               <span className="pill absolute top-3 left-3">Your photo</span>
               {running && (
                 <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 to-transparent p-5 pt-16 text-sm font-medium" role="status">
-                  <span className="mr-2 inline-block h-1.5 w-1.5 rounded-full bg-white align-middle motion-safe:animate-[live-dot_1.4s_ease-out_infinite]" aria-hidden />
+                  <span className="live-dot mr-2 inline-block h-1.5 w-1.5 rounded-full bg-white align-middle" aria-hidden />
                   Building your ad frame…
                 </div>
               )}

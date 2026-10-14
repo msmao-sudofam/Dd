@@ -108,6 +108,12 @@ spill from the media itself**, never from flat colour. That replaces the earlier
 - `prefers-reduced-motion`: no reveals, no tilt, the wall stands still, clips stay on their posters; the hero has no
   load-in, no self-playing film and no deck.
 - Regenerate the small clips and the type strip with `python web_extras.py` in `~/Projects/reelforge-previews`.
+- **Cost rules (2026-10-13, after M found the page sluggish; measured with 4× CPU throttling):**
+  per-frame CSS variables are written on the smallest element that needs them (`.film-in`, never the section that
+  holds the headline's letters); no `filter` on anything that repaints every frame (video, the film canvas): dim with
+  a black layer instead; the film's glow repaints every third frame; no `backdrop-filter` on the sticky header; the
+  clip wall plays at most 10 clips at once (6 on phones) and its drift is paused while off screen
+  (`landing/wall-governor.tsx`); scrolling changes React state only when the beat changes.
 - Still rejected: custom cursors, particles, accent-coloured glows, lime anywhere but the primary action, and a
   loading screen before the page (M's agency sites have one; here it would delay the sign-up button).
 - **Where the type motion comes from (2026-10-13):** M asked for the motion of his own sites. Letter rise out of word

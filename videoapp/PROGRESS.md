@@ -422,3 +422,20 @@ moves; these were rebuilt here without adding GSAP:
   production build with Lenis on; screenshots at 1440, 1024, 390 and 360 px; the rotator caught mid-roll; scroll
   values of the sharpened heading read back from the page.
 - Not checked: a real phone, Safari, and how Lenis feels on a trackpad (only scripted wheel events).
+
+## SPEED PASS AND COLOUR TRY-OUT (2026-10-13, night)
+M: "the site is a little sluggish, how can we make it more appealing maybe a new color".
+
+- **Measured** with headless Chromium at 4× CPU throttling (`scratchpad/hero/perf.mjs`, not in the repo), live site
+  against the fixed build, two runs each, while another job was using the GPU, so treat the numbers as a direction:
+  frames per second at rest on the hero 26–29 → 39–44; time spent restyling in a 4 s rest 1.8 s → 0.5–1.0 s; in a
+  6 s scroll 1.7–1.9 s → 0.9–1.1 s. Scroll frame rate was too noisy to call.
+- **Causes found and fixed:** the clip wall's drift ran (and restyled 80 tiles a frame) even when three screens
+  away, and about 30 of its videos decoded at once when on screen; the hero wrote its per-frame variables on the
+  whole section; brightness filters sat on the film canvas and on four videos; the header blurred everything
+  scrolling under it; every scroll step re-rendered the film component. Rules in `docs/DESIGN.md` → "Cost rules".
+- Lenis is quicker (lerp 0.14, was 0.09).
+- **Colour try-out:** preview deployments (never production) show a small "Colour" bar bottom left
+  (`components/accent-picker.tsx`): Lime (current), Ember, Gold, Pink, Violet, Blue, plus "On text", which also puts
+  the colour on the rolling look name, the band and the small dots. `?accent=ember` works as a link. Waiting on M to
+  pick; production still ships lime.

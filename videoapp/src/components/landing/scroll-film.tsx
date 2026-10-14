@@ -16,6 +16,10 @@ import { LazyVideo } from "@/components/lazy-video";
  * the result without a scroll. `--lit` (0 → 1) follows the frame on screen and drives the card's light;
  * `--bar` fills the story bars; `--px` / `--py` are the eased pointer position for the deck's parallax.
  * As soon as the visitor scrolls, the scroll position takes the film over again.
+ *
+ * Those variables change on every frame, so they are written on the film column only (`.film-in`), not on
+ * the section: a custom property restyles everything below the element it is set on, and the section also
+ * holds the headline's letters.
  */
 
 /** A finished clip floating behind the film card: one of the looks the same photo could become. */
@@ -131,7 +135,9 @@ export function ScrollFilm({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const glowRef = useRef<HTMLCanvasElement>(null);
   const deckRef = useRef<HTMLDivElement>(null);
-  const [progress, setProgress] = useState(0);
+  const filmRef = useRef<HTMLDivElement>(null);
+  /** The beat on screen. State changes only when it does, so scrolling does not re-render the film. */
+  const [beat, setBeat] = useState(0);
   const [loaded, setLoaded] = useState(0);
   /** Which caption the card shows: follows the frame on screen, not the scroll. */
   const [phase, setPhase] = useState<"start" | "mid" | "end">("start");
@@ -142,6 +148,7 @@ export function ScrollFilm({
     const section = sectionRef.current!;
     const stage = stageRef.current!;
     const card = cardRef.current!;
+    const film = filmRef.current!;
     const canvas = canvasRef.current!;
     const ctx = canvas.getContext("2d")!;
     // Ambient light: the current frame, 16 px wide, blurred up behind the card so the film lights the page.
@@ -212,7 +219,8 @@ export function ScrollFilm({
     let current = 0;
     let eased = 0;
     let lastDrawn = -1;
-    let lastP = -1;
+    let lastBeat = 0;
+    let glowAt = -99;
     let lastGrow = -1;
     let lastLit = -1;
     let lastBar = -1;
@@ -238,9 +246,11 @@ export function ScrollFilm({
       const rect = section.getBoundingClientRect();
       const raw = Math.max(0, Math.min(1, (pinTop - rect.top) / Math.max(1, rect.height - stageH)));
       const p = remap(raw);
-      if (Math.abs(p - lastP) > 0.002) {
-        lastP = p;
-        setProgress(p);
+      let b = beats.length - 1;
+      while (b > 0 && p < beats[b].from) b--;
+      if (b !== lastBeat) {
+        lastBeat = b;
+        setBeat(b);
       }
       // Resting at the top with every frame in memory: the film plays by itself, starting from the photo.
       const now = performance.now();
@@ -255,7 +265,7 @@ export function ScrollFilm({
       const grow = smoothstep(GROW_FROM, GROW_TO, eased);
       if (Math.abs(grow - lastGrow) > 0.001) {
         lastGrow = grow;
-        section.style.setProperty("--grow", grow.toFixed(4));
+        film.style.setProperty("--grow", grow.toFixed(4));
       }
       // Once the film has grown over the deck, its clips are invisible: stop decoding them until it shrinks again.
       if (grow > 0.98 !== deckOff) {
@@ -268,12 +278,12 @@ export function ScrollFilm({
       const lit = smoothstep(GROW_FROM, GROW_TO, at);
       if (Math.abs(lit - lastLit) > 0.001) {
         lastLit = lit;
-        section.style.setProperty("--lit", lit.toFixed(4));
+        film.style.setProperty("--lit", lit.toFixed(4));
       }
       const bar = auto ? at : p;
       if (Math.abs(bar - lastBar) > 0.001) {
         lastBar = bar;
-        section.style.setProperty("--bar", bar.toFixed(4));
+        film.style.setProperty("--bar", bar.toFixed(4));
       }
       const ph = at < GROW_FROM ? "start" : at >= CAPTION_END ? "end" : "mid";
       if (ph !== lastPhase) {
@@ -283,8 +293,8 @@ export function ScrollFilm({
       if (Math.abs(tx - px) > 0.001 || Math.abs(ty - py) > 0.001) {
         px += (tx - px) * 0.06;
         py += (ty - py) * 0.06;
-        section.style.setProperty("--px", px.toFixed(4));
-        section.style.setProperty("--py", py.toFixed(4));
+        film.style.setProperty("--px", px.toFixed(4));
+        film.style.setProperty("--py", py.toFixed(4));
       }
       const idx = Math.round(current);
       const img = nearest(idx);
@@ -296,7 +306,11 @@ export function ScrollFilm({
         const w = iw * scale;
         const h = ih * scale;
         ctx.drawImage(img, (canvas.width - w) / 2, (canvas.height - h) / 2, w, h);
-        glow?.drawImage(img, 0, 0, 16, 28);
+        // The glow is a 56 px blur over a large area: repainting it every third film frame is plenty.
+        if (Math.abs(idx - glowAt) >= 3 || idx === 0 || idx === frameCount - 1) {
+          glow?.drawImage(img, 0, 0, 16, 28);
+          glowAt = idx;
+        }
         lastDrawn = idx;
         delete canvas.dataset.dirty;
       }
@@ -330,7 +344,7 @@ export function ScrollFilm({
           {/* Text beats: one grid cell, cross-faded by progress. Overlaid on the film's lower edge on phones. */}
           <div className="absolute inset-x-4 bottom-3 z-10 grid p-5 md:static md:p-0 md:pr-[clamp(24px,5vw,72px)]">
             {beats.map((b, i) => {
-              const on = progress >= b.from && (progress < b.to || (i === beats.length - 1 && progress >= b.from));
+              const on = i === beat;
               return (
                 <div
                   key={i}
@@ -346,7 +360,7 @@ export function ScrollFilm({
           </div>
 
           {/* The film: 9:16 hero card (Morphic 32px radius) with story-style progress bars. */}
-          <div className="film-in absolute inset-x-4 top-3 bottom-3 md:relative md:inset-auto md:mr-[72px] md:w-[min(400px,42svh,32vw)] lg:mr-[clamp(40px,4vw,56px)]">
+          <div ref={filmRef} className="film-in absolute inset-x-4 top-3 bottom-3 md:relative md:inset-auto md:mr-[72px] md:w-[min(400px,42svh,32vw)] lg:mr-[clamp(40px,4vw,56px)]">
             <canvas
               ref={glowRef}
               width={16}
@@ -377,6 +391,7 @@ export function ScrollFilm({
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={poster} alt="" className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${loaded > 0 ? "opacity-0" : ""}`} />
               <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" role="img" aria-label={label} />
+              <div className="film-dim pointer-events-none absolute inset-0 bg-black" />
               <div className="film-shade absolute inset-0 bg-gradient-to-t from-black via-black/55 via-45% to-transparent md:hidden" />
               <div className="absolute inset-x-4 top-4 flex gap-1.5 mix-blend-difference" aria-hidden>
                 {beats.map((b, i) => (

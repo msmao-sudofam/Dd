@@ -130,20 +130,26 @@ p {
  * Phones: the card grows down from the top, so the first headline sits on black below it, not on white.
  */
 .film {
+  --start: 0.62;
+}
+/* The per-frame variables live on the film column, so changing them restyles the film and nothing else. */
+.film-in {
   --grow: 0;
   --lit: 0;
   --bar: 0;
   --px: 0;
   --py: 0;
-  --start: 0.62;
   --scale: calc(var(--start) + (1 - var(--start)) * var(--grow));
 }
 .film-card {
   transform: translate3d(calc(var(--px) * -5px * (1 - var(--grow))), calc(var(--py) * -4px * (1 - var(--grow))), 0) scale(var(--scale));
   transform-origin: 50% 0;
-  /* The white listing photo is dimmed a touch so it doesn't out-shine the headline on a black page. */
-  filter: brightness(calc(0.84 + 0.16 * var(--lit)));
   will-change: transform;
+}
+/* The white listing photo is dimmed a touch so it doesn't out-shine the headline on a black page.
+   A black layer fading out, not a filter: a filter would be re-run on every film frame. */
+.film-dim {
+  opacity: calc(0.16 * (1 - var(--lit)));
 }
 .film-glow {
   opacity: calc(0.05 + 0.37 * var(--lit));
@@ -192,13 +198,22 @@ p {
   border-radius: 14px;
   background: var(--surface);
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12), 0 22px 60px rgba(0, 0, 0, 0.7);
-  /* Behind the film and dimmed, so the eye lands on the film first. */
-  filter: brightness(0.72);
   animation: deck-drift calc(5.2s + var(--i) * 0.9s) ease-in-out calc(var(--i) * -1.7s) infinite alternate;
 }
 /* The look's name. Shown from 1024px: on smaller screens the scaled-down deck would make it unreadable. */
+/* Behind the film and dimmed, so the eye lands on the film first (a black layer, cheaper than a filter on video). */
+.film-deck-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #000;
+  opacity: 0.28;
+  transition: opacity 0.9s var(--ease);
+  pointer-events: none;
+}
 .film-deck-name {
   position: absolute;
+  z-index: 1;
   bottom: 7%;
   left: 8%;
   display: none;
@@ -377,15 +392,20 @@ p {
 
 /* The deck card whose look is named by the rotator comes forward: full brightness, a touch larger. */
 .film-deck-card {
-  transition: filter 0.9s var(--ease), scale 1.1s var(--ease-type), box-shadow 0.9s var(--ease);
+  transition: scale 1.1s var(--ease-type), box-shadow 0.9s var(--ease);
 }
 .film[data-look="0"] .film-deck-item:nth-child(1) .film-deck-card,
 .film[data-look="1"] .film-deck-item:nth-child(2) .film-deck-card,
 .film[data-look="2"] .film-deck-item:nth-child(3) .film-deck-card,
 .film[data-look="3"] .film-deck-item:nth-child(4) .film-deck-card {
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.5), 0 26px 70px rgba(0, 0, 0, 0.75);
-  filter: brightness(1.06);
   scale: 1.07;
+}
+.film[data-look="0"] .film-deck-item:nth-child(1) .film-deck-card::after,
+.film[data-look="1"] .film-deck-item:nth-child(2) .film-deck-card::after,
+.film[data-look="2"] .film-deck-item:nth-child(3) .film-deck-card::after,
+.film[data-look="3"] .film-deck-item:nth-child(4) .film-deck-card::after {
+  opacity: 0;
 }
 
 /*
@@ -587,15 +607,21 @@ p {
   transform: rotateX(24deg) rotateZ(-7deg) scale(1.12);
   transform-origin: 50% 50%;
 }
+/* The rows only drift while the wall is on screen (<WallGovernor/> sets data-on): a running animation on
+   rows this wide kept the browser restyling them on every frame, even three screens away. */
 .wall-row {
   display: flex;
   width: max-content;
-  animation: wall-x var(--dur, 80s) linear infinite;
+  animation: wall-x var(--dur, 80s) linear infinite paused;
+  will-change: transform;
+}
+.wall[data-on] .wall-row {
+  animation-play-state: running;
 }
 .wall-row[data-rev] {
   animation-direction: reverse;
 }
-.wall:hover .wall-row {
+.wall[data-on]:hover .wall-row {
   animation-play-state: paused;
 }
 
@@ -657,9 +683,21 @@ p {
   0%, 100% { transform: translateY(0); opacity: 0.55; }
   50% { transform: translateY(5px); opacity: 1; }
 }
-@keyframes live-dot {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.45); }
-  60% { box-shadow: 0 0 0 7px rgba(255, 255, 255, 0); }
+/* The pulsing dot: a ring that scales and fades (transform and opacity only, so it never repaints). */
+.live-dot {
+  position: relative;
+}
+.live-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: #fff;
+  animation: live-ring 2.4s ease-out infinite;
+}
+@keyframes live-ring {
+  0% { opacity: 0.45; transform: scale(1); }
+  60%, 100% { opacity: 0; transform: scale(3.4); }
 }
 @keyframes sheen {
   to { transform: translateX(260%) skewX(-18deg); }
@@ -683,6 +721,7 @@ p {
 
 @media (prefers-reduced-motion: reduce) {
   .wall-row,
+  .live-dot::after,
   .film-deck-card,
   .btn-sheen:hover::after {
     animation: none;
@@ -691,4 +730,16 @@ p {
   .fan > * {
     transition: none;
   }
+}
+
+/* Colour try-out (preview deployments, <AccentPicker/> "On text"): the action colour on a few pieces of type. */
+[data-accent-text] .look-slot,
+[data-accent-text] .band-item:nth-child(odd) {
+  color: var(--accent);
+}
+[data-accent-text] .band-item::after,
+[data-accent-text] .live-dot,
+[data-accent-text] .live-dot::after,
+[data-accent-text] .film-bar {
+  background: var(--accent);
 }

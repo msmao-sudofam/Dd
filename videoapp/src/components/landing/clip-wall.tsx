@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { LazyVideo } from "@/components/lazy-video";
+import { WallGovernor } from "@/components/landing/wall-governor";
 import type { PresetCard } from "@/lib/presets";
 
 const ROWS = 3;
@@ -10,13 +10,17 @@ function wallSrc(p: PresetCard): string {
   return p.preview_video_url === `/presets/${p.slug}.mp4` ? `/presets/sm/${p.slug}.mp4` : p.preview_video_url!;
 }
 
-/** Every preset clip drifting across a tilted plane. Decorative: the catalog below is the accessible list. */
+/**
+ * Every preset clip drifting across a tilted plane. Decorative: the catalog below is the accessible list.
+ * <WallGovernor/> loads and plays the clips, a few at a time.
+ */
 export function ClipWall({ presets }: { presets: PresetCard[] }) {
   const clips = presets.filter((p) => p.preview_video_url);
   if (clips.length < ROWS * 3) return null;
   const rows = Array.from({ length: ROWS }, (_, r) => clips.filter((_, i) => i % ROWS === r));
   return (
     <div className="wall h-[430px] sm:h-[620px]" aria-hidden data-testid="clip-wall">
+      <WallGovernor />
       <div className="wall-plane flex h-full flex-col justify-center gap-3">
         {rows.map((row, r) => (
           <div
@@ -33,7 +37,7 @@ export function ClipWall({ presets }: { presets: PresetCard[] }) {
                   tabIndex={-1}
                   className="relative mr-3 block aspect-[9/16] w-[118px] shrink-0 overflow-hidden rounded-[10px] bg-surface sm:w-[156px]"
                 >
-                  <LazyVideo src={wallSrc(p)} poster={p.thumbnail_url ?? undefined} className="h-full w-full object-cover" />
+                  <video data-src={wallSrc(p)} poster={p.thumbnail_url ?? undefined} className="h-full w-full object-cover" muted loop playsInline preload="none" />
                 </Link>
               )),
             )}

@@ -17,7 +17,7 @@ export async function SiteHeader() {
   return (
     <>
       <Analytics userId={profile?.id} email={profile?.email} />
-      <header className="sticky top-0 z-40 bg-black/80 backdrop-blur-md" data-site-header>
+      <header className="sticky top-0 z-40 bg-black/90" data-site-header>
         <div className="mx-auto flex h-14 max-w-6xl items-center gap-6 px-4">
           <Link href="/" className="text-[15px] font-bold tracking-[-0.03em]">
             {env.brandName()}

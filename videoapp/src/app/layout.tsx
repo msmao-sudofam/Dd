@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { DemoBanner } from "@/components/demo-banner";
+import { AccentPicker } from "@/components/accent-picker";
 import { Fx } from "@/components/fx";
 import { TryBarSlot } from "@/components/try-bar-slot";
 import { env } from "@/lib/env";
@@ -24,6 +25,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <SiteFooter />
         <TryBarSlot />
         <Fx />
+        {/* Colour try-out: Vercel preview deployments only, never production. */}
+        {process.env.VERCEL_ENV === "preview" && <AccentPicker />}
       </body>
     </html>
   );
