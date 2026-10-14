@@ -1,0 +1,1072 @@
+@import "tailwindcss";
+
+/*
+ * Midnight Studio — reference lock (see docs/DESIGN.md)
+ * Primary: Morphic (pure black canvas, Inter only, image-led rounded clip cards, ONE saturated CTA colour).
+ * Lime is CTA-only (+ focus ring). Active/selected states are white. No glows, no gradients on surfaces.
+ */
+:root {
+  --background: #000000;      /* Ebony canvas */
+  --surface: #212121;         /* Nightfall: elevated panels */
+  --surface-2: #292929;       /* Charcoal: hover */
+  --wash: rgba(255, 255, 255, 0.05); /* feature-highlight card */
+  --ghost: rgba(100, 100, 100, 0.16); /* ghost pill fill */
+  --border: rgba(255, 255, 255, 0.08);
+  --foreground: #ffffff;
+  --soft: #f5f5f5;            /* button text */
+  --muted: #999999;           /* helper / secondary */
+  --subtle: #737373;          /* tertiary */
+  --accent: #c6ff3d;          /* CTA ONLY */
+  --accent-ink: #000000;
+  --danger: #ff5c7a;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-wash: var(--wash);
+  --color-ghost: var(--ghost);
+  --color-border: var(--border);
+  --color-foreground: var(--foreground);
+  --color-soft: var(--soft);
+  --color-muted: var(--muted);
+  --color-subtle: var(--subtle);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-danger: var(--danger);
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+html {
+  color-scheme: dark;
+}
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-feature-settings: "cv11", "ss01";
+  letter-spacing: -0.011em;
+}
+h1, h2, h3 {
+  text-wrap: balance;
+}
+p {
+  text-wrap: pretty;
+}
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Film grain (borrowed from the animated-website system) — decorative, pointer-events none. */
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@utility display {
+  @apply font-bold tracking-[-0.05em] leading-[0.95];
+}
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 text-sm font-semibold transition active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-50;
+}
+/* Morphic primary action: filled, 7px radius. Lime = the only saturated UI colour. */
+@utility btn-primary {
+  @apply btn rounded-[7px] bg-accent px-4 py-2.5 text-accent-ink;
+}
+/* Morphic secondary ghost: translucent grey pill. */
+@utility btn-ghost {
+  @apply btn rounded-full bg-ghost px-[18px] py-[9px] text-soft hover:bg-surface-2;
+}
+@utility input {
+  @apply w-full rounded-[10px] border border-border bg-ghost px-4 py-3 text-sm text-foreground placeholder:text-subtle outline-none focus:border-white/40;
+}
+/* Feature-highlight surface (translucent wash, no shadow). */
+@utility card {
+  @apply rounded-2xl border border-border bg-wash;
+}
+@utility label {
+  @apply mb-1.5 block text-xs font-medium text-muted;
+}
+@utility pill {
+  @apply inline-flex items-center rounded-full bg-black/70 px-2.5 py-1 text-[11px] font-medium text-white;
+}
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/*
+ * Motion layer (docs/DESIGN.md → "Motion and light"). The lock still holds: black canvas, lime only on CTAs.
+ * What moved: light may now spill from the media itself (hero glow, pointer highlights), never from flat colour.
+ */
+:root {
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  /* Expo-out: the curve the display type rises on. */
+  --ease-type: cubic-bezier(0.16, 1, 0.3, 1);
+  /* Height of the sticky site header (two rows on phones). <Fx/> replaces it with the measured value. */
+  --hdr: 86px;
+  /* Height of anything above the header (the demo-mode line). Set by <DemoBanner/>, refined by <Fx/>. */
+  --pre: 0px;
+}
+@media (min-width: 640px) {
+  :root {
+    --hdr: 56px;
+  }
+}
+
+/*
+ * Hero film. The film opens on a plain white listing photo, so the card starts small and grows to full size
+ * as the visitor scrolls. <ScrollFilm/> writes --grow (0 → 1, scroll), --lit (0 → 1, how far the frame on
+ * screen is into the ad), --bar (story bars), --px/--py (eased pointer, -1..1) and --start (opening scale).
+ * Phones: the card grows down from the top, so the first headline sits on black below it, not on white.
+ */
+.film {
+  --start: 0.62;
+}
+/* The per-frame variables live on the film column, so changing them restyles the film and nothing else. */
+.film-in {
+  --grow: 0;
+  --lit: 0;
+  --bar: 0;
+  --px: 0;
+  --py: 0;
+  --scale: calc(var(--start) + (1 - var(--start)) * var(--grow));
+}
+.film-card {
+  transform: translate3d(calc(var(--px) * -5px * (1 - var(--grow))), calc(var(--py) * -4px * (1 - var(--grow))), 0) scale(var(--scale));
+  transform-origin: 50% 0;
+  will-change: transform;
+}
+/* The white listing photo is dimmed a touch so it doesn't out-shine the headline on a black page.
+   A black layer fading out, not a filter: a filter would be re-run on every film frame. */
+.film-dim {
+  opacity: calc(0.16 * (1 - var(--lit)));
+}
+.film-glow {
+  opacity: calc(0.05 + 0.37 * var(--lit));
+}
+.film-shade {
+  opacity: var(--grow);
+}
+.film-bar {
+  width: clamp(0%, calc((var(--bar) - var(--from)) / var(--span) * 100%), 100%);
+}
+/* Captions on the card stay at their real size while the card is scaled down. */
+.film-caption {
+  transform: scale(calc(1 / var(--scale)));
+  transform-origin: 0 0;
+}
+
+/*
+ * The deck: finished clips floating behind the film card (other looks the same photo could become).
+ * It shares the card's box and scale, so its slots are plain percentages. Each card leans away from the
+ * pointer by its --depth, drifts on its own clock, and tucks back behind the film as the film grows.
+ */
+.film-deck {
+  transform: scale(var(--scale));
+  transform-origin: 50% 0;
+}
+.film-deck-item {
+  --out: calc(1 - var(--grow));
+  position: absolute;
+  top: var(--y);
+  left: var(--x);
+  width: var(--w);
+  aspect-ratio: 9 / 16;
+  opacity: calc(var(--out) * var(--out));
+  transform: translate3d(
+      calc(var(--px) * var(--depth) * var(--out) * 1px + var(--tuck) * var(--grow)),
+      calc(var(--py) * var(--depth) * var(--out) * 0.7px),
+      0
+    )
+    rotate(calc(var(--r) * var(--out)));
+  will-change: transform, opacity;
+}
+.film-deck-card {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12), 0 22px 60px rgba(0, 0, 0, 0.7);
+  animation: deck-drift calc(5.2s + var(--i) * 0.9s) ease-in-out calc(var(--i) * -1.7s) infinite alternate;
+}
+/* The look's name. Shown from 1024px: on smaller screens the scaled-down deck would make it unreadable. */
+/* Behind the film and dimmed, so the eye lands on the film first (a black layer, cheaper than a filter on video). */
+.film-deck-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #000;
+  opacity: 0.28;
+  transition: opacity 0.9s var(--ease);
+  pointer-events: none;
+}
+.film-deck-name {
+  position: absolute;
+  z-index: 1;
+  bottom: 7%;
+  left: 8%;
+  display: none;
+  max-width: 84%;
+  overflow: hidden;
+  border-radius: 100px;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 0.3em 0.75em;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* Cards on the right are covered on their left edge by the film, so their name sits on the right. */
+.film-deck-name[data-side="right"] {
+  right: 8%;
+  left: auto;
+}
+@keyframes deck-drift {
+  from { translate: 0 -5px; rotate: -0.7deg; }
+  to { translate: 0 7px; rotate: 0.7deg; }
+}
+@media (min-width: 768px) {
+  .film {
+    --start: 0.84;
+  }
+  .film-card,
+  .film-deck {
+    transform-origin: 50% 50%;
+  }
+  .film-deck-card {
+    border-radius: 18px;
+  }
+}
+@media (min-width: 1024px) {
+  .film-deck-name {
+    display: block;
+  }
+}
+
+/*
+ * Text beats. Each beat's lines come in one after another (rise, unblur) and leave together, faster.
+ * The first beat also plays this once on load, word by word in the headline, before any script runs.
+ */
+.beat > * > * {
+  transition: opacity 0.55s var(--ease), transform 0.75s var(--ease), filter 0.55s var(--ease);
+  transition-delay: calc(var(--n, 0) * 70ms);
+}
+.beat > * > :nth-child(2) { --n: 1; }
+.beat > * > :nth-child(3) { --n: 2; }
+.beat > * > :nth-child(4) { --n: 3; }
+.beat > * > :nth-child(5) { --n: 4; }
+.beat > * > :nth-child(6) { --n: 5; }
+.beat[data-active="false"] {
+  pointer-events: none;
+}
+.beat[data-active="false"] > * > * {
+  opacity: 0;
+  transform: translate3d(0, 20px, 0);
+  filter: blur(8px);
+  transition-duration: 0.28s;
+  transition-delay: 0ms;
+}
+@keyframes hero-rise {
+  from { opacity: 0; transform: translate3d(0, 22px, 0); filter: blur(8px); }
+}
+@keyframes hero-char {
+  from { opacity: 0; transform: translate3d(0, 108%, 0) rotate(4deg); }
+}
+@keyframes hero-card {
+  from { opacity: 0; transform: translate3d(0, 44px, 0) scale(0.96); }
+}
+@keyframes deck-in {
+  from { opacity: 0; transform: translate3d(var(--tuck), 5%, 0) rotate(0deg) scale(0.86); }
+}
+/*
+ * Split type: each word is a mask and each letter rises from below its baseline with a small tilt, in a fast
+ * ripple from left to right. The padding and the equal negative margin give ascenders, descenders and the
+ * tight tracking room inside the mask without moving the text.
+ */
+.split .w {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  margin: -0.08em -0.06em -0.22em;
+  padding: 0.08em 0.06em 0.22em;
+}
+.split .ch {
+  display: inline-block;
+  transform-origin: 0 100%;
+}
+.fx-ready [data-reveal="split"] {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+.fx-ready [data-reveal="split"] .ch {
+  opacity: 0;
+  transform: translate3d(0, 108%, 0) rotate(4deg);
+  transition: transform 1.15s var(--ease-type), opacity 0.9s var(--ease-type);
+  transition-delay: calc(var(--d, 0ms) + var(--i) * 20ms);
+}
+.fx-ready [data-reveal="split"][data-in] .ch {
+  opacity: 1;
+  transform: none;
+}
+/* Inside a staggered group the heading does not fade as a block: its letters do the entering. */
+.fx-ready [data-reveal="kids"] > [data-reveal="split"] {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+/* Words that sharpen with the scroll (<Fx/> writes the inline styles; without it they are simply there). */
+[data-scrub-words] .sw {
+  display: inline-block;
+  will-change: opacity, filter, transform;
+}
+
+/*
+ * "Like <look>": the name rolls over letter by letter. The new word is in the flow and sets the width;
+ * the old one is lifted out and leaves upward, blurred. Each arriving letter flickers once, like a
+ * split-flap settling.
+ */
+.look-slot {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  /* Wider than the word on the right, so a longer name is not cut off while it leaves. */
+  margin: -0.08em -4em -0.24em -0.06em;
+  padding: 0.08em 4em 0.24em 0.06em;
+  white-space: nowrap;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 16%, #000 80%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0, #000 16%, #000 80%, transparent 100%);
+}
+.look-word {
+  display: inline-block;
+}
+.look-word[data-out] {
+  position: absolute;
+  top: 0.08em;
+  left: 0.06em;
+}
+.look-word .ch {
+  display: inline-block;
+  transform-origin: 0 100%;
+}
+@keyframes look-in {
+  from { opacity: 0; transform: translate3d(0, 108%, 0) rotate(5deg); }
+}
+@keyframes look-out {
+  to { opacity: 0; transform: translate3d(0, -104%, 0) rotate(-3deg); filter: blur(2px); }
+}
+@keyframes look-flap {
+  0% { filter: brightness(2.2); }
+  30% { filter: brightness(0.35); }
+  55% { filter: brightness(1.7); }
+  100% { filter: none; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .look-word:not([data-out]) .ch {
+    animation:
+      look-in 1.1s var(--ease-type) calc(var(--lead, 0ms) + var(--j) * 34ms) backwards,
+      look-flap 0.5s ease calc(var(--lead, 0ms) + var(--j) * 34ms + 420ms) backwards;
+  }
+  /* The first name waits for the headline above it. */
+  .look-word[data-first] {
+    --lead: 950ms;
+  }
+  .look-word[data-out] .ch {
+    animation: look-out 0.75s cubic-bezier(0.6, 0, 0.3, 1) calc(var(--j) * 20ms) forwards;
+  }
+}
+
+/* The deck card whose look is named by the rotator comes forward: full brightness, a touch larger. */
+.film-deck-card {
+  transition: scale 1.1s var(--ease-type), box-shadow 0.9s var(--ease);
+}
+.film[data-look="0"] .film-deck-item:nth-child(1) .film-deck-card,
+.film[data-look="1"] .film-deck-item:nth-child(2) .film-deck-card,
+.film[data-look="2"] .film-deck-item:nth-child(3) .film-deck-card,
+.film[data-look="3"] .film-deck-item:nth-child(4) .film-deck-card {
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.5), 0 26px 70px rgba(0, 0, 0, 0.75);
+  scale: 1.07;
+}
+.film[data-look="0"] .film-deck-item:nth-child(1) .film-deck-card::after,
+.film[data-look="1"] .film-deck-item:nth-child(2) .film-deck-card::after,
+.film[data-look="2"] .film-deck-item:nth-child(3) .film-deck-card::after,
+.film[data-look="3"] .film-deck-item:nth-child(4) .film-deck-card::after {
+  opacity: 0;
+}
+
+/*
+ * Look band: the looks' names in display type, every second one outlined, drifting sideways.
+ * <LookBand/> moves the track, faster and leaning with the scroll speed.
+ */
+.band {
+  overflow: hidden;
+  padding-block: clamp(20px, 4vw, 48px);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.band-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+.band-item {
+  display: flex;
+  align-items: center;
+  gap: 0.34em;
+  padding-right: 0.34em;
+  font-size: clamp(44px, 8.4vw, 124px);
+  font-weight: 700;
+  letter-spacing: -0.05em;
+  line-height: 1.05;
+  white-space: nowrap;
+}
+.band-item::after {
+  content: "";
+  width: 0.13em;
+  height: 0.13em;
+  flex: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+}
+.band-item:nth-child(even) {
+  color: transparent;
+  -webkit-text-stroke: 1.2px rgba(255, 255, 255, 0.42);
+}
+
+/* Buttons that lean toward the pointer (<Fx/> sets the transform while the pointer is over them). */
+[data-magnetic] {
+  transition-property: transform, filter, scale;
+  transition-duration: 0.25s;
+  transition-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+/* The hero's entrance waits for the loading screen (<Intro/>): these rules only match once `intro-on` is gone,
+   and that is when the animations start. After an intro the film card does not play its own entrance: the
+   intro's viewfinder lands on it instead. */
+@media (prefers-reduced-motion: no-preference) {
+  html:not(.intro-on) .film .beat[data-beat="0"] > * > :not(.hero-words, .look-rot) {
+    animation: hero-rise 0.9s var(--ease) calc(420ms + var(--n, 0) * 90ms) backwards;
+  }
+  html:not(.intro-on) .film .beat[data-beat="0"] .look-rot > span:first-child {
+    animation: hero-rise 0.9s var(--ease) 900ms backwards;
+  }
+  html:not(.intro-on) .film .hero-words .ch {
+    animation: hero-char 1.25s var(--ease-type) calc(60ms + var(--i, 0) * 22ms) backwards;
+  }
+  html:not(.intro-on, .intro-out, .intro-done) .film .film-in {
+    animation: hero-card 1.1s var(--ease) 120ms backwards;
+  }
+  html:not(.intro-on) .film .film-deck-item {
+    animation: deck-in 1.15s var(--ease) calc(520ms + var(--i) * 110ms) backwards;
+  }
+}
+html.intro-on .film .beat[data-beat="0"],
+html.intro-on .film .film-deck,
+html.intro-on .film .film-card,
+html.intro-out .film .film-card {
+  visibility: hidden;
+}
+
+/* ---- Loading screen (<Intro/>, landing page only) ------------------------------------------------- */
+.intro {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  color: #fff;
+  --lp: 0;
+}
+html.intro-on .intro,
+.intro.go:not(.gone) {
+  display: block;
+}
+.intro.go {
+  pointer-events: none;
+}
+.intro-lid {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 50.5%;
+  background: #000;
+  transition: transform 1.1s cubic-bezier(0.76, 0, 0.2, 1);
+}
+.intro-lid-t {
+  top: 0;
+}
+.intro-lid-b {
+  bottom: 0;
+}
+.intro.go .intro-lid-t {
+  transform: translateY(-101%);
+}
+.intro.go .intro-lid-b {
+  transform: translateY(101%);
+}
+.intro-mid {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 22px;
+}
+.intro-vf {
+  position: relative;
+  z-index: 2;
+  height: min(52svh, 440px);
+  aspect-ratio: 9 / 16;
+  overflow: hidden;
+  border-radius: 14px;
+  background: #111;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.14), 0 40px 120px rgba(0, 0, 0, 0.8);
+  animation: intro-vf-in 0.9s var(--ease-type) both;
+}
+.intro-vf.fly {
+  transition: left 1.05s cubic-bezier(0.76, 0, 0.2, 1), top 1.05s cubic-bezier(0.76, 0, 0.2, 1), width 1.05s cubic-bezier(0.76, 0, 0.2, 1),
+    height 1.05s cubic-bezier(0.76, 0, 0.2, 1), border-radius 1.05s cubic-bezier(0.76, 0, 0.2, 1), opacity 0.4s var(--ease);
+  border-radius: 32px;
+}
+.intro-vf.fade {
+  opacity: 0;
+}
+.intro-shot {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+}
+.intro-shot.on {
+  opacity: 1;
+}
+.intro-hud {
+  position: absolute;
+  z-index: 1;
+  font: 600 10px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.7);
+  transition: opacity 0.3s var(--ease);
+}
+.intro-rec {
+  top: 14px;
+  left: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.intro-rec i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ff3b30;
+  animation: intro-blink 1s steps(2, jump-none) infinite;
+}
+.intro-ratio {
+  top: 14px;
+  right: 14px;
+}
+.intro-tc {
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-variant-numeric: tabular-nums;
+}
+/* Viewfinder corner brackets: four L-shapes drawn with one gradient set. */
+.intro-corner {
+  position: absolute;
+  inset: 9px;
+  z-index: 1;
+  pointer-events: none;
+  --c: rgba(255, 255, 255, 0.85);
+  background:
+    linear-gradient(var(--c) 0 0) top left / 18px 1.5px, linear-gradient(var(--c) 0 0) top left / 1.5px 18px,
+    linear-gradient(var(--c) 0 0) top right / 18px 1.5px, linear-gradient(var(--c) 0 0) top right / 1.5px 18px,
+    linear-gradient(var(--c) 0 0) bottom left / 18px 1.5px, linear-gradient(var(--c) 0 0) bottom left / 1.5px 18px,
+    linear-gradient(var(--c) 0 0) bottom right / 18px 1.5px, linear-gradient(var(--c) 0 0) bottom right / 1.5px 18px;
+  background-repeat: no-repeat;
+  transition: opacity 0.3s var(--ease);
+}
+.intro-vf.fly .intro-hud,
+.intro-vf.fly .intro-corner {
+  opacity: 0;
+}
+.intro-wm {
+  display: flex;
+  overflow: hidden;
+  padding-block: 0.1em;
+  font-size: clamp(22px, 3vw, 30px);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  transition: opacity 0.4s var(--ease), transform 0.7s var(--ease-type);
+}
+.intro-wm span {
+  display: inline-block;
+  animation: hero-char 1s var(--ease-type) calc(250ms + var(--i) * 40ms) both;
+}
+.intro-bar {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: 22px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+  transition: opacity 0.4s var(--ease);
+}
+.intro-num {
+  font-size: clamp(56px, 9vw, 120px);
+  font-weight: 700;
+  line-height: 0.8;
+  letter-spacing: -0.05em;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+.intro-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(var(--lp));
+  transform-origin: 0 50%;
+}
+.intro.go .intro-wm {
+  opacity: 0;
+  transform: translateY(-14px);
+}
+.intro.go .intro-bar,
+.intro.go .intro-line {
+  opacity: 0;
+}
+@keyframes intro-vf-in {
+  from { opacity: 0; transform: translateY(24px) scale(0.92); }
+}
+@keyframes intro-blink {
+  50% { opacity: 0.15; }
+}
+
+/* Accordions open and close smoothly where the browser can animate to an auto height; elsewhere they snap. */
+@supports (interpolate-size: allow-keywords) {
+  details {
+    interpolate-size: allow-keywords;
+  }
+  details::details-content {
+    block-size: 0;
+    overflow: clip;
+    opacity: 0;
+    transition: block-size 0.45s var(--ease), opacity 0.35s var(--ease), content-visibility 0.45s allow-discrete;
+  }
+  details[open]::details-content {
+    block-size: auto;
+    opacity: 1;
+  }
+}
+
+/*
+ * Preset strips run off the right edge of the screen on desktop instead of stopping at the content column,
+ * so the last visible tile reads as "more to scroll", not as a clipped card. The section that holds them
+ * uses overflow-x: clip, because 100vw includes the scrollbar.
+ */
+@media (min-width: 768px) {
+  .strip-bleed {
+    --gutter: calc((100vw - min(100vw, 72rem)) / 2 + 1rem);
+    margin-right: calc(-1 * var(--gutter));
+    padding-right: var(--gutter);
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 12px);
+    mask-image: linear-gradient(to right, transparent 0, #000 12px);
+  }
+}
+
+/*
+ * One-shot scroll reveals. Content is hidden only after <Fx/> has mounted, so no JS means everything is visible.
+ * Kept short and shallow (0.6s, 16px, 4px blur) and triggered as soon as an element enters the viewport, so a
+ * heading is readable by the time it is halfway up the screen even at a fast scroll.
+ */
+.fx-ready [data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, 16px, 0);
+  filter: blur(4px);
+  transition: opacity 0.6s var(--ease), transform 0.6s var(--ease), filter 0.5s var(--ease);
+  transition-delay: var(--d, 0ms);
+}
+.fx-ready [data-reveal][data-in] {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+/* data-reveal="kids": the container stays put and its children come in one after another. */
+.fx-ready [data-reveal="kids"] {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+.fx-ready [data-reveal="kids"] > * {
+  opacity: 0;
+  transform: translate3d(0, 18px, 0);
+  filter: blur(4px);
+  transition: opacity 0.6s var(--ease), transform 0.7s var(--ease), filter 0.5s var(--ease);
+  transition-delay: calc(var(--d, 0ms) + var(--k, 0) * 80ms);
+}
+.fx-ready [data-reveal="kids"] > :nth-child(2) { --k: 1; }
+.fx-ready [data-reveal="kids"] > :nth-child(3) { --k: 2; }
+.fx-ready [data-reveal="kids"] > :nth-child(4) { --k: 3; }
+.fx-ready [data-reveal="kids"] > :nth-child(5) { --k: 4; }
+.fx-ready [data-reveal="kids"] > :nth-child(n + 6) { --k: 5; }
+.fx-ready [data-reveal="kids"][data-in] > * {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+/* Pointer spotlight: a hairline that brightens under the cursor (set --mx/--my from <Fx/>). */
+.spot {
+  position: relative;
+}
+.spot::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  padding: 1px;
+  background: radial-gradient(380px circle at var(--mx, 50%) var(--my, -30%), rgba(255, 255, 255, 0.6), transparent 62%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.45s var(--ease);
+}
+.spot:hover::before {
+  opacity: 1;
+}
+
+/* 3D tilt + glare for clip tiles (angles come from <Fx/>). */
+.tilt {
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform 0.6s var(--ease);
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+.tilt[data-tilting] {
+  transition-duration: 0.12s;
+}
+.tilt .glare {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: radial-gradient(circle at var(--gx, 50%) var(--gy, 0%), rgba(255, 255, 255, 0.32), transparent 55%);
+  mix-blend-mode: soft-light;
+  opacity: 0;
+  transition: opacity 0.4s var(--ease);
+}
+.tilt[data-tilting] .glare {
+  opacity: 1;
+}
+
+/* Moving wall of clips: rows drift sideways on a tilted plane and fade out at the edges. */
+@keyframes wall-x {
+  to {
+    transform: translate3d(-25%, 0, 0);
+  }
+}
+.wall {
+  perspective: 1400px;
+  overflow: hidden;
+  -webkit-mask-image: radial-gradient(ellipse 78% 58% at 50% 54%, #000 50%, transparent 100%);
+  mask-image: radial-gradient(ellipse 78% 58% at 50% 54%, #000 50%, transparent 100%);
+}
+.wall-plane {
+  transform: rotateX(24deg) rotateZ(-7deg) scale(1.12);
+  transform-origin: 50% 50%;
+}
+/* The rows only drift while the wall is on screen (<WallGovernor/> sets data-on): a running animation on
+   rows this wide kept the browser restyling them on every frame, even three screens away. */
+.wall-row {
+  display: flex;
+  width: max-content;
+  animation: wall-x var(--dur, 80s) linear infinite paused;
+  will-change: transform;
+}
+.wall[data-on] .wall-row {
+  animation-play-state: running;
+}
+.wall-row[data-rev] {
+  animation-direction: reverse;
+}
+.wall[data-on]:hover .wall-row {
+  animation-play-state: paused;
+}
+
+/* Video through type: white glyphs on black, multiplied over footage, so the clip only shows inside the letters. */
+.type-fill {
+  position: relative;
+  isolation: isolate;
+  background: #9a9a9a;
+}
+.type-fill > video,
+.type-fill > img {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  opacity: 0.88;
+  filter: saturate(1.25) brightness(1.15);
+}
+.type-fill > .type-fill-text {
+  background: #000;
+  color: #fff;
+  mix-blend-mode: multiply;
+}
+
+/* Fanned creator cards: spread on hover. */
+.fan {
+  position: relative;
+  --a: 7deg;
+}
+@media (min-width: 640px) {
+  .fan {
+    --a: 9deg;
+  }
+}
+.fan > * {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform-origin: 50% 130%;
+  transform: translateX(-50%) rotate(calc(var(--i) * var(--a)));
+  transition: transform 0.7s var(--ease);
+}
+.fan:hover > * {
+  transform: translateX(-50%) rotate(calc(var(--i) * var(--a) * 1.3));
+}
+.fan > *:hover {
+  z-index: 20 !important;
+  transform: translateX(-50%) rotate(calc(var(--i) * var(--a) * 1.3)) translateY(-14px) scale(1.04);
+}
+
+/* Cards behind the front one are dimmed for depth; the one under the pointer comes back to full brightness. */
+.fan > *:hover img {
+  filter: none !important;
+}
+
+@keyframes nudge-down {
+  0%, 100% { transform: translateY(0); opacity: 0.55; }
+  50% { transform: translateY(5px); opacity: 1; }
+}
+/* The pulsing dot: a ring that scales and fades (transform and opacity only, so it never repaints). */
+.live-dot {
+  position: relative;
+}
+.live-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: #fff;
+  animation: live-ring 2.4s ease-out infinite;
+}
+@keyframes live-ring {
+  0% { opacity: 0.45; transform: scale(1); }
+  60%, 100% { opacity: 0; transform: scale(3.4); }
+}
+@keyframes sheen {
+  to { transform: translateX(260%) skewX(-18deg); }
+}
+.btn-sheen {
+  position: relative;
+  overflow: hidden;
+}
+.btn-sheen::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 -60%;
+  width: 45%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  transform: translateX(0) skewX(-18deg);
+  pointer-events: none;
+}
+.btn-sheen:hover::after {
+  animation: sheen 0.9s var(--ease);
+}
+/* The main calls to action catch the light by themselves every few seconds, so the eye finds them. */
+@keyframes sheen-idle {
+  0% { transform: translateX(0) skewX(-18deg); }
+  16%, 100% { transform: translateX(260%) skewX(-18deg); }
+}
+.btn-sheen[data-shine]:not(:hover)::after {
+  animation: sheen-idle 5.5s var(--ease) 2.2s infinite;
+}
+
+/* ---- Buttons --------------------------------------------------------------------------------------
+   Everything here moves transform or opacity only.
+   - Both kinds: a press ripple from the touch point (<Fx/> adds `.ripple`) and the 0.97 squish.
+   - Primary: a soft glow in its own colour on hover.
+   - Ghost: a white fill grows from where the pointer came in and shrinks back to where it left
+     (<Fx/> sets --bx/--by), and the text turns black.
+   - <Roll/> labels: letters roll up one by one and a copy rolls in from below; an arrow slides through. */
+.btn-primary,
+.btn-ghost {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  transition: color 0.35s var(--ease), background-color 0.35s var(--ease), box-shadow 0.35s var(--ease), scale 0.2s var(--ease);
+}
+.btn-primary[data-magnetic],
+.btn-ghost[data-magnetic] {
+  transition: color 0.35s var(--ease), background-color 0.35s var(--ease), box-shadow 0.35s var(--ease), scale 0.2s var(--ease),
+    transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.btn-primary:hover:not(:disabled) {
+  box-shadow: 0 10px 34px -8px color-mix(in srgb, var(--accent) 75%, transparent), 0 0 0 1px color-mix(in srgb, var(--accent) 40%, transparent);
+}
+.btn-ghost::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: var(--bx, 50%);
+  top: var(--by, 50%);
+  width: 260%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #fff;
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.55s var(--ease-type);
+  pointer-events: none;
+}
+@media (hover: hover) {
+  .btn-ghost:hover:not(:disabled),
+  .group:hover .btn-ghost[data-group-fill] {
+    color: #000;
+  }
+  .btn-ghost:hover:not(:disabled)::before,
+  .group:hover .btn-ghost[data-group-fill]::before {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+.ripple {
+  position: absolute;
+  z-index: -1;
+  width: 240%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0);
+  animation: ripple 0.65s var(--ease) forwards;
+  pointer-events: none;
+}
+@keyframes ripple {
+  0% { opacity: 0.28; transform: translate(-50%, -50%) scale(0); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
+}
+
+.roll {
+  display: inline-block;
+  overflow: hidden;
+  padding-block: 0.12em;
+  margin-block: -0.12em;
+  line-height: 1.2;
+  vertical-align: top;
+}
+.roll-w {
+  display: inline-block;
+  white-space: nowrap;
+}
+.roll-ch {
+  display: inline-block;
+  text-shadow: 0 1.5em currentColor;
+  transition: transform 0.6s var(--ease-type) calc(var(--i, 0) * 16ms);
+}
+.roll-arrow {
+  display: inline-grid;
+  flex: none;
+  width: 1em;
+  height: 1em;
+  overflow: hidden;
+}
+.roll-arrow > svg {
+  grid-area: 1 / 1;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.55s var(--ease-type);
+}
+.roll-arrow > svg + svg {
+  transform: translateX(-140%);
+}
+@media (hover: hover) {
+  :is(.btn-primary, .btn-ghost):hover:not(:disabled) .roll-ch,
+  .group:hover [data-group-fill] .roll-ch {
+    transform: translateY(-1.5em);
+  }
+  :is(.btn-primary, .btn-ghost):hover:not(:disabled) .roll-arrow > svg,
+  .group:hover [data-group-fill] .roll-arrow > svg {
+    transform: translateX(140%);
+  }
+  :is(.btn-primary, .btn-ghost):hover:not(:disabled) .roll-arrow > svg + svg,
+  .group:hover [data-group-fill] .roll-arrow > svg + svg {
+    transform: translateX(0);
+  }
+}
+:focus-visible .roll-ch {
+  transform: translateY(-1.5em);
+}
+/* With the button leaning toward the pointer, its label leans a little further: a bit of depth. */
+[data-magnetic] .roll {
+  transform: translate3d(calc(var(--tx, 0px) * 0.35), calc(var(--ty, 0px) * 0.35), 0);
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wall-row,
+  .live-dot::after,
+  .film-deck-card,
+  .btn-sheen:hover::after,
+  .btn-sheen[data-shine]:not(:hover)::after,
+  .ripple {
+    animation: none;
+  }
+  .roll-ch,
+  .roll-arrow > svg,
+  .btn-ghost::before {
+    transition: none;
+  }
+  .tilt,
+  .fan > * {
+    transition: none;
+  }
+}
+
+/* Colour try-out (preview deployments, <AccentPicker/> "On text"): the action colour on a few pieces of type. */
+[data-accent-text] .look-slot,
+[data-accent-text] .band-item:nth-child(odd) {
+  color: var(--accent);
+}
+[data-accent-text] .band-item::after,
+[data-accent-text] .live-dot,
+[data-accent-text] .live-dot::after,
+[data-accent-text] .film-bar {
+  background: var(--accent);
+}

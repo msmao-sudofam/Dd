@@ -1,0 +1,184 @@
+export type Plan = "free" | "paid" | "monthly";
+export type Role = "user" | "admin";
+
+export interface Profile {
+  id: string;
+  email: string;
+  credits_balance: number;
+  plan: Plan;
+  role: Role;
+  referral_code: string;
+  referred_by: string | null;
+  stripe_customer_id?: string | null;
+  stripe_subscription_id?: string | null;
+  /** Product id of the active monthly plan (lib/pricing.ts MONTHLY_PLANS); null when not subscribed. */
+  subscription_plan?: string | null;
+  created_at: string;
+}
+
+export type LedgerReason =
+  | "purchase"
+  | "generation"
+  | "refund"
+  | "signup_bonus"
+  | "referral"
+  | "subscription"
+  | "admin";
+
+export interface LedgerEntry {
+  id: number;
+  user_id: string;
+  delta: number;
+  reason: LedgerReason;
+  job_id: string | null;
+  stripe_event_id: string | null;
+  meta: Record<string, unknown>;
+  created_at: string;
+}
+
+export type ProviderName = "fal" | "replicate" | "self" | "mock";
+export type ModelType = "t2v" | "i2v" | "t2i" | "i2i" | "ugc";
+export type Tier = "fast" | "mid" | "premium";
+
+export interface Model {
+  id: string;
+  slug: string;
+  name: string;
+  description: string;
+  provider: ProviderName;
+  provider_model_id: string;
+  type: ModelType;
+  tier: Tier;
+  credit_cost: number;
+  credit_cost_per_second: number | null;
+  api_cost_usd: number;
+  default_duration: number | null;
+  max_duration: number | null;
+  allowed_durations: number[];
+  allowed_aspects: string[];
+  params_json: Record<string, unknown>;
+  sort_order: number;
+  enabled: boolean;
+  created_at: string;
+}
+
+export type PresetCategory = "camera-moves" | "product-ads" | "ugc" | "effects" | "viral";
+
+export interface Preset {
+  id: string;
+  slug: string;
+  name: string;
+  description: string;
+  thumbnail_url: string | null;
+  preview_video_url: string | null;
+  model_id: string;
+  prompt_template: string;
+  params_json: Record<string, unknown>;
+  category: PresetCategory;
+  requires_image: boolean;
+  requires_subject: boolean;
+  is_featured: boolean;
+  sort_order: number;
+  enabled: boolean;
+  created_at: string;
+}
+
+export type JobStatus = "queued" | "running" | "succeeded" | "failed" | "refunded";
+
+export interface JobInput {
+  prompt: string;
+  image_url?: string | null;
+  image_path?: string | null;
+  duration?: number | null;
+  aspect_ratio?: string | null;
+  face_consent?: boolean;
+  [k: string]: unknown;
+}
+
+export type JobKind = "single" | "ugc";
+export type UgcStage = "voice" | "composite" | "avatar" | "broll" | "assemble" | "done";
+
+export interface Job {
+  id: string;
+  kind?: JobKind;
+  stage?: UgcStage | null;
+  stage_data?: Record<string, unknown>;
+  user_id: string;
+  model_id: string;
+  preset_id: string | null;
+  input_json: JobInput;
+  status: JobStatus;
+  provider: ProviderName;
+  provider_request_id: string | null;
+  output_url: string | null;
+  output_type: "video" | "image";
+  credits_charged: number;
+  cost_usd: number;
+  error: string | null;
+  created_at: string;
+  completed_at: string | null;
+}
+
+export interface SessionUser {
+  id: string;
+  email: string;
+}
+
+export interface UgcActor {
+  id: string;
+  slug: string;
+  name: string;
+  vibe: string;
+  age_range: string;
+  setting: string;
+  portrait_url: string | null;
+  preview_video_url: string | null;
+  voice: string;
+  voice_label: string;
+  tags: string[];
+  owner_id: string | null;
+  upload_path: string | null;
+  sort_order: number;
+  enabled: boolean;
+  created_at: string;
+}
+
+export interface UgcProject {
+  id: string;
+  user_id: string;
+  product_name: string;
+  product_description: string;
+  product_url: string | null;
+  benefits: string[];
+  audience: string;
+  offer: string;
+  product_image_path: string | null;
+  created_at: string;
+}
+
+export interface UgcScript {
+  angle: string;
+  hook: string;
+  body: string[];
+  cta: string;
+  on_screen_hook: string;
+}
+
+/** Anonymous "try it on your product" session (see supabase/migrations/20261012000006_try.sql). */
+export interface TrySession {
+  id: string;
+  ip_hash: string;
+  product_name: string;
+  source_url: string | null;
+  upload_path: string;
+  consent_at: string;
+  look: string | null;
+  still_request_id: string | null;
+  still_provider: ProviderName | null;
+  still_status: "none" | "running" | "succeeded" | "failed";
+  still_path: string | null;
+  still_started_at: string | null;
+  stills_used: number;
+  claimed_by: string | null;
+  created_at: string;
+}
