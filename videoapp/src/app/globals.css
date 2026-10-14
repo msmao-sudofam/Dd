@@ -453,22 +453,215 @@ p {
   transition-duration: 0.25s;
   transition-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
+/* The hero's entrance waits for the loading screen (<Intro/>): these rules only match once `intro-on` is gone,
+   and that is when the animations start. After an intro the film card does not play its own entrance: the
+   intro's viewfinder lands on it instead. */
 @media (prefers-reduced-motion: no-preference) {
-  .film .beat[data-beat="0"] > * > :not(.hero-words, .look-rot) {
+  html:not(.intro-on) .film .beat[data-beat="0"] > * > :not(.hero-words, .look-rot) {
     animation: hero-rise 0.9s var(--ease) calc(420ms + var(--n, 0) * 90ms) backwards;
   }
-  .film .beat[data-beat="0"] .look-rot > span:first-child {
+  html:not(.intro-on) .film .beat[data-beat="0"] .look-rot > span:first-child {
     animation: hero-rise 0.9s var(--ease) 900ms backwards;
   }
-  .film .hero-words .ch {
+  html:not(.intro-on) .film .hero-words .ch {
     animation: hero-char 1.25s var(--ease-type) calc(60ms + var(--i, 0) * 22ms) backwards;
   }
-  .film .film-in {
+  html:not(.intro-on, .intro-out, .intro-done) .film .film-in {
     animation: hero-card 1.1s var(--ease) 120ms backwards;
   }
-  .film .film-deck-item {
+  html:not(.intro-on) .film .film-deck-item {
     animation: deck-in 1.15s var(--ease) calc(520ms + var(--i) * 110ms) backwards;
   }
+}
+html.intro-on .film .beat[data-beat="0"],
+html.intro-on .film .film-deck,
+html.intro-on .film .film-card,
+html.intro-out .film .film-card {
+  visibility: hidden;
+}
+
+/* ---- Loading screen (<Intro/>, landing page only) ------------------------------------------------- */
+.intro {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  color: #fff;
+  --lp: 0;
+}
+html.intro-on .intro,
+.intro.go:not(.gone) {
+  display: block;
+}
+.intro.go {
+  pointer-events: none;
+}
+.intro-lid {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 50.5%;
+  background: #000;
+  transition: transform 1.1s cubic-bezier(0.76, 0, 0.2, 1);
+}
+.intro-lid-t {
+  top: 0;
+}
+.intro-lid-b {
+  bottom: 0;
+}
+.intro.go .intro-lid-t {
+  transform: translateY(-101%);
+}
+.intro.go .intro-lid-b {
+  transform: translateY(101%);
+}
+.intro-mid {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 22px;
+}
+.intro-vf {
+  position: relative;
+  z-index: 2;
+  height: min(52svh, 440px);
+  aspect-ratio: 9 / 16;
+  overflow: hidden;
+  border-radius: 14px;
+  background: #111;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.14), 0 40px 120px rgba(0, 0, 0, 0.8);
+  animation: intro-vf-in 0.9s var(--ease-type) both;
+}
+.intro-vf.fly {
+  transition: left 1.05s cubic-bezier(0.76, 0, 0.2, 1), top 1.05s cubic-bezier(0.76, 0, 0.2, 1), width 1.05s cubic-bezier(0.76, 0, 0.2, 1),
+    height 1.05s cubic-bezier(0.76, 0, 0.2, 1), border-radius 1.05s cubic-bezier(0.76, 0, 0.2, 1), opacity 0.4s var(--ease);
+  border-radius: 32px;
+}
+.intro-vf.fade {
+  opacity: 0;
+}
+.intro-shot {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+}
+.intro-shot.on {
+  opacity: 1;
+}
+.intro-hud {
+  position: absolute;
+  z-index: 1;
+  font: 600 10px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.7);
+  transition: opacity 0.3s var(--ease);
+}
+.intro-rec {
+  top: 14px;
+  left: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.intro-rec i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ff3b30;
+  animation: intro-blink 1s steps(2, jump-none) infinite;
+}
+.intro-ratio {
+  top: 14px;
+  right: 14px;
+}
+.intro-tc {
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-variant-numeric: tabular-nums;
+}
+/* Viewfinder corner brackets: four L-shapes drawn with one gradient set. */
+.intro-corner {
+  position: absolute;
+  inset: 9px;
+  z-index: 1;
+  pointer-events: none;
+  --c: rgba(255, 255, 255, 0.85);
+  background:
+    linear-gradient(var(--c) 0 0) top left / 18px 1.5px, linear-gradient(var(--c) 0 0) top left / 1.5px 18px,
+    linear-gradient(var(--c) 0 0) top right / 18px 1.5px, linear-gradient(var(--c) 0 0) top right / 1.5px 18px,
+    linear-gradient(var(--c) 0 0) bottom left / 18px 1.5px, linear-gradient(var(--c) 0 0) bottom left / 1.5px 18px,
+    linear-gradient(var(--c) 0 0) bottom right / 18px 1.5px, linear-gradient(var(--c) 0 0) bottom right / 1.5px 18px;
+  background-repeat: no-repeat;
+  transition: opacity 0.3s var(--ease);
+}
+.intro-vf.fly .intro-hud,
+.intro-vf.fly .intro-corner {
+  opacity: 0;
+}
+.intro-wm {
+  display: flex;
+  overflow: hidden;
+  padding-block: 0.1em;
+  font-size: clamp(22px, 3vw, 30px);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  transition: opacity 0.4s var(--ease), transform 0.7s var(--ease-type);
+}
+.intro-wm span {
+  display: inline-block;
+  animation: hero-char 1s var(--ease-type) calc(250ms + var(--i) * 40ms) both;
+}
+.intro-bar {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: 22px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+  transition: opacity 0.4s var(--ease);
+}
+.intro-num {
+  font-size: clamp(56px, 9vw, 120px);
+  font-weight: 700;
+  line-height: 0.8;
+  letter-spacing: -0.05em;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+.intro-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(var(--lp));
+  transform-origin: 0 50%;
+}
+.intro.go .intro-wm {
+  opacity: 0;
+  transform: translateY(-14px);
+}
+.intro.go .intro-bar,
+.intro.go .intro-line {
+  opacity: 0;
+}
+@keyframes intro-vf-in {
+  from { opacity: 0; transform: translateY(24px) scale(0.92); }
+}
+@keyframes intro-blink {
+  50% { opacity: 0.15; }
 }
 
 /* Accordions open and close smoothly where the browser can animate to an auto height; elsewhere they snap. */

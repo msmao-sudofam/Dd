@@ -4,6 +4,7 @@ import { getSessionUser } from "@/lib/auth";
 import { ClipWall } from "@/components/landing/clip-wall";
 import { CreatorFan } from "@/components/landing/creator-fan";
 import { Faq, FAQ_ITEMS } from "@/components/landing/faq";
+import { Intro } from "@/components/landing/intro";
 import { LookBand } from "@/components/landing/look-band";
 import { LookRotator } from "@/components/landing/look-rotator";
 import { ScrollFilm, type Beat, type DeckClip } from "@/components/landing/scroll-film";
@@ -15,6 +16,7 @@ import { Roll } from "@/components/roll";
 import { SmoothScroll } from "@/components/smooth-scroll";
 import { ScrubWords, SplitText, letterCount } from "@/components/split-text";
 import { db } from "@/lib/db";
+import { env } from "@/lib/env";
 import { MONTHLY_PLAN, SIGNUP_BONUS_CREDITS } from "@/lib/pricing";
 import { CATEGORIES, listPresetCards } from "@/lib/presets";
 import { currentTryView } from "@/lib/try/session";
@@ -74,6 +76,7 @@ export default async function Home() {
     const seeded = p.preview_video_url === `/presets/${p.slug}.mp4`;
     return [{
       src: seeded ? `/presets/sm/${p.slug}.mp4` : p.preview_video_url,
+      srcWide: seeded ? `/presets/${p.slug}.mp4` : undefined,
       poster: p.thumbnail_url ?? undefined,
       name: label ?? p.name,
       href: `/presets/${p.slug}`,
@@ -169,6 +172,7 @@ export default async function Home() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }} />
+      <Intro brand={env.brandName()} />
       <SmoothScroll />
 
       <ScrollFilm

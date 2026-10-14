@@ -25,6 +25,8 @@ import { LazyVideo } from "@/components/lazy-video";
 /** A finished clip floating behind the film card: one of the looks the same photo could become. */
 export interface DeckClip {
   src: string;
+  /** Sharper file for wide screens, where the deck cards are big. */
+  srcWide?: string;
   poster?: string;
   name: string;
 }
@@ -149,6 +151,7 @@ export function ScrollFilm({
     const stage = stageRef.current!;
     const card = cardRef.current!;
     const film = filmRef.current!;
+    const intro = document.documentElement.classList;
     const canvas = canvasRef.current!;
     const ctx = canvas.getContext("2d")!;
     // Ambient light: the current frame, 16 px wide, blurred up behind the card so the film lights the page.
@@ -167,6 +170,7 @@ export function ScrollFilm({
         img.onload = async () => {
           frames[i] = "createImageBitmap" in window ? await createImageBitmap(img).catch(() => img) : img;
           count++;
+          film.dataset.loaded = (count / frameCount).toFixed(3); // read by the loading screen (<Intro/>)
           if (!stop) setLoaded(count / frameCount);
           resolve();
         };
@@ -254,7 +258,8 @@ export function ScrollFilm({
       }
       // Resting at the top with every frame in memory: the film plays by itself, starting from the photo.
       const now = performance.now();
-      const wantAuto = raw < AUTO_BELOW && count === frameCount && !document.hidden;
+      // It waits for the loading screen to lift, so the film starts from the photo the intro ended on.
+      const wantAuto = raw < AUTO_BELOW && count === frameCount && !document.hidden && !intro.contains("intro-on");
       if (wantAuto && !auto) autoT0 = now;
       auto = wantAuto;
       const pos = auto ? autoPos((now - autoT0) / 1000) : p;
@@ -379,7 +384,7 @@ export function ScrollFilm({
                       style={{ "--x": slot.x, "--y": slot.y, "--w": slot.w, "--r": slot.r, "--depth": slot.depth, "--tuck": slot.tuck, "--i": i } as React.CSSProperties}
                     >
                       <div className="film-deck-card">
-                        <LazyVideo src={c.src} poster={c.poster} className="h-full w-full object-cover" />
+                        <LazyVideo src={c.src} srcWide={c.srcWide} poster={c.poster} className="h-full w-full object-cover" />
                         <span className="film-deck-name" data-side={i % 2 ? "right" : undefined}>{c.name}</span>
                       </div>
                     </div>

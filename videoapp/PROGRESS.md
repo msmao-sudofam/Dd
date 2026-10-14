@@ -446,3 +446,11 @@ rolling letter labels (`src/components/roll.tsx`), sliding arrows, primary hover
 entry point, press ripple (mouse and touch), idle sheen on the main CTAs, label lean on magnetic buttons. Used on the
 landing page, try stage, header and pricing cards; the fill, glow and ripple apply to every `btn-primary`/`btn-ghost`
 in the app. Checked with screenshots of rest/mid/hover/press/leave states; e2e phase1, phase3, phase6, try-and-feed pass.
+
+## LOADING SCREEN AND SHARPER HERO CLIPS (2026-10-13, late)
+M: "we need a better landing page of good loading screen ... the main videos ... on the first thing you see need to
+be way better". Done: the loading screen (DESIGN.md, "Loading screen"); the hero's floating clips now load the
+576x1024 preset files on screens 768 px and wider instead of the 288x512 ones (`LazyVideo srcWide`).
+Not done, needs M: brand-new hero footage. On 2026-10-13 the GPU was held by another session's render
+(`talking-head/work/gpu_lock`), Higgsfield had 0 credits, Kling 9 credits, fal no balance.
+

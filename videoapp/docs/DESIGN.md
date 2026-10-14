@@ -115,8 +115,15 @@ spill from the media itself**, never from flat colour. That replaces the earlier
   a black layer instead; the film's glow repaints every third frame; no `backdrop-filter` on the sticky header; the
   clip wall plays at most 10 clips at once (6 on phones) and its drift is paused while off screen
   (`landing/wall-governor.tsx`); scrolling changes React state only when the beat changes.
-- Still rejected: custom cursors, particles, accent-coloured glows, lime anywhere but the primary action, and a
-  loading screen before the page (M's agency sites have one; here it would delay the sign-up button).
+- Still rejected: custom cursors, particles, lime anywhere but the primary action. (Accent glows were allowed on the
+  primary button on 2026-10-13, see "Button kit".)
+- **Loading screen (2026-10-13, M asked for one):** `landing/intro.tsx` + `landing/intro-gate.ts` (runs in <head>).
+  Landing page only, once per browser tab, skipped for reduced motion, crawlers and automated browsers (`?intro`
+  forces it). A 9:16 viewfinder (REC, 9:16, running timecode, corner brackets) flicks through 12 preset stills
+  (`public/intro/`, 124 KB) with cuts that slow as it fills; the counter follows real loading (fonts, the stills,
+  the hero film's frames via `data-loaded` on `.film-in`); at least 1.8 s, at most 5 s. Then the curtains split and
+  the viewfinder flies onto the film card, landing on the film's first frame; the hero's type and deck play their
+  entrance as it opens (`html.intro-on/-out/-done` gate the CSS). Pattern from Sealed Occasion's intro.
 - **Where the type motion comes from (2026-10-13):** M asked for the motion of his own sites. Letter rise out of word
   masks, the rolling rotator synced to media and the expo-out curve `cubic-bezier(.16,1,.3,1)` are Sealed Occasion's;
   the scroll-speed band with outlined words is That Food Guy's; the scroll-sharpened words are NOCTURNE's manifesto;
