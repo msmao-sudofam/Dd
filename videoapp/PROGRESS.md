@@ -439,3 +439,10 @@ M: "the site is a little sluggish, how can we make it more appealing maybe a new
   (`components/accent-picker.tsx`): Lime (current), Ember, Gold, Pink, Violet, Blue, plus "On text", which also puts
   the colour on the rolling look name, the band and the small dots. `?accent=ember` works as a link. Waiting on M to
   pick; production still ships lime.
+
+## ANIMATED BUTTONS (2026-10-13, late)
+M: "I think we should make the buttons cooler more animated". Added the button kit (DESIGN.md, "Button kit" row):
+rolling letter labels (`src/components/roll.tsx`), sliding arrows, primary hover glow, ghost fill from the pointer's
+entry point, press ripple (mouse and touch), idle sheen on the main CTAs, label lean on magnetic buttons. Used on the
+landing page, try stage, header and pricing cards; the fill, glow and ripple apply to every `btn-primary`/`btn-ghost`
+in the app. Checked with screenshots of rest/mid/hover/press/leave states; e2e phase1, phase3, phase6, try-and-feed pass.

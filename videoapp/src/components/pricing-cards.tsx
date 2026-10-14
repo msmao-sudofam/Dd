@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CREDIT_PACKS, MONTHLY_PLAN, MONTHLY_PLANS, perCreditUsd, type MonthlyPlan } from "@/lib/pricing";
+import { Roll } from "./roll";
 
 /** Credits for one Fast clip; used only for the "≈ N clips" hint. */
 const FAST_CLIP_CREDITS = 24;
@@ -35,13 +36,13 @@ export function PricingCards({ loggedIn, subscription }: { loggedIn: boolean; su
       <form action="/api/billing/checkout" method="post" className="mt-auto pt-7">
         <input type="hidden" name="product" value={product} />
         <button className={`${primary ? "btn-primary btn-sheen" : "btn-ghost"} w-full !py-2.5`} data-testid={`buy-${product}`}>
-          {label}
+          <Roll>{label}</Roll>
         </button>
       </form>
     ) : (
       <div className="mt-auto pt-7">
         <Link href="/signup?next=/billing" className={`${primary ? "btn-primary btn-sheen" : "btn-ghost"} w-full !py-2.5`}>
-          Start free
+          <Roll>Start free</Roll>
         </Link>
       </div>
     );

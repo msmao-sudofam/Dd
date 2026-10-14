@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { prepareImage } from "@/lib/client/resize-image";
 import { TRY_LOOKS, type TryView } from "@/lib/try/looks";
 import { CONSENT_LABEL } from "../create/image-upload";
+import { Roll } from "../roll";
 
 /**
  * "Try it on your product", before sign-up: paste a store link or upload a photo, see the photo on the card,
@@ -108,13 +109,13 @@ export function TryStage({ initial, loggedIn }: { initial: TryView | null; logge
                 data-testid="try-url"
               />
               <button className="btn-primary shrink-0 !rounded-full !px-5" disabled={!!busy} data-testid="try-url-submit">
-                {busy === "link" ? "Reading…" : "Show it"}
+                <Roll>{busy === "link" ? "Reading…" : "Show it"}</Roll>
               </button>
             </form>
             <div className="mt-3 flex items-center gap-3 text-sm text-muted">
               <span>or</span>
               <button type="button" className="btn-ghost !py-2" disabled={!!busy} onClick={() => !needConsent() && fileRef.current?.click()}>
-                {busy === "upload" ? "Uploading…" : "Upload a photo"}
+                <Roll>{busy === "upload" ? "Uploading…" : "Upload a photo"}</Roll>
               </button>
               <input
                 ref={fileRef}
@@ -160,22 +161,22 @@ export function TryStage({ initial, loggedIn }: { initial: TryView | null; logge
             </div>
             <div className="mt-6 flex flex-wrap items-center gap-3">
               {done ? (
-                <Link href={cta} className="btn-primary btn-sheen !px-5 !py-3 !text-[15px]" data-testid="try-cta">
-                  {loggedIn ? "Make it move" : "Make it move, free"}
+                <Link href={cta} className="btn-primary btn-sheen !px-5 !py-3 !text-[15px]" data-testid="try-cta" data-magnetic data-shine>
+                  <Roll arrow>{loggedIn ? "Make it move" : "Make it move, free"}</Roll>
                 </Link>
               ) : (
                 <button className="btn-primary btn-sheen !px-5 !py-3 !text-[15px]" disabled={!!busy || running || view.stillsLeft === 0} onClick={makeStill} data-testid="try-still-btn">
-                  {running || busy === "still" ? "Building your frame…" : "Show me the ad frame"}
+                  <Roll>{running || busy === "still" ? "Building your frame…" : "Show me the ad frame"}</Roll>
                 </button>
               )}
               {done && view.stillsLeft > 0 && (
                 <button className="btn-ghost !py-3" disabled={!!busy || look === view.look} onClick={makeStill} data-testid="try-again">
-                  Try this look instead
+                  <Roll>Try this look instead</Roll>
                 </button>
               )}
               {!done && (
                 <Link href={cta} className="btn-ghost !py-3">
-                  Skip to the video
+                  <Roll arrow>Skip to the video</Roll>
                 </Link>
               )}
             </div>

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getCurrentProfile, isAdminProfile } from "@/lib/auth";
 import { env } from "@/lib/env";
 import { Analytics } from "./analytics";
+import { Roll } from "./roll";
 
 export async function SiteHeader() {
   const profile = await getCurrentProfile();
@@ -33,12 +34,12 @@ export async function SiteHeader() {
                 <Link href="/billing" className="btn-ghost !px-3.5 !py-1.5 tabular-nums" data-testid="credit-balance">
                   {profile.credits_balance} <span className="text-muted">credits</span>
                 </Link>
-                <Link href="/dashboard" className="btn-ghost !px-3.5 !py-1.5">Account</Link>
+                <Link href="/dashboard" className="btn-ghost !px-3.5 !py-1.5"><Roll>Account</Roll></Link>
               </>
             ) : (
               <>
-                <Link href="/login" className="btn-ghost !px-3.5 !py-1.5">Log in</Link>
-                <Link href="/signup" className="btn-primary btn-sheen !py-1.5">Start free</Link>
+                <Link href="/login" className="btn-ghost !px-3.5 !py-1.5"><Roll>Log in</Roll></Link>
+                <Link href="/signup" className="btn-primary btn-sheen !py-1.5"><Roll>Start free</Roll></Link>
               </>
             )}
           </div>

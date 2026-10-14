@@ -11,6 +11,7 @@ import { TryStage } from "@/components/landing/try-stage";
 import { LazyVideo } from "@/components/lazy-video";
 import { PresetShowcase } from "@/components/presets/preset-showcase";
 import { PricingCards } from "@/components/pricing-cards";
+import { Roll } from "@/components/roll";
 import { SmoothScroll } from "@/components/smooth-scroll";
 import { ScrubWords, SplitText, letterCount } from "@/components/split-text";
 import { db } from "@/lib/db";
@@ -108,10 +109,12 @@ export default async function Home() {
             <span className="hidden sm:inline"> for TikTok, Reels and Shorts. No studio, no editor, no prompts</span>.
           </p>
           <div className="mt-5 flex flex-wrap items-center gap-3 md:mt-8">
-            <Link href={start} className="btn-primary btn-sheen !px-5 !py-3 !text-[15px]" data-testid="hero-cta-top" data-magnetic>
-              {user ? "Make a video" : "Make your first ad free"}
+            <Link href={start} className="btn-primary btn-sheen !px-5 !py-3 !text-[15px]" data-testid="hero-cta-top" data-magnetic data-shine>
+              <Roll arrow>{user ? "Make a video" : "Make your first ad free"}</Roll>
             </Link>
-            <Link href="#try" className="btn-ghost hidden !py-3 sm:inline-flex">{mine ? `Back to ${mine.shortName}` : "Try it on your product"}</Link>
+            <Link href="#try" className="btn-ghost hidden !py-3 sm:inline-flex" data-magnetic>
+              <Roll>{mine ? `Back to ${mine.shortName}` : "Try it on your product"}</Roll>
+            </Link>
           </div>
           <p className="mt-3 flex items-center gap-4 text-xs text-subtle md:mt-4">
             {!user && <span>{SIGNUP_BONUS_CREDITS} free credits · no card required</span>}
@@ -152,10 +155,10 @@ export default async function Home() {
           </h2>
           <p className="mt-4 max-w-md text-base text-white/75 md:mt-6 md:text-lg md:text-muted">A vertical 9:16 clip, ready for TikTok, Reels and Shorts.</p>
           <div className="mt-6 flex flex-wrap gap-3 md:mt-8">
-            <Link href={start} className="btn-primary btn-sheen !px-5 !py-3 !text-[15px]" data-testid="hero-cta">
-              {user ? "Make a video" : "Make your first ad free"}
+            <Link href={start} className="btn-primary btn-sheen !px-5 !py-3 !text-[15px]" data-testid="hero-cta" data-magnetic>
+              <Roll arrow>{user ? "Make a video" : "Make your first ad free"}</Roll>
             </Link>
-            <Link href="#presets" className="btn-ghost !py-3">See presets</Link>
+            <Link href="#presets" className="btn-ghost !py-3"><Roll>See presets</Roll></Link>
           </div>
           <p className="mt-4 text-xs text-subtle">{SIGNUP_BONUS_CREDITS} free credits · no card required</p>
         </div>
@@ -195,7 +198,9 @@ export default async function Home() {
           <ClipWall presets={cards} />
         </div>
         <div className="relative z-10 -mt-2 flex justify-center px-4" data-reveal>
-          <Link href="/feed" className="btn-ghost !py-3" data-testid="open-feed">Swipe through all {cards.length} →</Link>
+          <Link href="/feed" className="btn-ghost !py-3" data-testid="open-feed">
+            <Roll arrow>{`Swipe through all ${cards.length}`}</Roll>
+          </Link>
         </div>
       </section>
 
@@ -209,7 +214,7 @@ export default async function Home() {
                 <SplitText text={presetsTitle} />
               </h2>
             </div>
-            <Link href="/presets" className="btn-ghost hidden shrink-0 sm:inline-flex" data-reveal>Browse all</Link>
+            <Link href="/presets" className="btn-ghost hidden shrink-0 sm:inline-flex" data-reveal><Roll arrow>Browse all</Roll></Link>
           </div>
           <div data-reveal style={{ "--d": "90ms" } as React.CSSProperties}>
             <PresetShowcase categories={CATEGORIES} presets={cards} photoLabel={mine ? "Your photo" : undefined} />
@@ -228,7 +233,7 @@ export default async function Home() {
             <p className="text-sm text-muted">New · UGC Ad Studio</p>
             <h2 className="display mt-2 max-w-2xl text-[clamp(32px,4.5vw,56px)]">UGC ads without hiring creators.</h2>
             <p className="mt-3 max-w-xl text-muted">AI creators hold your product and pitch it to camera — scripts, voice, captions and end card included.</p>
-            <span className="btn-ghost mt-8 group-hover:bg-surface-2">Open the studio →</span>
+            <span className="btn-ghost mt-8" data-group-fill><Roll arrow>Open the studio</Roll></span>
           </div>
           <CreatorFan actors={actors} />
         </Link>
@@ -293,8 +298,8 @@ export default async function Home() {
             <h2 className="type-fill-text display py-3 text-[clamp(52px,10vw,148px)] !leading-[0.92]">Your next ad is one photo away.</h2>
           </div>
           <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
-            <Link href={start} className="btn-primary btn-sheen !px-6 !py-3.5 !text-base" data-magnetic>
-              {user ? "Make a video" : `Get ${SIGNUP_BONUS_CREDITS} free credits`}
+            <Link href={start} className="btn-primary btn-sheen !px-6 !py-3.5 !text-base" data-magnetic data-shine>
+              <Roll arrow>{user ? "Make a video" : `Get ${SIGNUP_BONUS_CREDITS} free credits`}</Roll>
             </Link>
             <p className="text-sm text-muted">No card required. Failed clips are refunded.</p>
           </div>

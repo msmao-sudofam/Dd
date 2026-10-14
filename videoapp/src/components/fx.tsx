@@ -7,7 +7,9 @@ import { useEffect } from "react";
  *  - [data-reveal]  one-shot scroll reveal (styles in globals.css; `--d` on the element staggers it)
  *  - .spot          hairline highlight that follows the pointer
  *  - [data-tilt]    3D tilt + glare on clip tiles
- *  - [data-magnetic] a button that leans toward the pointer while it is over it
+ *  - [data-magnetic] a button that leans toward the pointer while it is over it (its label leans further)
+ *  - .btn-ghost     the white hover fill grows from where the pointer came in and shrinks to where it left
+ *  - .btn-primary / .btn-ghost  a ripple from the point where they are pressed (mouse and touch)
  *  - [data-scrub-words]  a heading whose words sharpen one by one as it scrolls up the screen
  *  - --hdr          the sticky header's measured height, used to pin the hero film just below it
  *  - --pre          the height of the line above the header (demo mode), so the hero fits the first screen
@@ -98,6 +100,18 @@ export function Fx() {
 
     let magnet: HTMLElement | null = null;
     let tilted: HTMLElement | null = null;
+    let filled: HTMLElement | null = null;
+    const fillFrom = (el: HTMLElement, e: PointerEvent) => {
+      const r = el.getBoundingClientRect();
+      el.style.setProperty("--bx", `${(e.clientX - r.left).toFixed(0)}px`);
+      el.style.setProperty("--by", `${(e.clientY - r.top).toFixed(0)}px`);
+    };
+    const unpull = (el: HTMLElement | null) => {
+      if (!el) return;
+      el.style.removeProperty("transform");
+      el.style.removeProperty("--tx");
+      el.style.removeProperty("--ty");
+    };
     const release = (el: HTMLElement | null) => {
       if (!el) return;
       delete el.dataset.tilting;
@@ -115,12 +129,23 @@ export function Fx() {
       }
       const mag = reduced ? null : (target?.closest<HTMLElement>("[data-magnetic]") ?? null);
       if (mag !== magnet) {
-        magnet?.style.removeProperty("transform");
+        unpull(magnet);
         magnet = mag;
       }
       if (mag) {
         const r = mag.getBoundingClientRect();
-        mag.style.transform = `translate3d(${((e.clientX - r.left - r.width / 2) * 0.22).toFixed(1)}px,${((e.clientY - r.top - r.height / 2) * 0.32).toFixed(1)}px,0)`;
+        const tx = ((e.clientX - r.left - r.width / 2) * 0.22).toFixed(1);
+        const ty = ((e.clientY - r.top - r.height / 2) * 0.32).toFixed(1);
+        mag.style.transform = `translate3d(${tx}px,${ty}px,0)`;
+        mag.style.setProperty("--tx", `${tx}px`);
+        mag.style.setProperty("--ty", `${ty}px`);
+      }
+      // The fill's origin is set once on the way in and once on the way out, not on every move.
+      const fill = target?.closest<HTMLElement>(".btn-ghost") ?? null;
+      if (fill !== filled) {
+        if (filled) fillFrom(filled, e);
+        if (fill) fillFrom(fill, e);
+        filled = fill;
       }
       const tilt = reduced ? null : (target?.closest<HTMLElement>("[data-tilt]") ?? null);
       if (tilt !== tilted) {
@@ -141,9 +166,27 @@ export function Fx() {
     const onLeave = () => {
       release(tilted);
       tilted = null;
-      magnet?.style.removeProperty("transform");
+      unpull(magnet);
       magnet = null;
+      filled = null;
     };
+    // The ripple is an extra element React doesn't know about; it removes itself when it has played.
+    const onDown = (e: PointerEvent) => {
+      if (reduced || e.button !== 0) return;
+      const btn = (e.target as Element | null)?.closest<HTMLElement>(".btn-primary, .btn-ghost");
+      if (!btn || (btn as HTMLButtonElement).disabled) return;
+      const r = btn.getBoundingClientRect();
+      const dot = document.createElement("span");
+      dot.className = "ripple";
+      dot.setAttribute("aria-hidden", "");
+      dot.style.left = `${e.clientX - r.left}px`;
+      dot.style.top = `${e.clientY - r.top}px`;
+      dot.style.width = `${Math.max(r.width, r.height) * 2.4}px`;
+      btn.appendChild(dot);
+      dot.addEventListener("animationend", () => dot.remove(), { once: true });
+      window.setTimeout(() => dot.remove(), 1200);
+    };
+    document.addEventListener("pointerdown", onDown, { passive: true });
     document.addEventListener("pointermove", onMove, { passive: true });
     document.documentElement.addEventListener("pointerleave", onLeave);
 
@@ -157,6 +200,7 @@ export function Fx() {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
       document.removeEventListener("pointermove", onMove);
+      document.removeEventListener("pointerdown", onDown);
       document.documentElement.removeEventListener("pointerleave", onLeave);
       root.classList.remove("fx-ready");
     };

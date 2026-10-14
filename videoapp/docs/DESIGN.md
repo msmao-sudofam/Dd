@@ -102,6 +102,7 @@ spill from the media itself**, never from flat colour. That replaces the earlier
 | Header offset | `--hdr`, measured by `fx.tsx` | The film stage pins just below the sticky header (86 px on phones, 56 px from 640 px). |
 | Preset strip bleed | `preset-rows.tsx`, `.strip-bleed` | On desktop the strips run to the right edge of the screen; the wrapper uses `overflow-x: clip` because 100vw includes the scrollbar. |
 | CTA sheen | `.btn-sheen` | A single light sweep across the lime button on hover. |
+| Button kit (2026-10-13) | `.btn-primary`, `.btn-ghost`, `<Roll/>` (`roll.tsx`), `fx.tsx` | Labels wrapped in `<Roll>` roll up letter by letter on hover or keyboard focus while a copy rolls in from below (16 ms stagger, `--ease-type`); `arrow` adds an arrow that slides through. Primary: glow in the accent colour on hover. Ghost: a white fill grows from where the pointer came in and shrinks to where it left, text turns black (`data-group-fill` lets a card's hover drive it). Both: a ripple from the press point (mouse and touch). `data-shine` makes the sheen pass by itself every 5.5 s (hero, try and closing CTAs). The label of a magnetic button leans 35% further than the button. Transform and opacity only; all off under reduced motion. |
 
 - One controller (`components/fx.tsx`, mounted in the root layout) drives reveals, hairlines and tilt with a single
   pointer listener; state lives in data attributes and CSS variables.
