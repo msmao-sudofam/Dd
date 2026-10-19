@@ -1,0 +1,26 @@
+{
+  "_readme": "Every number or factual claim that appears on screen, in VO, or in captions must match an entry here. 'match' holds the exact strings the gate looks for (case-insensitive). Add entries from the real label, the store, or a cited study before using them. 'show_source' is the line to put on screen under the number, if needed.",
+  "entries": [
+    {
+      "id": "price-mango",
+      "claim": "Mango: $29.99",
+      "match": ["$29.99", "29.99"],
+      "source": "siquemasupplements.com product price (verify against live store before each campaign)",
+      "show_source": null,
+      "added": "2026-10-19"
+    },
+    {
+      "id": "price-kiwi-strawberry",
+      "claim": "Kiwi Strawberry: $29.99",
+      "match": ["$29.99", "29.99"],
+      "source": "siquemasupplements.com product price (verify against live store before each campaign)",
+      "show_source": null,
+      "added": "2026-10-19"
+    }
+  ],
+  "ignore_numbers": [
+    "_readme: numbers that are not claims (years, handles, timecodes). The gate skips these.",
+    "2026",
+    "24/7"
+  ]
+}
