@@ -2,18 +2,145 @@
   "_readme": "Every number or factual claim that appears on screen, in VO, or in captions must match an entry here. 'match' holds the exact strings the gate looks for (case-insensitive). Add entries from the real label, the store, or a cited study before using them. 'show_source' is the line to put on screen under the number, if needed.",
   "entries": [
     {
-      "id": "price-mango",
-      "claim": "Mango: $29.99",
-      "match": ["$29.99", "29.99"],
-      "source": "siquemasupplements.com product price (verify against live store before each campaign)",
+      "id": "price-variety-pack",
+      "claim": "Sí Quema Variety Pack: $132.96",
+      "match": [
+        "$132.96",
+        "132.96"
+      ],
+      "source": "https://siquemasupplements.com/products/variety-pack (fetched 2026-10-19)",
       "show_source": null,
       "added": "2026-10-19"
     },
     {
-      "id": "price-kiwi-strawberry",
-      "claim": "Kiwi Strawberry: $29.99",
-      "match": ["$29.99", "29.99"],
-      "source": "siquemasupplements.com product price (verify against live store before each campaign)",
+      "id": "price-cucumber-lime-one-tub",
+      "claim": "Sí Quema Cucumber Lime (One tub): $34.99",
+      "match": [
+        "$34.99",
+        "34.99"
+      ],
+      "source": "https://siquemasupplements.com/products/cucumber-lime (fetched 2026-10-19)",
+      "show_source": null,
+      "added": "2026-10-19"
+    },
+    {
+      "id": "price-cucumber-lime-two-pack",
+      "claim": "Sí Quema Cucumber Lime (Two-pack): $66.48",
+      "match": [
+        "$66.48",
+        "66.48"
+      ],
+      "source": "https://siquemasupplements.com/products/cucumber-lime (fetched 2026-10-19)",
+      "show_source": null,
+      "added": "2026-10-19"
+    },
+    {
+      "id": "price-cucumber-lime-three-pack",
+      "claim": "Sí Quema Cucumber Lime (Three-pack): $99.72",
+      "match": [
+        "$99.72",
+        "99.72"
+      ],
+      "source": "https://siquemasupplements.com/products/cucumber-lime (fetched 2026-10-19)",
+      "show_source": null,
+      "added": "2026-10-19"
+    },
+    {
+      "id": "price-kiwi-strawberry-one-tub",
+      "claim": "Sí Quema Kiwi Strawberry (One tub): $34.99",
+      "match": [
+        "$34.99",
+        "34.99"
+      ],
+      "source": "https://siquemasupplements.com/products/kiwi-strawberry (fetched 2026-10-19)",
+      "show_source": null,
+      "added": "2026-10-19"
+    },
+    {
+      "id": "price-kiwi-strawberry-two-pack",
+      "claim": "Sí Quema Kiwi Strawberry (Two-pack): $66.48",
+      "match": [
+        "$66.48",
+        "66.48"
+      ],
+      "source": "https://siquemasupplements.com/products/kiwi-strawberry (fetched 2026-10-19)",
+      "show_source": null,
+      "added": "2026-10-19"
+    },
+    {
+      "id": "price-kiwi-strawberry-three-pack",
+      "claim": "Sí Quema Kiwi Strawberry (Three-pack): $99.72",
+      "match": [
+        "$99.72",
+        "99.72"
+      ],
+      "source": "https://siquemasupplements.com/products/kiwi-strawberry (fetched 2026-10-19)",
+      "show_source": null,
+      "added": "2026-10-19"
+    },
+    {
+      "id": "price-watermelon-one-tub",
+      "claim": "Sí Quema Watermelon (One tub): $34.99",
+      "match": [
+        "$34.99",
+        "34.99"
+      ],
+      "source": "https://siquemasupplements.com/products/watermelon (fetched 2026-10-19)",
+      "show_source": null,
+      "added": "2026-10-19"
+    },
+    {
+      "id": "price-watermelon-two-pack",
+      "claim": "Sí Quema Watermelon (Two-pack): $66.48",
+      "match": [
+        "$66.48",
+        "66.48"
+      ],
+      "source": "https://siquemasupplements.com/products/watermelon (fetched 2026-10-19)",
+      "show_source": null,
+      "added": "2026-10-19"
+    },
+    {
+      "id": "price-watermelon-three-pack",
+      "claim": "Sí Quema Watermelon (Three-pack): $99.72",
+      "match": [
+        "$99.72",
+        "99.72"
+      ],
+      "source": "https://siquemasupplements.com/products/watermelon (fetched 2026-10-19)",
+      "show_source": null,
+      "added": "2026-10-19"
+    },
+    {
+      "id": "price-mango-one-tub",
+      "claim": "Sí Quema Mango (One tub): $34.99",
+      "match": [
+        "$34.99",
+        "34.99"
+      ],
+      "source": "https://siquemasupplements.com/products/mango (fetched 2026-10-19)",
+      "show_source": null,
+      "added": "2026-10-19"
+    },
+    {
+      "id": "price-mango-two-pack",
+      "claim": "Sí Quema Mango (Two-pack): $66.48",
+      "match": [
+        "$66.48",
+        "66.48"
+      ],
+      "source": "https://siquemasupplements.com/products/mango (fetched 2026-10-19)",
+      "show_source": null,
+      "added": "2026-10-19"
+    },
+    {
+      "id": "price-mango-three-pack",
+      "claim": "Sí Quema Mango (Three-pack): $99.72",
+      "match": [
+        "$99.72",
+        "99.72"
+      ],
+      "source": "https://siquemasupplements.com/products/mango (fetched 2026-10-19)",
       "show_source": null,
       "added": "2026-10-19"
     }
