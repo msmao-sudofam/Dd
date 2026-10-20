@@ -31,6 +31,16 @@ backs it.
   enfoque, endurance, appetite, apetito. These are structure/function claims, and
   each one needs the disclaimer below.
 
+## SÍ QUEMA specifics
+
+- **The label says "ENERGY + FOCUS".** That's a benefit claim. Any video where the
+  label is readable carries the FDA disclaimer card. Default: every video has it.
+- **The store title says "Thermogenic Fat Burner Powder"** and products are tagged
+  "fat burner". That's the store's call, not the video's. In video, "fat burner" only
+  appears if it's on the physical label in shot, never as a headline, caption, or VO.
+- The store's warning (200 mg caffeine, one scoop a day, 18+, not if pregnant or
+  nursing, ask a doctor) goes in the caption or post copy of any ad that talks about the caffeine.
+
 ## Always
 
 **FDA disclaimer:** any benefit claim (energy, focus, metabolism, thermogenic...)

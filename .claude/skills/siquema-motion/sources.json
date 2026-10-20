@@ -143,6 +143,185 @@
       "source": "https://siquemasupplements.com/products/mango (fetched 2026-10-19)",
       "show_source": null,
       "added": "2026-10-19"
+    },
+    {
+      "id": "dose-caffeine",
+      "claim": "200 mg caffeine per serving",
+      "match": [
+        "200 mg",
+        "200mg"
+      ],
+      "source": "Product page + Supplement Facts, https://siquemasupplements.com/products/mango (same on all four flavors; fetched 2026-10-19). Verify against the physical label before a campaign.",
+      "show_source": null,
+      "added": "2026-10-20"
+    },
+    {
+      "id": "dose-carnitine-total",
+      "claim": "2 g L-carnitine per serving",
+      "match": [
+        "2 g",
+        "2g"
+      ],
+      "source": "Product page + Supplement Facts, https://siquemasupplements.com/products/mango (same on all four flavors; fetched 2026-10-19). Verify against the physical label before a campaign.",
+      "show_source": null,
+      "added": "2026-10-20"
+    },
+    {
+      "id": "dose-nalc",
+      "claim": "N-Acetyl L-Carnitine HCl 1 g",
+      "match": [
+        "1 g",
+        "1g"
+      ],
+      "source": "Product page + Supplement Facts, https://siquemasupplements.com/products/mango (same on all four flavors; fetched 2026-10-19). Verify against the physical label before a campaign.",
+      "show_source": null,
+      "added": "2026-10-20"
+    },
+    {
+      "id": "dose-tyrosine",
+      "claim": "L-Tyrosine 500 mg",
+      "match": [
+        "500 mg",
+        "500mg"
+      ],
+      "source": "Product page + Supplement Facts, https://siquemasupplements.com/products/mango (same on all four flavors; fetched 2026-10-19). Verify against the physical label before a campaign.",
+      "show_source": null,
+      "added": "2026-10-20"
+    },
+    {
+      "id": "dose-theanine",
+      "claim": "L-Theanine 350 mg",
+      "match": [
+        "350 mg",
+        "350mg"
+      ],
+      "source": "Product page + Supplement Facts, https://siquemasupplements.com/products/mango (same on all four flavors; fetched 2026-10-19). Verify against the physical label before a campaign.",
+      "show_source": null,
+      "added": "2026-10-20"
+    },
+    {
+      "id": "dose-capsimax",
+      "claim": "Capsimax Cayenne Extract 100 mg",
+      "match": [
+        "100 mg",
+        "100mg"
+      ],
+      "source": "Product page + Supplement Facts, https://siquemasupplements.com/products/mango (same on all four flavors; fetched 2026-10-19). Verify against the physical label before a campaign.",
+      "show_source": null,
+      "added": "2026-10-20"
+    },
+    {
+      "id": "dose-gbb",
+      "claim": "Gamma-Butyrobetaine HCl 75 mg",
+      "match": [
+        "75 mg",
+        "75mg"
+      ],
+      "source": "Product page + Supplement Facts, https://siquemasupplements.com/products/mango (same on all four flavors; fetched 2026-10-19). Verify against the physical label before a campaign.",
+      "show_source": null,
+      "added": "2026-10-20"
+    },
+    {
+      "id": "dose-astragin",
+      "claim": "AstraGin 50 mg",
+      "match": [
+        "50 mg",
+        "50mg"
+      ],
+      "source": "Product page + Supplement Facts, https://siquemasupplements.com/products/mango (same on all four flavors; fetched 2026-10-19). Verify against the physical label before a campaign.",
+      "show_source": null,
+      "added": "2026-10-20"
+    },
+    {
+      "id": "dose-grains-of-paradise",
+      "claim": "Grains of Paradise Extract 40 mg",
+      "match": [
+        "40 mg",
+        "40mg"
+      ],
+      "source": "Product page + Supplement Facts, https://siquemasupplements.com/products/mango (same on all four flavors; fetched 2026-10-19). Verify against the physical label before a campaign.",
+      "show_source": null,
+      "added": "2026-10-20"
+    },
+    {
+      "id": "serving-size",
+      "claim": "1 scoop = 4.5 g",
+      "match": [
+        "4.5 g",
+        "4.5g"
+      ],
+      "source": "Product page + Supplement Facts, https://siquemasupplements.com/products/mango (same on all four flavors; fetched 2026-10-19). Verify against the physical label before a campaign.",
+      "show_source": null,
+      "added": "2026-10-20"
+    },
+    {
+      "id": "servings-per-tub",
+      "claim": "30 servings per tub",
+      "match": [
+        "30 servings",
+        "30 porciones"
+      ],
+      "source": "Product page + Supplement Facts, https://siquemasupplements.com/products/mango (same on all four flavors; fetched 2026-10-19). Verify against the physical label before a campaign.",
+      "show_source": null,
+      "added": "2026-10-20"
+    },
+    {
+      "id": "net-wt",
+      "claim": "Net wt. 135 g",
+      "match": [
+        "135 g",
+        "135g"
+      ],
+      "source": "Product page + Supplement Facts, https://siquemasupplements.com/products/mango (same on all four flavors; fetched 2026-10-19). Verify against the physical label before a campaign.",
+      "show_source": null,
+      "added": "2026-10-20"
+    },
+    {
+      "id": "ingredient-count",
+      "claim": "Nine ingredients, every dose on the label",
+      "match": [
+        "9 ingredients",
+        "nine ingredients"
+      ],
+      "source": "Product page + Supplement Facts, https://siquemasupplements.com/products/mango (same on all four flavors; fetched 2026-10-19). Verify against the physical label before a campaign.",
+      "show_source": null,
+      "added": "2026-10-20"
+    },
+    {
+      "id": "guarantee",
+      "claim": "30-day money-back guarantee",
+      "match": [
+        "30 days",
+        "30 dias",
+        "30 días"
+      ],
+      "source": "Product page + Supplement Facts, https://siquemasupplements.com/products/mango (same on all four flavors; fetched 2026-10-19). Verify against the physical label before a campaign.",
+      "show_source": null,
+      "added": "2026-10-20"
+    },
+    {
+      "id": "shipping",
+      "claim": "Ships from California in 1-2 business days",
+      "match": [
+        "2 business days",
+        "2 days",
+        "2 dias",
+        "2 días"
+      ],
+      "source": "Product page + Supplement Facts, https://siquemasupplements.com/products/mango (same on all four flavors; fetched 2026-10-19). Verify against the physical label before a campaign.",
+      "show_source": null,
+      "added": "2026-10-20"
+    },
+    {
+      "id": "flavor-count",
+      "claim": "4 flavors",
+      "match": [
+        "4 flavors",
+        "4 sabores"
+      ],
+      "source": "Product page + Supplement Facts, https://siquemasupplements.com/products/mango (same on all four flavors; fetched 2026-10-19). Verify against the physical label before a campaign.",
+      "show_source": null,
+      "added": "2026-10-20"
     }
   ],
   "ignore_numbers": [
