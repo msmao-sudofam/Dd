@@ -48,9 +48,16 @@ the video. This skill decides whether it ships.
    - It scans the code for slop patterns, scans every text for banned claims,
      checks every number against `sources.json`, checks the FDA disclaimer, checks
      flashing (more than 3 flashes per second fails), and writes a contact sheet.
-   - Then **you** open the contact sheet(s) it wrote and check each frame against
-     `slop.md` and `principles.md` yourself. Write the result into the report under
-     "Visual check". Code passing is not enough. The frames have to pass.
+   - Then **the godfather** reviews the frames. That's a separate reviewer whose
+     only job is saying no. Spawn it with the Agent tool, without your build context,
+     so it can't go easy on its own work. Give it: the contact sheet paths,
+     `gate_report.md`, `slop.md`, `principles.md`, `compliance.md`, `sources.json`.
+     Tell it: "You are the godfather of graphics. Every graphic must point to
+     something real (the label, the product, the person, the room). Fail anything
+     on the ban list, any unsourced number, any AI-looking product or person, any
+     stutter. Return PASS or FAIL with a reason for each frame you object to."
+     Paste its verdict into the report under "Visual check". Code passing is not
+     enough. The frames have to pass the godfather.
    - FAIL → fix and re-run. Never show M Mo a render that hasn't passed.
      WARN → fix it, or write one line on why it stays.
 6. **Present** the render with the gate summary line (`MOTION GATE: PASS …`).
@@ -59,6 +66,20 @@ the video. This skill decides whether it ships.
    the move in `moves.json` too. If it bans something, add it to `slop.md` and,
    when it can be detected in code, to the patterns in `scripts/gate.py`.
 8. **Log usage.** `python3 scripts/moves.py use <id> [<id> ...]` for each move that shipped.
+
+## Transcription
+
+Transcription goes through the **ElevenLabs connector**, no API key needed (video-use's
+own Scribe path wants `ELEVENLABS_API_KEY`; skip it). It costs roughly 6 credits
+per second of audio (~15¢ for 75 s), so transcribe each source once and cache it.
+1. `ffmpeg -i <video> -vn -ac 1 -b:a 96k <edit>/audio/<name>.mp3`
+2. `creative_create_flow` → `creative_create_asset_upload` (exact byte size, `audio/mpeg`)
+   → `curl -X PUT -H "Content-Type: audio/mpeg" --data-binary @<mp3> "<upload_url>"`
+   → `creative_finalize_asset_upload` with the flow_id
+3. `creative_transcribe_audio` (model `eleven_scribe_v1`, connect_from = that node), then poll
+   `creative_get_flow_run_status`. Never call transcribe twice for the same file; each call is charged.
+4. Save the `words` array (word-level start/end) to `<edit>/transcripts/<name>.json`.
+   That's the same shape video-use expects, so cuts and captions work from it.
 
 ## Move lifecycle
 

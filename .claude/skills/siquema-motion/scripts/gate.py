@@ -9,6 +9,7 @@ What it checks:
   numbers every claim-shaped number must match sources.json
   disclaimer any benefit claim requires the FDA disclaimer text
   flashes  more than 3 flashes in any 1 s window fails (photosensitivity, and it's a scam tell)
+  stutter  dropped-frame gaps fail; brief mid-move freezes (120-400 ms) warn
   frames   writes contact sheets to --out for Claude's visual check (step 2 of the gate)
 
 Silence a code finding on purpose with a comment on that line:  gate: allow <rule-id>, <reason>
@@ -242,6 +243,28 @@ def check_flashes(video, rep, threshold=25.0):
         rep.add("PASS", "flashes", str(video), f"max {worst} flash(es) in any 1 s window")
 
 
+def check_stutter(video, rep):
+    """Stutters: dropped frames (timestamp gaps) and brief freezes (a held frame mid-motion)."""
+    r = run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "frame=pts_time", "-of", "csv=p=0", str(video)])
+    pts = sorted(float(x) for x in r.stdout.split() if x.replace(".", "", 1).isdigit())
+    if len(pts) > 2:
+        deltas = [b - a for a, b in zip(pts, pts[1:])]
+        nominal = sorted(deltas)[len(deltas) // 2]
+        gaps = [(pts[i + 1], d) for i, d in enumerate(deltas) if nominal and d > 1.6 * nominal]
+        if gaps:
+            first = ", ".join(f"{t:.2f}s" for t, _ in gaps[:5])
+            rep.add("FAIL", "stutter/dropped", str(video), f"{len(gaps)} dropped-frame gap(s) at {first}. Re-render at a constant frame rate.")
+    r = run(["ffmpeg", "-v", "info", "-i", str(video), "-vf", "freezedetect=n=0.002:d=0.12", "-an", "-f", "null", "-"])
+    starts = [float(m) for m in re.findall(r"freeze_start: ([\d.]+)", r.stderr)]
+    durs = [float(m) for m in re.findall(r"freeze_duration: ([\d.]+)", r.stderr)]
+    brief = [(s, d) for s, d in zip(starts, durs) if d < 0.4]
+    if brief:
+        where = ", ".join(f"{s:.2f}s ({d * 1000:.0f}ms)" for s, d in brief[:5])
+        rep.add("WARN", "stutter/freeze", str(video), f"{len(brief)} brief freeze(s) at {where}. Check these frames: a hold on purpose is fine, a hitch mid-move is not.")
+    if not any(c.startswith("stutter") for _, c, _, _ in rep.items):
+        rep.add("PASS", "stutter", str(video), "constant frame timing, no brief freezes")
+
+
 def contact_sheets(video, out, duration, every=1.0):
     out.mkdir(parents=True, exist_ok=True)
     for old in out.glob("sheet_*.jpg"):
@@ -282,6 +305,7 @@ def main():
     if args.video:
         dur = probe_duration(args.video)
         check_flashes(args.video, rep)
+        check_stutter(args.video, rep)
         sheets = contact_sheets(args.video, out, dur, every=max(0.5, min(2.0, dur / 48)))
 
     fails, warns = rep.count("FAIL"), rep.count("WARN")
