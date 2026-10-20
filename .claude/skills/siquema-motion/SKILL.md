@@ -15,6 +15,7 @@ the video. This skill decides whether it ships.
 | File | What it holds | Read when |
 |---|---|---|
 | `brand/brand.md` | Who SÍ QUEMA is, products, voice, assets rules | Every job, first |
+| `brand/store.json` | Live catalog: titles, prices, descriptions, photo paths (from `scripts/fetch_store.py`) | Any product shot or price. If it's missing or more than 30 days old, re-run the fetch. |
 | `principles.md` | The 6 rules everything comes back to | Every job |
 | `slop.md` | Ban list + swap table ("instead of X, do Y") | Planning any motion |
 | `compliance.md` | What a supplement video can and can't say | Any on-screen text, VO, or caption |
