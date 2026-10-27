@@ -41,12 +41,24 @@ On a machine that can't reach Google Fonts, set `REMOTION_LOCAL_FONTS=1` to load
 ## Rules baked in
 
 - All label numbers live in `src/lib/theme.ts` (`INGREDIENTS`, `WARNINGS`, …), copied verbatim from the label brief. Change them only there, and only from the physical label.
-- Every reel shows `200 mg caffeine per serving · 18+`. Reels that show a line ending in `*` (4, 5, 8) also show the FDA disclaimer.
+- Every reel shows `200 mg caffeine per serving · 18+`. Reels that show a line ending in `*` (4, 5, 8) also show the FDA disclaimer, worded as in 21 CFR 101.93 ("…evaluated by the Food and Drug Administration…").
 - Text stays between y=220 and y=1500. The fine print sits at the bottom of that zone, so the TikTok caption UI doesn't cover it.
 - Frame 0 is the cover: the hook is fully on screen with no fade.
 - Loop: in the last 0.5 s, frame 0 slides back in and lands 3 frames before the end.
 - Audio is synthesized SFX only (`scripts/make-sfx.mjs`). Add the trending sound in TikTok.
 - Claim language: no "fat burner / burn fat / lose weight / clean / all natural / detox / clinically proven", and no before/after.
+
+## Brand gate
+
+Before anything ships, run the SÍ QUEMA motion gate (`.claude/skills/siquema-motion`) from the repo root:
+
+```bash
+python3 .claude/skills/siquema-motion/scripts/gate.py --video siquema-viral-remotion/out/<Id>.mp4 \
+  --code siquema-viral-remotion/src siquema-viral-remotion/scripts --out verify/<Id>
+```
+
+The brief asks for some moves the gate bans by default: the punch zoom, the whooshes (synthesized here, not stock), the 3-2-1 countdown and the 1→9 dose counters.
+Where the gate's code scan catches one (the punch zoom and the whooshes), the line carries a `// gate: allow <rule>, <reason>` comment.
 
 ## Layout
 

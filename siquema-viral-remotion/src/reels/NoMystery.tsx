@@ -3,7 +3,7 @@ import { AbsoluteFill, useCurrentFrame } from "remotion";
 import { Caption, E, Reel, prog } from "../lib/fx";
 import { ANTON, C, INTER, sec } from "../lib/theme";
 
-// 8 cards x 0.9 s = 7.2 s, + the NO MYSTERY slam + 0.5 s loop = 9.5 s
+// 8 cards x 0.9 s = 7.2 s, + the NO MYSTERY card + 0.5 s loop = 9.5 s
 export const NO_MYSTERY_DUR = sec(9.5);
 
 const CARDS = [
@@ -33,7 +33,7 @@ const Body: React.FC = () => {
   const end = f >= END_AT;
   const th = themeAt(f);
   const local = f - i * STEP;
-  const k = i === 0 && f < STEP ? 1 : prog(local, 0, 6, E.back);
+  const k = i === 0 && f < STEP ? 1 : prog(local, 0, 6, E.settle);
   const card = CARDS[i];
   const ek = prog(f, END_AT, 7);
   return (

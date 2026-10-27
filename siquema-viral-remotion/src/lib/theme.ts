@@ -34,7 +34,7 @@ export const C = {
 export const W = 1080;
 export const H = 1920;
 export const FPS = 30;
-/** All text lives between these y values (TikTok UI covers the rest). */
+/** All text stays inside this vertical band (TikTok UI covers the rest). */
 export const SAFE_TOP = 220;
 export const SAFE_BOTTOM = 1500;
 
@@ -79,7 +79,8 @@ export const WARNINGS = [
 
 export const FINE_PRINT = "200 mg caffeine per serving · 18+";
 export const FDA =
-  "*These statements have not been evaluated by the FDA. This product is not intended to diagnose, treat, cure or prevent any disease.";
+  // 21 CFR 101.93 wording (the brand gate requires the agency name spelled out)
+  "*These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease.";
 
 /** A made-up, generic "proprietary blend" label used as the comparison. Not any real brand. */
 export const EXAMPLE_BLEND = {

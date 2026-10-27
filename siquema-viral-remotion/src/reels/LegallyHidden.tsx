@@ -61,7 +61,7 @@ const SceneBlend: React.FC = () => {
       </svg>
       <AbsoluteFill style={{ background: C.cream, opacity: scrim * 0.96, top: 880 }} />
       {Questions.map((q, i) => {
-        const k = prog(f, Q_AT[i], 7, E.back);
+        const k = prog(f, Q_AT[i], 7, E.settle);
         if (f < Q_AT[i]) return null;
         return (
           <div
@@ -158,10 +158,10 @@ export const LegallyHidden: React.FC = () => {
       dur={LEGALLY_HIDDEN_DUR}
       hits={[CIRCLE_AT + 20, ...Q_AT, WHIP_AT + 10, CAPTION_AT]}
       sfx={[
-        { at: ZOOM_AT, s: "whoosh", v: 0.35 },
+        { at: ZOOM_AT, s: "whoosh", v: 0.35 }, // gate: allow stock-sfx, synthesized, requested in the brief
         { at: CIRCLE_AT + 20, s: "impact" },
         ...Q_AT.map((at) => ({ at, s: "pop" as const })),
-        { at: WHIP_AT - 3, s: "whoosh" },
+        { at: WHIP_AT - 3, s: "whoosh" }, // gate: allow stock-sfx, synthesized, requested in the brief
         ...INGREDIENTS.map((_, i) => ({ at: Math.round(TYPE_AT + (i + 1) * TYPE_STEP), s: "tick" as const })),
         { at: CAPTION_AT, s: "pop" },
       ]}

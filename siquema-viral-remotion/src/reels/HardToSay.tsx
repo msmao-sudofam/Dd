@@ -35,12 +35,12 @@ const Body: React.FC = () => {
   const t0 = pairFrame(idx);
   const active = f >= PAIR_AT && f < CAPTION_AT;
   const sk = idx === 0 ? 1 : Math.min(1, (f - t0) / SCRAMBLE);
-  const card = prog(f, t0 + CARD_DELAY, 9, E.back);
+  const card = prog(f, t0 + CARD_DELAY, 9, E.settle);
   const nameIn = idx === 0 ? 1 : prog(f, t0, 6);
 
   return (
     <AbsoluteFill>
-      <AbsoluteFill style={{ background: `radial-gradient(900px 900px at 50% 48%, #3a0a10 0%, ${C.dark} 70%)` }}>
+      <AbsoluteFill style={{ background: `radial-gradient(900px 900px at 540px 920px, #3a0a10, ${C.dark} 630px)` }}>
         {active ? (
           <>
             <Label color={C.cream} style={{ position: "absolute", top: 520, width: "100%", textAlign: "center", opacity: 0.55 }}>
@@ -110,7 +110,7 @@ export const HardToSay: React.FC = () => (
       hits={[...PAIRS.map((_, i) => pairFrame(i) + CARD_DELAY), CAPTION_AT]}
       sfx={[
         ...PAIRS.flatMap((_, i) => [
-          ...(i > 0 ? [{ at: pairFrame(i) - 2, s: "whoosh" as const, v: 0.25 }] : []),
+          ...(i > 0 ? [{ at: pairFrame(i) - 2, s: "whoosh" as const, v: 0.25 }] : []), // gate: allow stock-sfx, synthesized, requested in the brief
           { at: pairFrame(i) + CARD_DELAY, s: "pop" as const },
         ]),
         { at: CAPTION_AT, s: "impact", v: 0.5 },

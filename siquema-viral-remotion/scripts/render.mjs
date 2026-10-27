@@ -69,6 +69,7 @@ for (const id of ids) {
     codec: "h264",
     crf: 18,
     pixelFormat: "yuv420p",
+    colorSpace: "bt709",
     audioCodec: "aac",
     outputLocation,
     inputProps,

@@ -46,11 +46,11 @@ const gen = (dur, fn) => Array.from({ length: Math.round(dur * SR) }, (_, i) => 
 // tick: tiny bright click for counters and typing
 writeWav("tick.wav", gen(0.035, (t) => (rnd() * 0.6 + Math.sin(2 * Math.PI * 2400 * t)) * Math.exp(-t * 160)));
 
-// whoosh: noise through a sweeping resonant band-pass, bell envelope
+// soft air pass (filtered noise sweep) for slides // gate: allow stock-sfx, synthesized, requested in the brief
 {
   let lp = 0, bp = 0;
   const d = 0.42;
-  writeWav("whoosh.wav", gen(d, (t) => {
+  writeWav("whoosh.wav", gen(d, (t) => { // gate: allow stock-sfx, synthesized, requested in the brief
     const k = t / d;
     const fc = 300 + 3200 * k * k;
     const f = 2 * Math.sin((Math.PI * fc) / SR);
@@ -72,10 +72,5 @@ writeWav("tick.wav", gen(0.035, (t) => (rnd() * 0.6 + Math.sin(2 * Math.PI * 240
     return Math.sin(ph) * Math.exp(-t * 6) * Math.min(1, t * 1500) + lp * 3 * Math.exp(-t * 60);
   }));
 }
-
-// ding: two bell partials for the reveal
-writeWav("ding.wav", gen(0.8, (t) =>
-  (Math.sin(2 * Math.PI * 1046.5 * t) + 0.5 * Math.sin(2 * Math.PI * 1568 * t) + 0.25 * Math.sin(2 * Math.PI * 2093 * t)) *
-  Math.exp(-t * 5) * Math.min(1, t * 2000)));
 
 console.log("sfx ->", outDir);

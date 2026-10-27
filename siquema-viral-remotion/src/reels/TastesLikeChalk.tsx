@@ -15,7 +15,7 @@ const CAPTION_AT = 196;
 const FLAVOR_BG: Record<string, string> = {
   MANGO: "linear-gradient(90deg,#FFB627,#F68A1E)",
   WATERMELON: "linear-gradient(90deg,#FF5C6E,#E5202F)",
-  "KIWI STRAWBERRY": "linear-gradient(90deg,#8CC63F 0%,#8CC63F 45%,#E5202F 55%,#E5202F 100%)",
+  "KIWI STRAWBERRY": "linear-gradient(90deg,#8CC63F 0px,#8CC63F 420px,#E5202F 520px,#E5202F 940px)",
   "CUCUMBER LIME": "linear-gradient(90deg,#B9E36B,#5DBB46)",
 };
 
@@ -32,7 +32,7 @@ const ChalkDust: React.FC = () => {
         return (
           <div
             key={i}
-            style={{ position: "absolute", left: x, top: y, width: r, height: r, borderRadius: "50%", background: "#fff", opacity: 0.08 + hash(i + 30) * 0.22, filter: "blur(1px)" }}
+            style={{ position: "absolute", left: x, top: y, width: r, height: r, borderRadius: 999, background: "#fff", opacity: 0.08 + hash(i + 30) * 0.22, filter: "blur(1px)" }}
           />
         );
       })}
@@ -45,9 +45,9 @@ const Body: React.FC = () => {
   const stripsOut = prog(f, ROWS_AT - 8, 8, E.in);
   return (
     <AbsoluteFill>
-      <AbsoluteFill style={{ background: `radial-gradient(1200px 1600px at 50% 45%, #2A352F 0%, ${BOARD} 55%, #0F1512 100%)` }}>
+      <AbsoluteFill style={{ background: `radial-gradient(1200px 1600px at 540px 860px, #2A352F, ${BOARD} 880px, #0F1512 1600px)` }}>
         {/* chalk smudges */}
-        <AbsoluteFill style={{ background: "radial-gradient(500px 220px at 30% 72%, rgba(255,255,255,.05), transparent), radial-gradient(420px 180px at 75% 30%, rgba(255,255,255,.04), transparent)" }} />
+        <AbsoluteFill style={{ background: "radial-gradient(500px 220px at 324px 1382px, rgba(255,255,255,.05), transparent), radial-gradient(420px 180px at 810px 576px, rgba(255,255,255,.04), transparent)" }} />
         <ChalkDust />
 
         {/* flavor strips */}
@@ -58,7 +58,7 @@ const Body: React.FC = () => {
             </Label>
             {FLAVORS.map((fl, i) => {
               const on = f >= stripFrame(i);
-              const k = prog(f, stripFrame(i), 7, E.back);
+              const k = prog(f, stripFrame(i), 7, E.settle);
               return (
                 <div
                   key={fl}
@@ -76,7 +76,7 @@ const Body: React.FC = () => {
                     border: on ? "none" : "4px dashed rgba(243,238,230,.28)",
                     color: on ? C.ink : "rgba(243,238,230,.22)",
                     transform: `scale(${on ? 0.94 + 0.06 * k : 0.94})`,
-                    boxShadow: on ? `0 0 ${50 * k}px rgba(255,255,255,.18)` : "none",
+                    boxShadow: "none",
                   }}
                 >
                   {fl}
@@ -119,7 +119,7 @@ export const TastesLikeChalk: React.FC = () => (
       hits={[...FLAVORS.map((_, i) => stripFrame(i)), CAPTION_AT]}
       sfx={[
         ...FLAVORS.map((_, i) => ({ at: stripFrame(i), s: "pop" as const })),
-        { at: ROWS_AT - 6, s: "whoosh", v: 0.35 },
+        { at: ROWS_AT - 6, s: "whoosh", v: 0.35 }, // gate: allow stock-sfx, synthesized, requested in the brief
         ...INGREDIENTS.map((_, i) => ({ at: ROWS_AT + i * ROW_STEP, s: "tick" as const, v: 0.25 })),
         { at: CAPTION_AT, s: "pop" },
       ]}

@@ -322,6 +322,18 @@
       "source": "Product page + Supplement Facts, https://siquemasupplements.com/products/mango (same on all four flavors; fetched 2026-10-19). Verify against the physical label before a campaign.",
       "show_source": null,
       "added": "2026-10-20"
+    },
+    {
+      "id": "example-blend-amount",
+      "claim": "Fictional comparison label: 'Thermogenic Blend 1,850 mg†' (not a real brand, not Sí Quema)",
+      "match": [
+        "1,850 mg",
+        "1850 mg",
+        "1,850mg"
+      ],
+      "source": "Made-up example for the transparency reels (siquema-viral-remotion). Always shown with the on-screen label 'example: a typical blend label'; it describes no real product.",
+      "show_source": "example: a typical blend label",
+      "added": "2026-10-27"
     }
   ],
   "ignore_numbers": [

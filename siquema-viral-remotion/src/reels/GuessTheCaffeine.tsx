@@ -26,7 +26,7 @@ const CORRECT = 1;
 const PowderBg: React.FC = () => {
   const f = useCurrentFrame();
   return (
-    <AbsoluteFill style={{ background: `radial-gradient(900px 1100px at 50% 62%, #5a0d14 0%, ${C.dark} 70%)` }}>
+    <AbsoluteFill style={{ background: `radial-gradient(900px 1100px at 540px 1190px, #5a0d14, ${C.dark} 770px)` }}>
       {Array.from({ length: 90 }, (_, i) => {
         const x = hash(i) * 1080;
         const y0 = hash(i + 100) * 1920;
@@ -41,7 +41,7 @@ const PowderBg: React.FC = () => {
               top: y,
               width: r,
               height: r,
-              borderRadius: "50%",
+              borderRadius: 999,
               background: C.cream,
               opacity: 0.08 + hash(i + 400) * 0.25,
               filter: `blur(${hash(i + 500) * 2}px)`,
@@ -56,7 +56,7 @@ const PowderBg: React.FC = () => {
 const Body: React.FC<z.infer<typeof guessSchema>> = ({ scoopSrc }) => {
   const f = useCurrentFrame();
   const revealed = f >= REVEAL_AT;
-  const rk = prog(f, REVEAL_AT, 8, E.back);
+  const rk = prog(f, REVEAL_AT, 8, E.settle);
   const n = Math.floor((f - COUNT_AT) / 30); // 0,1,2 -> "3","2","1"
   const inCount = f >= COUNT_AT && f < REVEAL_AT;
   const ck = inCount ? (f - COUNT_AT - n * 30) / 30 : 0;
@@ -74,7 +74,7 @@ const Body: React.FC<z.infer<typeof guessSchema>> = ({ scoopSrc }) => {
       <AbsoluteFill
         style={{
           background:
-            "linear-gradient(180deg, rgba(11,8,9,.72) 0%, rgba(11,8,9,.25) 30%, rgba(11,8,9,.35) 55%, rgba(11,8,9,.85) 100%)",
+            "linear-gradient(180deg, rgba(11,8,9,.72) 0px, rgba(11,8,9,.25) 576px, rgba(11,8,9,.35) 1056px, rgba(11,8,9,.85) 1920px)",
         }}
       />
 
@@ -120,7 +120,7 @@ const Body: React.FC<z.infer<typeof guessSchema>> = ({ scoopSrc }) => {
                 color: on ? "#fff" : C.ink,
                 opacity: dim ? 1 - 0.65 * rk : 1,
                 transform: `scale(${on ? 1 + 0.1 * rk : 1})`,
-                boxShadow: on ? `0 0 ${60 * rk}px rgba(229,32,47,.8)` : "0 8px 30px rgba(0,0,0,.3)",
+                boxShadow: "0 8px 30px rgba(0,0,0,.3)",
               }}
             >
               {c.k} {c.v}
@@ -145,7 +145,7 @@ export const GuessTheCaffeine: React.FC<z.infer<typeof guessSchema>> = (props) =
         { at: COUNT_AT, s: "tick", v: 0.6 },
         { at: COUNT_AT + 30, s: "tick", v: 0.6 },
         { at: COUNT_AT + 60, s: "tick", v: 0.6 },
-        { at: REVEAL_AT, s: "ding" },
+        { at: REVEAL_AT, s: "pop" },
         { at: REVEAL_AT, s: "impact", v: 0.5 },
         { at: ANSWER_AT, s: "pop" },
         { at: COMMENT_AT, s: "pop" },

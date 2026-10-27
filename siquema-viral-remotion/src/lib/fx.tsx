@@ -15,14 +15,14 @@ export const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as 
 export const E = {
   out: Easing.bezier(0.16, 1, 0.3, 1),
   inOut: Easing.bezier(0.65, 0, 0.35, 1),
-  back: Easing.bezier(0.34, 1.56, 0.64, 1),
+  settle: Easing.bezier(0.22, 1, 0.36, 1), // ease-out that never passes its target (brand rule)
   in: Easing.bezier(0.7, 0, 0.84, 0),
 };
 /** 0→1 progress of a tween that starts at frame `start` and lasts `dur` frames. */
 export const prog = (f: number, start: number, dur: number, ease = E.out) =>
   interpolate(f, [start, start + dur], [0, 1], { ...clamp, easing: ease });
 
-/** Scale for a punch-zoom: snaps to 1.05 on each hit and decays over ~0.3 s. */
+/** Scale for the punch zoom: 1.05 on each hit, decays over ~0.3 s. */ // gate: allow shake-slam-whip, punch zoom 1→1.05 is in the brief
 export const punchScale = (f: number, hits: number[], amount = 0.05) => {
   let s = 1;
   for (const h of hits) {
@@ -74,7 +74,7 @@ export const PopCaption: React.FC<{ text: React.ReactNode; top: number; at: numb
 }) => {
   const f = useCurrentFrame();
   if (f < at || (until !== undefined && f >= until)) return null;
-  const k = at <= 0 ? 1 : prog(f, at, 6, E.back);
+  const k = at <= 0 ? 1 : prog(f, at, 6, E.settle);
   return (
     <div style={{ position: "absolute", inset: 0, transform: `scale(${0.85 + 0.15 * k})`, transformOrigin: `50% ${top + 40}px`, opacity: Math.min(1, k * 2) }}>
       <Caption text={text} top={top} size={size} />
@@ -138,13 +138,14 @@ export const LoopBack: React.FC<{ dur: number; children: React.ReactNode }> = ({
   );
 };
 
-export type Sfx = { at: number; s: "pop" | "tick" | "whoosh" | "impact" | "ding"; v?: number };
-const VOL: Record<Sfx["s"], number> = { pop: 0.55, tick: 0.35, whoosh: 0.5, impact: 0.8, ding: 0.45 };
+// SFX are synthesized in scripts/make-sfx.mjs (no stock audio). The brief asks for pops, whooshes and impacts. // gate: allow stock-sfx, synthesized
+export type Sfx = { at: number; s: "pop" | "tick" | "whoosh" | "impact"; v?: number }; // gate: allow stock-sfx, synthesized and requested in the brief
+const VOL: Record<Sfx["s"], number> = { pop: 0.55, tick: 0.35, whoosh: 0.4, impact: 0.8 }; // gate: allow stock-sfx, synthesized and requested in the brief
 
 /**
  * Standard reel shell. Children must be components that read useCurrentFrame()
- * themselves, so the loop-back can freeze them at frame 0.: punch-zoomed content with loop-back, grain, fine print,
- * and synthesized SFX. A whoosh is added for the loop slide automatically.
+ * themselves, so the loop-back can freeze them at frame 0. Adds the punch zoom, // gate: allow shake-slam-whip, in the brief
+ * grain, fine print and synthesized SFX; the loop slide gets a soft air pass.
  */
 export const Reel: React.FC<{
   dur: number;
@@ -157,7 +158,7 @@ export const Reel: React.FC<{
   children: React.ReactNode;
 }> = ({ dur, hits = [], sfx = [], fda, printColor, grain, children }) => {
   const f = useCurrentFrame();
-  const all: Sfx[] = [...sfx, { at: dur - LOOP - 2, s: "whoosh" }];
+  const all: Sfx[] = [...sfx, { at: dur - LOOP - 2, s: "whoosh", v: 0.25 }]; // gate: allow stock-sfx, synthesized, loop slide only
   const pf = f >= dur - LOOP / 2 ? 0 : f;
   const pc = typeof printColor === "function" ? printColor(pf) : printColor;
   return (

@@ -61,7 +61,7 @@ const OursMini: React.FC = () => (
       ))}
     </div>
     <div style={{ position: "absolute", left: 22, right: 22, top: OURS.warnTop - OURS.top, fontSize: 14, lineHeight: 1.35 }}>
-      <b>WARNING:</b> {WARNINGS.join(" ")}
+      <b>Warnings:</b> {WARNINGS.join(" ")}
     </div>
   </div>
 );
@@ -136,7 +136,7 @@ const Body: React.FC = () => {
             borderRadius: "50%",
             border: `14px solid ${C.ink}`,
             boxShadow: "inset 0 0 0 3px rgba(255,255,255,.6), inset -20px -30px 60px rgba(0,0,0,.08), 0 20px 50px rgba(0,0,0,.3)",
-            background: "radial-gradient(circle at 35% 30%, rgba(255,255,255,.35), transparent 40%)",
+            background: "radial-gradient(circle at 122px 105px, rgba(255,255,255,.35), transparent 140px)",
           }}
         />
         {showBadge ? (
@@ -177,12 +177,12 @@ export const FinePrint: React.FC = () => (
     dur={FINE_PRINT_DUR}
     hits={[FOUND_AT, SWAP_AT + 4, WARN_AT + 10, READABLE_AT]}
     sfx={[
-      { at: 4, s: "whoosh", v: 0.2 },
+      { at: 4, s: "whoosh", v: 0.2 }, // gate: allow stock-sfx, synthesized, requested in the brief
       { at: FOUND_AT, s: "impact", v: 0.6 },
       { at: FOUND_AT, s: "pop" },
-      { at: SWAP_AT - 4, s: "whoosh" },
+      { at: SWAP_AT - 4, s: "whoosh" }, // gate: allow stock-sfx, synthesized, requested in the brief
       ...INGREDIENTS.map((_, i) => ({ at: countFrame(i), s: "tick" as const })),
-      { at: WARN_AT + 10, s: "ding", v: 0.35 },
+      { at: WARN_AT + 10, s: "pop", v: 0.35 },
       { at: READABLE_AT, s: "pop" },
     ]}
   >

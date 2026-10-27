@@ -11,12 +11,12 @@ const TICK_AT = 30;
 const TICK_STEP = 7.5; // 0.25 s per dose row
 const tickFrame = (i: number) => Math.round(TICK_AT + i * TICK_STEP);
 const COMPARE_AT = 100;
-const SLAM_AT = 150;
+const BIG_AT = 150;
 
 const Tag: React.FC<{ children: React.ReactNode; top: number; at: number; bg: string; color: string }> = ({ children, top, at, bg, color }) => {
   const f = useCurrentFrame();
   if (f < at) return null;
-  const k = prog(f, at, 7, E.back);
+  const k = prog(f, at, 7, E.settle);
   return (
     <div style={{ position: "absolute", top, width: "100%", textAlign: "center", transform: `scale(${0.6 + 0.4 * k})`, opacity: Math.min(1, k * 2) }}>
       <span style={{ fontFamily: INTER, fontWeight: 800, fontSize: 76, background: bg, color, padding: "10px 34px", borderRadius: 18 }}>{children}</span>
@@ -31,7 +31,7 @@ const Body: React.FC = () => {
   const bump = Math.max(0, 1 - (f - lastTick) / 6);
   const shake = f >= TICK_AT && f < tickFrame(8) + 6 ? Math.sin(f * 2.3) * 6 * bump : 0;
   const dimRows = prog(f, COMPARE_AT + 8, 6);
-  const slam = prog(f, SLAM_AT, 7, E.out);
+  const big = prog(f, BIG_AT, 7, E.out);
 
   return (
     <AbsoluteFill>
@@ -64,7 +64,7 @@ const Body: React.FC = () => {
         </div>
         <div style={{ position: "absolute", left: 70, right: 70, top: 150 }}>
           {INGREDIENTS.map((ing, i) => {
-            const k = prog(f, tickFrame(i), 5, E.back);
+            const k = prog(f, tickFrame(i), 5, E.settle);
             const isCaff = i === 0;
             return (
               <DoseRow
@@ -92,8 +92,8 @@ const Body: React.FC = () => {
 
       {f < COMPARE_AT ? <Caption text="count the numbers on each label" top={260} /> : null}
 
-      {f >= SLAM_AT ? (
-        <AbsoluteFill style={{ background: C.dark, opacity: Math.min(1, slam * 3) }}>
+      {f >= BIG_AT ? (
+        <AbsoluteFill style={{ background: C.dark, opacity: Math.min(1, big * 3) }}>
           <div
             style={{
               position: "absolute",
@@ -104,12 +104,12 @@ const Body: React.FC = () => {
               fontSize: 300,
               lineHeight: 1,
               color: C.cream,
-              transform: `scale(${2.4 - 1.4 * slam})`,
+              transform: `scale(${2.4 - 1.4 * big})`,
             }}
           >
             1 <span style={{ fontSize: 150 }}>VS</span> <span style={{ color: C.brightRed }}>9.</span>
           </div>
-          <Label color={C.cream} style={{ position: "absolute", top: 960, width: "100%", textAlign: "center", opacity: prog(f, SLAM_AT + 12, 8) * 0.8, fontSize: 30 }}>
+          <Label color={C.cream} style={{ position: "absolute", top: 960, width: "100%", textAlign: "center", opacity: prog(f, BIG_AT + 12, 8) * 0.8, fontSize: 30 }}>
             numbers on the label
           </Label>
         </AbsoluteFill>
@@ -121,14 +121,14 @@ const Body: React.FC = () => {
 export const CountTheNumbers: React.FC = () => (
   <Reel
       dur={COUNT_DUR}
-      printColor={(f) => (f >= SLAM_AT ? C.cream : C.ink)}
-      hits={[COMPARE_AT, COMPARE_AT + 12, SLAM_AT]}
+      printColor={(f) => (f >= BIG_AT ? C.cream : C.ink)}
+      hits={[COMPARE_AT, COMPARE_AT + 12, BIG_AT]}
       sfx={[
         ...INGREDIENTS.map((_, i) => ({ at: tickFrame(i), s: "tick" as const })),
         { at: COMPARE_AT, s: "pop" },
         { at: COMPARE_AT + 12, s: "pop" },
-        { at: SLAM_AT - 4, s: "whoosh", v: 0.35 },
-        { at: SLAM_AT, s: "impact" },
+        { at: BIG_AT - 4, s: "whoosh", v: 0.35 }, // gate: allow stock-sfx, synthesized, requested in the brief
+        { at: BIG_AT, s: "impact" },
       ]}
   >
     <Body />
