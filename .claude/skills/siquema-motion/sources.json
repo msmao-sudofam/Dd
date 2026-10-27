@@ -337,11 +337,12 @@
     },
     {
       "id": "caffeine-coffee-comparison",
-      "claim": "200 mg caffeine is about two cups of coffee",
+      "claim": "200 mg caffeine is about two 8-oz cups of coffee",
       "match": [
-        "about two cups of coffee"
+        "about two 8-oz cups of coffee",
+        "two 8-oz cups"
       ],
-      "source": "Owner's label brief for the transparency reels (2026-10-27), as the plain-English line for Caffeine Anhydrous 200 mg. Verify against the physical label / product page before paid use.",
+      "source": "FDA consumer update 'Spilling the Beans: How Much Caffeine is Too Much?' (earlier version: an 8-ounce cup of coffee is about 80-100 mg; current version: 400 mg is about two to three 12-oz cups), https://www.fda.gov/consumers/consumer-updates/spilling-beans-how-much-caffeine-too-much . USDA cites ~95 mg per 8 oz brewed. 2 x 80-100 mg = 160-200 mg.",
       "show_source": null,
       "added": "2026-10-27"
     }

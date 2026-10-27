@@ -56,13 +56,13 @@ export type Ingredient = {
 };
 
 export const INGREDIENTS: Ingredient[] = [
-  { name: "Caffeine Anhydrous", dose: "200 mg", note: "about two cups of coffee" },
+  { name: "Caffeine Anhydrous", dose: "200 mg", note: "about two 8-oz cups of coffee" },
   { name: "N-Acetyl L-Carnitine HCl", dose: "1 g", note: "carnitine, form #1" },
   { name: "L-Carnitine L-Tartrate", dose: "1 g", note: "carnitine, form #2" },
   { name: "L-Tyrosine", dose: "500 mg", note: "mental focus*" },
   { name: "L-Theanine", dose: "350 mg", note: "focus, not jitters*" },
   { name: "Capsimax® Cayenne Ext.", dose: "100 mg", note: "the cayenne kick*" },
-  { name: "Gamma-Butyrobetaine HCl", dose: "75 mg", note: "the one that makes you sweat" },
+  { name: "Gamma-Butyrobetaine HCl", dose: "75 mg", note: "the one that makes you sweat*" },
   { name: "AstraGin®", dose: "50 mg", note: "helps absorption*" },
   { name: "Grains of Paradise Ext.", dose: "40 mg", note: "thermogenic spice*" },
 ];
@@ -85,7 +85,7 @@ export const FDA =
 /** A made-up, generic "proprietary blend" label used as the comparison. Not any real brand. */
 export const EXAMPLE_BLEND = {
   label: "example: a typical blend label",
-  line: "Thermogenic Blend",
+  line: "Proprietary Blend",
   amount: "1,850 mg†",
   names:
     "Caffeine Anhydrous, Acetyl L-Carnitine, Cayenne Pepper Extract, Green Tea Leaf Extract, Black Pepper Extract",

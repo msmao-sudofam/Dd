@@ -1,13 +1,13 @@
 import React from "react";
 import { AbsoluteFill, useCurrentFrame } from "remotion";
-import { Caption, E, Label, Reel, hash, prog } from "../lib/fx";
+import { Caption, E, Label, Reel, prog } from "../lib/fx";
 import { ANTON, C, INTER, sec } from "../lib/theme";
 
 export const HARD_DUR = sec(8.5);
 
 const PAIRS = [
   { name: "N-Acetyl L-Carnitine HCl", plain: "carnitine, form #1", dose: "1 g" },
-  { name: "Gamma-Butyrobetaine HCl", plain: "the one that makes you sweat", dose: "75 mg" },
+  { name: "Gamma-Butyrobetaine HCl", plain: "the one that makes you sweat*", dose: "75 mg" },
   { name: "Astragalus & Panax notoginseng ext.", plain: "AstraGin®, helps absorption*", dose: "50 mg" },
   { name: "Aframomum melegueta (seed) ext.", plain: "grains of paradise, a spice", dose: "40 mg" },
 ];
@@ -18,15 +18,8 @@ const SCRAMBLE = 14;
 const CARD_DELAY = 17;
 const CAPTION_AT = 200;
 
-const GLYPHS = "abcdefghijklmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ"; // letters only: no stray numbers on screen
-const scramble = (text: string, k: number, f: number) =>
-  text
-    .split("")
-    .map((ch, i) => {
-      if (ch === " " || i / text.length < k) return ch;
-      return GLYPHS[Math.floor(hash(i * 31 + f) * GLYPHS.length)];
-    })
-    .join("");
+/** Type-on: the name writes itself left to right (no scrambled letters on screen). */
+const typeOn = (text: string, k: number) => text.slice(0, Math.max(1, Math.ceil(k * text.length)));
 
 const Body: React.FC = () => {
   const f = useCurrentFrame();
@@ -36,7 +29,7 @@ const Body: React.FC = () => {
   const active = f >= PAIR_AT && f < CAPTION_AT;
   const sk = idx === 0 ? 1 : Math.min(1, (f - t0) / SCRAMBLE);
   const card = prog(f, t0 + CARD_DELAY, 9, E.settle);
-  const nameIn = idx === 0 ? 1 : prog(f, t0, 6);
+  const nameIn = 1; // the type-on is the entrance
 
   return (
     <AbsoluteFill>
@@ -63,7 +56,7 @@ const Body: React.FC = () => {
                 minHeight: 160,
               }}
             >
-              {scramble(p.name, sk, f)}
+              {typeOn(p.name, sk)}
             </div>
             {f >= t0 + CARD_DELAY ? (
               <div

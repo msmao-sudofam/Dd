@@ -19,7 +19,7 @@ const AMOUNT = { x: 842, y: 802 };
 const FOCUS = { x: 540, y: 780 };
 const CARD_TOP = 570;
 
-const Questions = ["Caffeine?", "Carnitine?", "Cayenne?"];
+const Questions = ["Caffeine", "Carnitine", "Cayenne"];
 
 const SceneBlend: React.FC = () => {
   const f = useCurrentFrame();
@@ -88,7 +88,7 @@ const SceneBlend: React.FC = () => {
               opacity: Math.min(1, k * 2),
             }}
           >
-            {q} <span style={{ color: C.brightRed }}>? mg</span>
+            {q}: <span style={{ color: C.brightRed }}>? mg</span>
           </div>
         );
       })}
