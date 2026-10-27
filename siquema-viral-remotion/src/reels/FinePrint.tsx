@@ -10,7 +10,8 @@ const FOUND_AT = 90;
 const SWAP_AT = 120;
 const COUNT_AT = 142;
 const COUNT_STEP = 6.5;
-const countFrame = (i: number) => Math.round(COUNT_AT + i * COUNT_STEP);
+/** Frame the lens settles on row i (it travels during the first 45% of each step). */
+const arriveFrame = (i: number) => (i === 0 ? COUNT_AT : Math.round(COUNT_AT + (i - 1 + 0.45) * COUNT_STEP));
 const WARN_AT = 212;
 const READABLE_AT = 225;
 
@@ -69,8 +70,8 @@ const OursMini: React.FC = () => (
 /** Lens position over time. */
 const lensAt = (f: number): { x: number; y: number } => {
   if (f < SWAP_AT) {
-    const xs = [380, 700, 430, 560, AMOUNT.x];
-    const ys = [700, 740, 820, 700, AMOUNT.y];
+    const xs = [380, 690, 430, 560, AMOUNT.x];
+    const ys = [840, 790, 850, 760, AMOUNT.y]; // starts below the example tag so it reads on the cover
     const t = [0, 22, 42, 62, 82];
     return {
       x: interpolate(f, t, xs, { ...clamp, easing: E.inOut }),
@@ -96,8 +97,9 @@ const Body: React.FC = () => {
   const ours = f >= SWAP_AT;
   const swapK = prog(f, SWAP_AT - 4, 8, E.inOut);
   const { x, y } = lensAt(f);
-  const count = f >= COUNT_AT ? INGREDIENTS.filter((_, i) => f >= countFrame(i)).length : ours ? 0 : 1;
-  const lastTick = count > 0 && ours ? countFrame(count - 1) : FOUND_AT;
+  // count = doses the lens has reached, so the badge steps exactly as each dose enters the lens
+  const count = f >= COUNT_AT ? INGREDIENTS.filter((_, i) => rowY(i) <= y + 4).length : ours ? 0 : 1;
+  const lastTick = count > 0 && ours ? arriveFrame(count - 1) : FOUND_AT;
   const bump = Math.max(0, 1 - (f - lastTick) / 6);
   const showBadge = f >= FOUND_AT;
   const Layer = ours ? OursMini : BlendMini;
@@ -181,7 +183,7 @@ export const FinePrint: React.FC = () => (
       { at: FOUND_AT, s: "impact", v: 0.6 },
       { at: FOUND_AT, s: "pop" },
       { at: SWAP_AT - 4, s: "whoosh" }, // gate: allow stock-sfx, synthesized, requested in the brief
-      ...INGREDIENTS.map((_, i) => ({ at: countFrame(i), s: "tick" as const })),
+      ...INGREDIENTS.map((_, i) => ({ at: arriveFrame(i), s: "tick" as const })),
       { at: WARN_AT + 10, s: "pop", v: 0.35 },
       { at: READABLE_AT, s: "pop" },
     ]}

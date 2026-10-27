@@ -35,7 +35,6 @@ const Body: React.FC = () => {
   const local = f - i * STEP;
   const k = i === 0 && f < STEP ? 1 : prog(local, 0, 6, E.settle);
   const card = CARDS[i];
-  const ek = prog(f, END_AT, 7);
   return (
     <AbsoluteFill>
       <AbsoluteFill style={{ background: th.bg }}>
@@ -60,7 +59,6 @@ const Body: React.FC = () => {
               fontSize: 210,
               lineHeight: 0.98,
               color: th.fg,
-              transform: `scale(${2 - ek})`,
             }}
           >
             NO
@@ -68,7 +66,7 @@ const Body: React.FC = () => {
             <span style={{ color: th.accent }}>MYSTERY.</span>
           </div>
         )}
-        <Caption text="every dose in our pre-workout:" top={260} />
+        <Caption text={<>every dose in our<br />pre-workout:</>} top={260} />
       </AbsoluteFill>
     </AbsoluteFill>
   );

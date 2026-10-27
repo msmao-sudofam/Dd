@@ -18,7 +18,7 @@ const SCRAMBLE = 14;
 const CARD_DELAY = 17;
 const CAPTION_AT = 200;
 
-const GLYPHS = "ABCDEFGHJKLMNPQRSTUVWXYZ0123456789#%&?";
+const GLYPHS = "abcdefghijklmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ"; // letters only: no stray numbers on screen
 const scramble = (text: string, k: number, f: number) =>
   text
     .split("")

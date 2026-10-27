@@ -1,7 +1,7 @@
 import React from "react";
 import { AbsoluteFill, OffthreadVideo, interpolate, staticFile, useCurrentFrame } from "remotion";
 import { z } from "zod";
-import { Caption, E, PopCaption, Reel, clamp, hash, prog } from "../lib/fx";
+import { Caption, E, PopCaption, Reel, clamp, prog } from "../lib/fx";
 import { ANTON, C, INTER, sec } from "../lib/theme";
 
 export const GUESS_DUR = sec(8.5);
@@ -22,36 +22,8 @@ const CHIPS = [
 ];
 const CORRECT = 1;
 
-/** Stand-in background: dark, warm, drifting powder. Replaced by scoop.mp4 when present. */
-const PowderBg: React.FC = () => {
-  const f = useCurrentFrame();
-  return (
-    <AbsoluteFill style={{ background: `radial-gradient(900px 1100px at 540px 1190px, #5a0d14, ${C.dark} 770px)` }}>
-      {Array.from({ length: 90 }, (_, i) => {
-        const x = hash(i) * 1080;
-        const y0 = hash(i + 100) * 1920;
-        const y = (y0 - f * (0.6 + hash(i + 200) * 1.6) + 1920 * 4) % 1920;
-        const r = 2 + hash(i + 300) * 7;
-        return (
-          <div
-            key={i}
-            style={{
-              position: "absolute",
-              left: x + Math.sin((f + i * 13) / 30) * 12,
-              top: y,
-              width: r,
-              height: r,
-              borderRadius: 999,
-              background: C.cream,
-              opacity: 0.08 + hash(i + 400) * 0.25,
-              filter: `blur(${hash(i + 500) * 2}px)`,
-            }}
-          />
-        );
-      })}
-    </AbsoluteFill>
-  );
-};
+/** Stand-in until public/scoop.mp4 exists: a flat dark field (no fake texture). */
+const PlaceholderBg: React.FC = () => <AbsoluteFill style={{ background: `linear-gradient(180deg, #1A1315 0px, ${C.dark} 1920px)` }} />;
 
 const Body: React.FC<z.infer<typeof guessSchema>> = ({ scoopSrc }) => {
   const f = useCurrentFrame();
@@ -68,7 +40,7 @@ const Body: React.FC<z.infer<typeof guessSchema>> = ({ scoopSrc }) => {
         {scoopSrc ? (
           <OffthreadVideo src={staticFile(scoopSrc)} muted style={{ width: "100%", height: "100%", objectFit: "cover" }} />
         ) : (
-          <PowderBg />
+          <PlaceholderBg />
         )}
       </AbsoluteFill>
       <AbsoluteFill

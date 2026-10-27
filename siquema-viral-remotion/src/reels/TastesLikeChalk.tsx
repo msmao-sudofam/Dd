@@ -5,12 +5,12 @@ import { ANTON, C, FLAVORS, INGREDIENTS, INTER, sec } from "../lib/theme";
 
 export const CHALK_DUR = sec(8);
 
-const STRIP_AT = 36;
+const STRIP_AT = 0; // MANGO is already lit on the cover
 const STRIP_STEP = 22.5; // 0.75 s per flavor
 const stripFrame = (i: number) => Math.round(STRIP_AT + i * STRIP_STEP);
-const ROWS_AT = 126;
+const ROWS_AT = 96;
 const ROW_STEP = 4;
-const CAPTION_AT = 196;
+const CAPTION_AT = 170;
 
 const FLAVOR_BG: Record<string, string> = {
   MANGO: "linear-gradient(90deg,#FFB627,#F68A1E)",
@@ -21,18 +21,19 @@ const FLAVOR_BG: Record<string, string> = {
 
 const BOARD = "#1D2621";
 
+/** Chalk haze: a few big, soft clouds drifting slowly (dust in the air, not specks). */
 const ChalkDust: React.FC = () => {
   const f = useCurrentFrame();
   return (
     <>
-      {Array.from({ length: 70 }, (_, i) => {
-        const x = (hash(i) * 1080 + f * (0.3 + hash(i + 7) * 0.8)) % 1080;
-        const y = (hash(i + 50) * 1920 - f * (0.2 + hash(i + 9) * 0.6) + 3840) % 1920;
-        const r = 2 + hash(i + 90) * 5;
+      {Array.from({ length: 7 }, (_, i) => {
+        const r = 220 + hash(i + 90) * 260;
+        const x = hash(i) * 1080 - r / 2 + Math.sin((f + i * 40) / 90) * 40;
+        const y = hash(i + 50) * 1920 - r / 2 - f * (0.15 + hash(i + 9) * 0.25);
         return (
           <div
             key={i}
-            style={{ position: "absolute", left: x, top: y, width: r, height: r, borderRadius: 999, background: "#fff", opacity: 0.08 + hash(i + 30) * 0.22, filter: "blur(1px)" }}
+            style={{ position: "absolute", left: x, top: y, width: r, height: r * 0.6, borderRadius: 999, background: "#fff", opacity: 0.035 + hash(i + 30) * 0.035, filter: "blur(50px)" }}
           />
         );
       })}
@@ -58,7 +59,7 @@ const Body: React.FC = () => {
             </Label>
             {FLAVORS.map((fl, i) => {
               const on = f >= stripFrame(i);
-              const k = prog(f, stripFrame(i), 7, E.settle);
+              const k = i === 0 ? 1 : prog(f, stripFrame(i), 7, E.settle);
               return (
                 <div
                   key={fl}
@@ -73,8 +74,8 @@ const Body: React.FC = () => {
                     fontSize: 92,
                     letterSpacing: "0.01em",
                     background: on ? FLAVOR_BG[fl] : "transparent",
-                    border: on ? "none" : "4px dashed rgba(243,238,230,.28)",
-                    color: on ? C.ink : "rgba(243,238,230,.22)",
+                    border: on ? "none" : "4px dashed rgba(243,238,230,.5)",
+                    color: on ? C.ink : "rgba(243,238,230,.5)",
                     transform: `scale(${on ? 0.94 + 0.06 * k : 0.94})`,
                     boxShadow: "none",
                   }}
@@ -116,9 +117,9 @@ export const TastesLikeChalk: React.FC = () => (
       dur={CHALK_DUR}
       fda
       printColor={C.cream}
-      hits={[...FLAVORS.map((_, i) => stripFrame(i)), CAPTION_AT]}
+      hits={[...FLAVORS.slice(1).map((_, i) => stripFrame(i + 1)), CAPTION_AT]}
       sfx={[
-        ...FLAVORS.map((_, i) => ({ at: stripFrame(i), s: "pop" as const })),
+        ...FLAVORS.slice(1).map((_, i) => ({ at: stripFrame(i + 1), s: "pop" as const })),
         { at: ROWS_AT - 6, s: "whoosh", v: 0.35 }, // gate: allow stock-sfx, synthesized, requested in the brief
         ...INGREDIENTS.map((_, i) => ({ at: ROWS_AT + i * ROW_STEP, s: "tick" as const, v: 0.25 })),
         { at: CAPTION_AT, s: "pop" },

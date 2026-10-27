@@ -2,7 +2,7 @@ import React from "react";
 import { AbsoluteFill, useCurrentFrame } from "remotion";
 import { Caption, E, Label, Reel, prog } from "../lib/fx";
 import { DoseRow, ExampleBlendCard } from "../lib/labels";
-import { ANTON, C, INGREDIENTS, INTER, sec } from "../lib/theme";
+import { ANTON, C, EXAMPLE_BLEND, INGREDIENTS, INTER, sec } from "../lib/theme";
 
 export const COUNT_DUR = sec(8);
 
@@ -13,13 +13,13 @@ const tickFrame = (i: number) => Math.round(TICK_AT + i * TICK_STEP);
 const COMPARE_AT = 100;
 const BIG_AT = 150;
 
-const Tag: React.FC<{ children: React.ReactNode; top: number; at: number; bg: string; color: string }> = ({ children, top, at, bg, color }) => {
+const Tag: React.FC<{ children: React.ReactNode; top: number; at: number; bg: string; color: string; left?: number; size?: number }> = ({ children, top, at, bg, color, left, size = 76 }) => {
   const f = useCurrentFrame();
   if (f < at) return null;
   const k = prog(f, at, 7, E.settle);
   return (
-    <div style={{ position: "absolute", top, width: "100%", textAlign: "center", transform: `scale(${0.6 + 0.4 * k})`, opacity: Math.min(1, k * 2) }}>
-      <span style={{ fontFamily: INTER, fontWeight: 800, fontSize: 76, background: bg, color, padding: "10px 34px", borderRadius: 18 }}>{children}</span>
+    <div style={{ position: "absolute", top, ...(left === undefined ? { width: "100%", textAlign: "center" } : { left }), transform: `scale(${0.6 + 0.4 * k})`, opacity: Math.min(1, k * 2) }}>
+      <span style={{ fontFamily: INTER, fontWeight: 800, fontSize: size, background: bg, color, padding: "10px 34px", borderRadius: 18 }}>{children}</span>
     </div>
   );
 };
@@ -37,9 +37,9 @@ const Body: React.FC = () => {
     <AbsoluteFill>
       {/* TOP: example blend label */}
       <AbsoluteFill style={{ background: "#CFCAC2", height: SPLIT }}>
-        <Label style={{ position: "absolute", left: 70, top: 455, color: "#555" }}>example blend label</Label>
+        <Label style={{ position: "absolute", left: 70, top: 455, color: "#555" }}>{EXAMPLE_BLEND.label}</Label>
         <ExampleBlendCard width={560} scale={0.62} style={{ position: "absolute", left: 70, top: 500 }} />
-        <div style={{ position: "absolute", left: 680, right: 70, top: 470, textAlign: "center", transform: `translateX(${shake}px)` }}>
+        <div style={{ position: "absolute", left: 680, right: 70, top: 470, textAlign: "center", transform: `translateX(${shake}px)`, opacity: 1 - prog(f, COMPARE_AT - 4, 4) }}>
           <Label style={{ color: "#555" }}>numbers:</Label>
           <div style={{ fontFamily: ANTON, fontSize: 230, lineHeight: 1.05, color: "#7a756d" }}>1</div>
         </div>
@@ -74,7 +74,7 @@ const Body: React.FC = () => {
                 size={31}
                 style={{
                   height: 47,
-                  opacity: (f >= tickFrame(i) ? Math.min(1, k * 2) : 0) * (isCaff ? 1 : 1 - 0.85 * dimRows),
+                  opacity: (f >= tickFrame(i) ? Math.min(1, k * 2) : 0) * (isCaff ? 1 : 1 - dimRows),
                   transform: `translateX(${(1 - k) * 60}px)`,
                 }}
               />
@@ -83,7 +83,7 @@ const Body: React.FC = () => {
         </div>
       </AbsoluteFill>
 
-      <Tag top={560} at={COMPARE_AT} bg={C.ink} color={C.cream}>
+      <Tag top={600} left={650} size={54} at={COMPARE_AT} bg={C.ink} color={C.cream}>
         Caffeine: <span style={{ color: C.brightRed }}>?</span>
       </Tag>
       <Tag top={1160} at={COMPARE_AT + 12} bg={C.red} color="#fff">

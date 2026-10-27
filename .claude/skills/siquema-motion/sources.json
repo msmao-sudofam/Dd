@@ -334,6 +334,16 @@
       "source": "Made-up example for the transparency reels (siquema-viral-remotion). Always shown with the on-screen label 'example: a typical blend label'; it describes no real product.",
       "show_source": "example: a typical blend label",
       "added": "2026-10-27"
+    },
+    {
+      "id": "caffeine-coffee-comparison",
+      "claim": "200 mg caffeine is about two cups of coffee",
+      "match": [
+        "about two cups of coffee"
+      ],
+      "source": "Owner's label brief for the transparency reels (2026-10-27), as the plain-English line for Caffeine Anhydrous 200 mg. Verify against the physical label / product page before paid use.",
+      "show_source": null,
+      "added": "2026-10-27"
     }
   ],
   "ignore_numbers": [

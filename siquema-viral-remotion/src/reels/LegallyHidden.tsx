@@ -59,7 +59,7 @@ const SceneBlend: React.FC = () => {
           transform={`rotate(-5 ${FOCUS.x} ${FOCUS.y})`}
         />
       </svg>
-      <AbsoluteFill style={{ background: C.cream, opacity: scrim * 0.96, top: 880 }} />
+      <AbsoluteFill style={{ background: C.cream, opacity: scrim, top: 880 }} />
       {Questions.map((q, i) => {
         const k = prog(f, Q_AT[i], 7, E.settle);
         if (f < Q_AT[i]) return null;
@@ -83,7 +83,14 @@ const SceneBlend: React.FC = () => {
           </div>
         );
       })}
-      <Caption text="your pre-workout is legally allowed to hide this" top={260} />
+      {/* the example tag stays readable while 1,850 mg fills the screen */}
+      <Label style={{ position: "absolute", top: FOCUS.y - 170, width: "100%", textAlign: "center", opacity: z, fontSize: 30 }}>
+        <span style={{ background: C.cream, padding: "4px 12px" }}>{EXAMPLE_BLEND.label}</span>
+      </Label>
+      {/* hook is the cover; it clears out of the camera move */}
+      <div style={{ opacity: 1 - prog(f, ZOOM_AT, 8) }}>
+        <Caption text="your pre-workout is legally allowed to hide this" top={260} />
+      </div>
     </AbsoluteFill>
   );
 };
