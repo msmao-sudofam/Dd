@@ -27,7 +27,11 @@ const SceneBlend: React.FC = () => {
   const s = 1 + 1.6 * z;
   const tx = (FOCUS.x - AMOUNT.x) * z;
   const ty = (FOCUS.y - AMOUNT.y) * z;
-  const band = Math.min(1, z * 2.5); // framing mask is solid early in the push
+  const band = f >= ZOOM_AT ? 1 : 0; // hard cut to the framed row: nothing ever slides off the edge
+  // the band follows the blend row on screen (row center = AMOUNT moved by the camera), so no other line shows
+  const rowY = AMOUNT.y + ty;
+  const bandTop = rowY - 22 * s;
+  const bandBottom = rowY + 24 * s;
   const draw = prog(f, CIRCLE_AT, 20, E.inOut);
   const scrim = prog(f, Q_AT[0] - 6, 8);
   return (
@@ -44,16 +48,16 @@ const SceneBlend: React.FC = () => {
         <ExampleBlendCard style={{ position: "absolute", left: 130, top: CARD_TOP }} />
       </AbsoluteFill>
       {/* the zoom is framed to a clean band around the blend row: cream above/below, soft fade on the cut edge */}
-      <AbsoluteFill style={{ background: C.cream, opacity: band, height: FOCUS.y - 75 }} />
-      <AbsoluteFill style={{ background: C.cream, opacity: band, top: FOCUS.y + 55 }} />
-      <div style={{ position: "absolute", left: 0, top: FOCUS.y - 75, width: 320, height: 130, opacity: band, background: `linear-gradient(90deg, ${C.cream} 40px, rgba(243,238,230,0) 320px)` }} />
+      <AbsoluteFill style={{ background: C.cream, opacity: band, height: bandTop }} />
+      <AbsoluteFill style={{ background: C.cream, opacity: band, top: bandBottom }} />
+      <div style={{ position: "absolute", left: 0, top: bandTop, width: 320, height: bandBottom - bandTop, opacity: band, background: `linear-gradient(90deg, ${C.cream} 40px, rgba(243,238,230,0) 320px)` }} />
       {/* red circle drawn around 1,850 mg */}
       <svg width={1080} height={1920} style={{ position: "absolute", inset: 0 }}>
         <ellipse
           cx={FOCUS.x}
           cy={FOCUS.y}
           rx={250}
-          ry={92}
+          ry={66}
           fill="none"
           stroke={C.brightRed}
           strokeWidth={11}
@@ -89,7 +93,7 @@ const SceneBlend: React.FC = () => {
         );
       })}
       {/* the example tag stays readable while 1,850 mg fills the screen */}
-      <Label style={{ position: "absolute", top: FOCUS.y - 135, width: "100%", textAlign: "center", opacity: prog(f, ZOOM_AT + 22, 8), fontSize: 30, color: "#555" }}>
+      <Label style={{ position: "absolute", top: bandTop - 90, width: "100%", textAlign: "center", opacity: band, fontSize: 30, color: "#555" }}>
         {EXAMPLE_BLEND.label}
       </Label>
       {/* hook is the cover; it clears out of the camera move */}
