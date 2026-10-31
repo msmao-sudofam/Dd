@@ -14,8 +14,8 @@ Email: {EMAIL}
 
 CSS = """@font-face{font-family:Archivo;src:url('/assets/fonts/archivo.woff2') format('woff2');font-weight:100 900;font-stretch:62% 125%;font-display:swap}@font-face{font-family:'JetBrains Mono';src:url('/assets/fonts/jetbrains-mono.woff2') format('woff2');font-weight:100 800;font-display:swap}
 :root{
-  --bg:#0a0b0d;--bg-2:#111317;--line:#262a31;--fg:#f3f4f6;--mute:#8b9099;
-  --steel:#636466;--amber:#faac1a;--glass:#9ec9d6;
+  --bg:#ffffff;--bg-2:#edf3f6;--line:#d4dde2;--fg:#1d282f;--mute:#57656e;
+  --steel:#636466;--amber:#39586c;--glass:#9ec9d6;
   --f-display:"Archivo",system-ui,sans-serif;
   --f-body:"Archivo",system-ui,sans-serif;
   --f-mono:"JetBrains Mono",ui-monospace,monospace;
@@ -27,14 +27,14 @@ body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--f-body);fon
 a{color:var(--fg);text-decoration:underline;text-decoration-color:var(--amber);text-decoration-thickness:1px;text-underline-offset:3px}
 a:hover{color:var(--amber)}
 :focus-visible{outline:2px solid var(--amber);outline-offset:3px}
-.skip{position:absolute;left:16px;top:-200px;z-index:10;background:var(--amber);color:#0a0b0d;padding:10px 14px;border-radius:4px;font-weight:600;text-decoration:none}
-.skip:focus{top:12px;color:#0a0b0d}
+.skip{position:absolute;left:16px;top:-200px;z-index:10;background:var(--amber);color:#fff;padding:10px 14px;border-radius:4px;font-weight:600;text-decoration:none}
+.skip:focus{top:12px;color:#fff}
 .site-head{border-bottom:1px solid var(--line)}
 .bar{max-width:1120px;margin:0 auto;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:16px}
 .logo{font-family:var(--f-display);font-variation-settings:"wdth" 112;font-weight:800;font-size:1.5rem;letter-spacing:-0.03em;color:var(--amber);text-decoration:none;line-height:1}
 .logo:hover{color:var(--amber)}
-.btn{min-height:44px;min-width:44px;display:inline-block;background:var(--amber);color:#0a0b0d;border-radius:4px;padding:10px 16px;font-weight:600;font-size:.9375rem;line-height:1.2;text-decoration:none}
-.btn:hover{background:#ffbf47;color:#0a0b0d}
+.btn{min-height:44px;min-width:44px;display:inline-block;background:var(--amber);color:#fff;border-radius:4px;padding:10px 16px;font-weight:600;font-size:.9375rem;line-height:1.2;text-decoration:none}
+.btn:hover{background:#243e50;color:#fff}
 main{display:block;max-width:calc(68ch + 32px);margin:0 auto;padding:48px 16px 80px}
 .label{font-family:var(--f-mono);font-size:.75rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
 h1,h2,h3{font-family:var(--f-display);font-variation-settings:"wdth" 112;letter-spacing:-0.03em;line-height:1.1}
@@ -98,8 +98,8 @@ def page(path, title, desc, label, h1, lede, sections, after_toc="", tail=""):
 <title>{title}</title>
 <meta name="description" content="{desc}">
 <link rel="canonical" href="https://cgcontractorsinc.com/{path}/">
-<meta name="theme-color" content="#0a0b0d">
-<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#ffffff">
+<meta name="color-scheme" content="light">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="{FONTS}">

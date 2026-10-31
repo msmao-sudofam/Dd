@@ -1,0 +1,31 @@
+{
+  "duration": 16,
+  "audio": false,
+  "source": "CGC supplied Instagram footage",
+  "shots": [
+    {
+      "source": "cgc_DNltQTcyJAj_4.mp4",
+      "start": 6,
+      "duration": 4,
+      "description": "Clear glass conference-room fronts and entrance doors."
+    },
+    {
+      "source": "cgc_DD8NdeCy3QF_0.mp4",
+      "start": 12,
+      "duration": 4,
+      "description": "Glass panels secured to a glazing rack truck."
+    },
+    {
+      "source": "cgc_DEY5eDKpqKD_0.mp4",
+      "start": 0,
+      "duration": 4,
+      "description": "Interior glass installation with ladders and floor protection."
+    },
+    {
+      "source": "cgc_DLV_167SUbo_1.mp4",
+      "start": 37,
+      "duration": 4,
+      "description": "Black-framed interior entrance doors and glass office fronts."
+    }
+  ]
+}
