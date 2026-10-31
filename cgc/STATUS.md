@@ -30,6 +30,7 @@ The hero is poster-first and does not autoplay. Play/pause, CC, progress and fiv
 - Latest Lighthouse mobile (before the generated film; **not rerun after it**): **89 Performance / 100 Accessibility / 100 Best Practices / 100 SEO**. FCP 1.2s, LCP 3.8s, TBT 0ms, CLS 0. Local lab measurements, not field data.
 - The generated-film preview above is Ready with target `preview`; its page and film return a Vercel SSO redirect, so deployed playback, captions and the concept label remain unverified. Local checks above ran against the same build. No DNS change, Deployment Protection change or production promotion of `cgc-glazing` was performed.
 - Incident: a first deploy attempt from `cgc/site` without an explicit project flag created a separate Vercel project named `site` and auto-promoted its deployment to production (`https://site-gao33kud9-sdvsfbs.vercel.app`). It is not `cgc-glazing` and should not be used as the CGC preview. Removing that project or deployment requires owner approval; it was not deleted here.
+- Deploy from `cgc/site` with `--project cgc-glazing`; without that flag the CLI can create a new project instead of reusing the linked one.
 - Static injection idempotent; IDs unique. Desktop and phone hero/concept/scope/gallery/form views visually inspected.
 - Single-file storyboard tested offline at 390 and 1440: 8 shots, 3 embedded images loaded, JSON download passed, 0 external requests, 0 script errors, 0 overflow.
 
