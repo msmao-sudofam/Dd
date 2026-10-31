@@ -1,31 +1,43 @@
 {
   "duration": 16,
   "audio": false,
-  "source": "CGC supplied Instagram footage",
+  "source": "Generated concept film: local Wan 2.2 5B image-to-video from the CGC storyboard keyframes",
+  "disclosure": "Illustrative generated concept. Not a completed CGC project and not evidence of installed work.",
   "shots": [
     {
-      "source": "cgc_DNltQTcyJAj_4.mp4",
-      "start": 6,
-      "duration": 4,
-      "description": "Clear glass conference-room fronts and entrance doors."
+      "shot": "b01",
+      "start": 0.0,
+      "duration": 3.2,
+      "description": "A world in the edge. Sunlight and reflections at the glass entrance.",
+      "keyframe": "creative/video-concepts-2026-10-31/entrance-light.png"
     },
     {
-      "source": "cgc_DD8NdeCy3QF_0.mp4",
-      "start": 12,
-      "duration": 4,
-      "description": "Glass panels secured to a glazing rack truck."
+      "shot": "b02",
+      "start": 3.2,
+      "duration": 3.2,
+      "description": "The moving mirror. Clouds and the white facade shift in reflection.",
+      "keyframe": "creative/video-concepts-2026-10-31/curtain-wall-after.png"
     },
     {
-      "source": "cgc_DEY5eDKpqKD_0.mp4",
-      "start": 0,
-      "duration": 4,
-      "description": "Interior glass installation with ladders and floor protection."
+      "shot": "b03",
+      "start": 6.4,
+      "duration": 3.2,
+      "description": "Reflection becomes a place. The open glass entrance and sunlit lobby.",
+      "keyframe": "creative/video-concepts-2026-10-31/entrance-light.png"
     },
     {
-      "source": "cgc_DLV_167SUbo_1.mp4",
-      "start": 37,
-      "duration": 4,
-      "description": "Black-framed interior entrance doors and glass office fronts."
+      "shot": "b05",
+      "start": 9.6,
+      "duration": 3.2,
+      "description": "The invisible corner. Reflections resolve into a clear conference room.",
+      "keyframe": "site/assets/concepts/office-after.webp"
+    },
+    {
+      "shot": "b06",
+      "start": 12.8,
+      "duration": 3.2,
+      "description": "Reveal the building. The completed facade in clear afternoon light.",
+      "keyframe": "creative/video-concepts-2026-10-31/curtain-wall-after.png"
     }
   ]
 }

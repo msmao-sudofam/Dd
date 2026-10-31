@@ -1,0 +1,85 @@
+{
+  "title": "The Reflection Run — generated concept film",
+  "status": "Generated concept film, complete for website review. Not evidence of completed CGC work.",
+  "created": "2026-10-31",
+  "storyboard": "creative/video-concepts-2026-10-31/VIDEO-STORYBOARDS.md (Film B)",
+  "model": {
+    "name": "Wan 2.2 TI2V 5B fp16 (local ComfyUI)",
+    "diffusion_model": "wan2.2_ti2v_5B_fp16.safetensors",
+    "text_encoder": "umt5-xxl-encoder-fp8-e4m3fn-scaled.safetensors",
+    "vae": "wan2.2_vae.safetensors",
+    "native_frames": 121,
+    "fps": 24,
+    "native_size": "1280x704",
+    "steps": 20,
+    "cfg": 5,
+    "sampler": "uni_pc",
+    "scheduler": "simple",
+    "shift": 8
+  },
+  "sources": [
+    "creative/video-concepts-2026-10-31/entrance-light.png (built-in image generation)",
+    "creative/video-concepts-2026-10-31/curtain-wall-after.png (built-in image generation)",
+    "site/assets/concepts/office-after.webp (built-in image generation)"
+  ],
+  "shots": [
+    {
+      "id": "b01",
+      "start": 0.0,
+      "duration": 3.2,
+      "caption": "A world in the edge. Sunlight and reflections at the glass entrance.",
+      "seed": 4409661,
+      "keyframe_source": "entrance-light.png crop=1000:562:430:120, scaled to 1280x720",
+      "motion_prompt": "Extreme macro along a polished clear-glass door edge in morning sunlight. A small reflected blue sky and white building sit naturally in the glass thickness. The camera moves slowly lengthwise; a thin highlight travels over the edge as the angle changes. Shallow depth of field, fine material detail, rigid real glass, physically smooth move. Photorealistic live-action architectural cinema, steel-blue glass, graphite aluminum, correct verticals, restrained film grain, no people."
+    },
+    {
+      "id": "b02",
+      "start": 3.2,
+      "duration": 3.2,
+      "caption": "The moving mirror. Clouds and the white facade shift in reflection.",
+      "seed": 1109661,
+      "keyframe_source": "curtain-wall-after.png crop=1440:810:60:90, scaled to 1280x720",
+      "motion_prompt": "Oblique grazing view along a white commercial office facade with complete steel-blue curtain-wall glazing. Track slowly left to right close to the glass while real clouds and the white architecture move in convincing reflection parallax. Mullions stay rigid and evenly spaced; the entrance stays in the same position. Camera movement is physically smooth, one controlled move. Photorealistic live-action architectural cinema, graphite aluminum, morning sun, restrained grain, no people, no text."
+    },
+    {
+      "id": "b03",
+      "start": 6.4,
+      "duration": 3.2,
+      "caption": "Reflection becomes a place. The open glass entrance and sunlit lobby.",
+      "seed": 4409661,
+      "keyframe_source": "entrance-light.png crop=1440:810:48:100, scaled to 1280x720",
+      "motion_prompt": "Slow forward glide toward and through an open graphite-framed glass entrance door of a bright white commercial lobby. Reflections of trees and sky on the left glass panes shift naturally with parallax; the real interior terrazzo floor and sun patch stay consistent. The camera passes through the existing opening without crossing glass or changing the architecture. Physically smooth camera, photorealistic live-action architectural cinema, steel-blue glass, no people, no text."
+    },
+    {
+      "id": "b05",
+      "start": 9.6,
+      "duration": 3.2,
+      "caption": "The invisible corner. Reflections resolve into a clear conference room.",
+      "seed": 4409661,
+      "keyframe_source": "site/assets/concepts/office-after.webp crop=1440:810:48:100, scaled to 1280x720",
+      "motion_prompt": "Rise and arc slowly around a frameless glass conference-room corner in a bright white office interior. Layers of reflected sky resolve into clear transparency as the angle changes. Keep one light-oak table and dark chairs behind the glass, glass edges sharp and physically fixed, ceiling lights and carpet stable. One controlled camera move, photorealistic live-action architectural cinema, no people, no text."
+    },
+    {
+      "id": "b06",
+      "start": 12.8,
+      "duration": 3.2,
+      "caption": "Reveal the building. The completed facade in clear afternoon light.",
+      "seed": 4409661,
+      "keyframe_source": "curtain-wall-after.png crop=1440:810:60:70, scaled to 1280x720",
+      "motion_prompt": "Exterior architectural pullback of the same white commercial office building at blue hour, complete steel-blue curtain-wall glazing and quiet clean sidewalk. Camera pulls back slowly and rises only slightly; warm restrained interior lights glow. Preserve facade bay counts and entrance position. Photorealistic live-action architectural cinema, physically smooth move, no drone swoop, no people, no text."
+    }
+  ],
+  "edit": {
+    "duration_seconds": 16.04,
+    "fps": 24,
+    "audio": false,
+    "wide": "site/assets/film/wide.mp4",
+    "portrait": "site/assets/film/portrait.mp4",
+    "wide_size": "1600x900",
+    "portrait_size": "720x1100",
+    "source_trim": "77 frames per shot, starting at frame 12 of each 121-frame generation",
+    "grade": "contrast 1.05, saturation 0.90, cool shadow/midtone bias, grain 2, white 0.3s in / 0.4s out",
+    "captions": "site/assets/film/captions.vtt"
+  },
+  "disclosure": "Generated concept film. Illustrative visualization, not a completed CGC project. Shown separately from the real project gallery."
+}

@@ -2,6 +2,8 @@
 
 Two cinematic directions, three new standalone concept images, and twelve ready-to-adapt shot prompts. All images were made with the built-in image generator. These are **illustrative concepts**, not photographs or footage of completed CGC work. No video files have been generated in this package.
 
+**Production note (2026-10-31):** Film B was produced as a local Wan 2.2 generated concept film and integrated into the site. See `../reflection-run-film-2026-10-31/FILM.md` for the shots used, prompts, seeds, edit and limitations. It is still a generated concept, never evidence of completed CGC work.
+
 ## Choose the film
 
 | Direction | Idea | Best use |
