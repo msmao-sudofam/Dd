@@ -19,8 +19,8 @@ export function clientIp(req) {
 /** Read the JSON body. Vercel pre-parses JSON into req.body; fall back to the stream. */
 export async function readJson(req, maxBytes) {
   if (req.body !== undefined && req.body !== null && typeof req.body === 'object' && !Buffer.isBuffer(req.body)) {
-    if (JSON.stringify(req.body).length > maxBytes) throw httpError(413, 'Payload too large');
-    return req.body;
+    if (Buffer.byteLength(JSON.stringify(req.body), 'utf8') > maxBytes) throw httpError(413, 'Payload too large');
+    return jsonObject(req.body);
   }
   let raw = '';
   if (typeof req.body === 'string') raw = req.body;
@@ -33,9 +33,16 @@ export async function readJson(req, maxBytes) {
       req.on('error', reject);
     });
   }
-  if (raw.length > maxBytes) throw httpError(413, 'Payload too large');
+  if (Buffer.byteLength(raw, 'utf8') > maxBytes) throw httpError(413, 'Payload too large');
   if (!raw.trim()) return {};
-  try { return JSON.parse(raw); } catch { throw httpError(400, 'Body must be JSON'); }
+  let parsed;
+  try { parsed = JSON.parse(raw); } catch { throw httpError(400, 'Body must be JSON'); }
+  return jsonObject(parsed);
+}
+
+function jsonObject(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) throw httpError(400, 'Body must be a JSON object');
+  return value;
 }
 
 export function httpError(status, message) { const e = new Error(message); e.status = status; return e; }

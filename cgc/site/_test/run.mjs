@@ -131,6 +131,28 @@ await t('brute force => 429 after 20 bad tries', async () => {
 });
 
 const auth = { 'x-crm-key': TEST_KEY };
+await t('JSON bodies must be objects on public and CRM endpoints', async () => {
+  const before = mem.data.size;
+  for (const body of ['null', '[]', 'true', '42', '"text"', []]) {
+    for (const handler of [lead, leads]) {
+      const r = await call(handler, { method: 'POST', headers: auth, body });
+      assert.equal(r.status, 400, `Expected 400 for ${JSON.stringify(body)}`);
+      assert.equal(r.json.ok, false);
+    }
+  }
+  assert.equal(mem.data.size, before);
+});
+await t('UTF-8 byte limit applies to pre-parsed objects', async () => {
+  const r = await call(lead, { method: 'POST', body: { ...good, scope: '界'.repeat(8000) } });
+  assert.equal(r.status, 413);
+});
+await t('UTF-8 byte limit applies to raw JSON strings and buffers', async () => {
+  const raw = JSON.stringify({ ...good, scope: '界'.repeat(8000) });
+  for (const body of [raw, Buffer.from(raw)]) {
+    const r = await call(lead, { method: 'POST', body });
+    assert.equal(r.status, 413);
+  }
+});
 let id;
 console.log('\n/api/leads — CRUD');
 await t('GET list returns all fields', async () => {
