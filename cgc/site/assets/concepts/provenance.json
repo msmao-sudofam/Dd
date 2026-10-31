@@ -1,0 +1,11 @@
+{
+  "method": "Built-in image generation; matching before frames edited from generated after frames.",
+  "disclosure": "Illustrative concept \u2014 generated visualization, not a CGC project photograph.",
+  "files": {
+    "storefront-after": "exec-ba25bf23-3f39-4e6a-a9dc-eeb25bc17522.png",
+    "storefront-before": "exec-ed359eea-3716-4897-9f34-04eebea394f6.png",
+    "office-after": "exec-fa29725e-30cd-489a-8ee9-b440d5f9d266.png",
+    "office-before": "exec-61e0680c-804f-4300-96fa-b1e16b7cf9b4.png"
+  },
+  "constraints": "Matching camera/facade and surroundings. No brands, logos, people or invented client identity."
+}

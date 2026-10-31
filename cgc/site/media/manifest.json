@@ -1241,5 +1241,35 @@
     "cgc_DeP_8slkrom_11",
     "cgc_DHXAGWlyCZr_09"
   ],
-  "notes": "All 90 raw photos classified from contact sheets. Captions describe visible content only. Pair viewpoints differ; not a pixel-aligned survey."
+  "notes": "All 90 raw photos classified from contact sheets. Captions describe visible content only. Pair viewpoints differ; not a pixel-aligned survey.",
+  "documented_pairs": [
+    {
+      "before": "cgc_DG6hOoNSqdD_13",
+      "after": "cgc_DHW_j3mSr-w_01",
+      "caption": "Corner opening: plywood-backed framing to installed glass."
+    },
+    {
+      "before": "cgc_DG6hOoNSqdD_15",
+      "after": "cgc_DHXAGWlyCZr_02",
+      "caption": "Brick-wall openings: boarded to glazed. Views are from different positions."
+    }
+  ],
+  "concept_pairs": [
+    {
+      "before": "assets/concepts/storefront-before.webp",
+      "after": "assets/concepts/storefront-after.webp",
+      "title": "A new face for the building.",
+      "caption": "Storefront / from board-up to glazed entrance.",
+      "before_alt": "Illustrative concept: plywood boards cover a white stucco storefront opening.",
+      "after_alt": "Illustrative concept: graphite-framed glass storefront and double entrance doors in the same facade."
+    },
+    {
+      "before": "assets/concepts/office-before.webp",
+      "after": "assets/concepts/office-after.webp",
+      "title": "Defined space. Open sightlines.",
+      "caption": "Office fronts / from open floor to glass enclosure.",
+      "before_alt": "Illustrative concept: open office conference area with a table and chairs.",
+      "after_alt": "Illustrative concept: the same conference area enclosed by clear glass partitions and doors."
+    }
+  ]
 }
