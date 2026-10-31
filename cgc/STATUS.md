@@ -1,8 +1,8 @@
 # CGC status — redesigned preview, October 31, 2026
 
-Preview: **https://cgc-glazing-fj5kwdnks-sdvsfbs.vercel.app/**
+Preview: **https://cgc-glazing-bim8hnpeg-sdvsfbs.vercel.app/**
 
-The deployment is READY in Vercel project `cgc-glazing`, scope `sdvsfbs`. The redesigned page was opened in the existing app-browser tab; its film was verified playing there with readyState 4 and no media error. Deployment Protection remains enabled. No client domain/DNS was changed and no production promotion was performed for this redesign.
+The deployment is READY in Vercel project `cgc-glazing`, scope `sdvsfbs`. This updated preview is READY. The preceding redesign preview was opened in the app browser and its film verified playing; the latest comparison addition was verified locally and deployed successfully. Deployment Protection remains enabled. No client domain/DNS was changed and no production promotion was performed for this redesign.
 
 ## Current design
 
@@ -11,7 +11,7 @@ The user selected **clean and bright: white, graphite and steel blue**. This sup
 - White architectural layout, graphite type and steel-blue actions. The supplied logo keeps its original colors. Legal pages and CRM use the matching light palette.
 - The 3D hero is replaced with a **16-second silent film**, edited from CGC's actual supplied footage. Desktop: 1600×900, 3,425,674 bytes. Phone: 720×1100, 2,306,580 bytes. Both encode at 24fps. Source footage is 720px phone footage; it is not a newly filmed commercial or 4K source.
 - Poster-first presentation, responsive video source, pause/play, chapter descriptions, progress and optional CC captions. Playback pauses out of view or when the tab is hidden. Reduced motion and JavaScript-off retain the poster without automatic motion; no WebGL dependency remains.
-- Two new matched **generated concept** before/after studies: boarded storefront → glazing; open conference area → glass enclosure. The built-in image generator created the after images and edited them into matching before views. Each is clearly labeled illustrative and is not presented as a completed CGC job. Final WebP images and provenance are under `site/assets/concepts/`; prompt set is in `_work/IMAGE-PROMPTS.md`.
+- Three matched **generated concept** before/after studies: boarded storefront → glazing; open conference area → glass enclosure; boarded corner office → glazed curtain wall. The built-in image generator created the after images and edited them into matching before views. Each is clearly labeled illustrative and is not presented as a completed CGC job. Final WebP images and provenance are under `site/assets/concepts/`; prompt set is in `_work/IMAGE-PROMPTS.md`.
 - The original jobsite comparisons are still available in an expandable section. Real project gallery photos are separate, curated with 12 initial selections and Show more. All 76 retained photographs remain available and statically present in the HTML.
 - All existing verified facts, five scope rows, bidding workflow, calculator, bid ticket/form, exact consent text, FAQs, legal pages, CRM features and SEO files are retained. SMS remains unchecked by default.
 
@@ -45,3 +45,11 @@ The project's original first deployment was unexpectedly auto-promoted by Vercel
 Spanish version; Google Business Profile verification/setup; review QR using the owner's actual review URL. No fabricated reviews, awards, years or project totals have been added.
 
 Changes are committed in small steps on the existing branch. Nothing was pushed.
+
+## Final follow-through
+
+Added the third generated comparison to the public site with visible disclosure. All comparison control IDs are unique and the static build remains idempotent. Repeated API 28/28, functional 10/10, four-width responsive/axe, and no-JS/reduced-motion/320px checks passed. The Lighthouse numbers above are from the preceding full redesign run, not a fresh measurement of this comparison addition.
+
+The newly generated cinematic intro is **not complete**. Two six-shot boards, twelve video prompts and five additional still/storyboard images are saved under creative/video-concepts-2026-10-31/. Runway was discovered and suggested; its newly exposed connection check returned Unknown tool twice, so no video task was submitted. Current intro still uses actual supplied CGC footage. See LAUNCH-CHECKLIST.md for remaining video and owner-account steps.
+
+During project linking, the Vercel CLI unexpectedly downloaded a local OIDC credential. The file was removed immediately without opening or using its contents. This was disclosed to the user. No additional protection-bypass operation was performed, and DNS, Deployment Protection and production promotion remain unchanged.
