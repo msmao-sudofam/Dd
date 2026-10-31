@@ -1270,6 +1270,14 @@
       "caption": "Office fronts / from open floor to glass enclosure.",
       "before_alt": "Illustrative concept: open office conference area with a table and chairs.",
       "after_alt": "Illustrative concept: the same conference area enclosed by clear glass partitions and doors."
+    },
+    {
+      "before": "assets/concepts/curtain-wall-before.webp",
+      "after": "assets/concepts/curtain-wall-after.webp",
+      "title": "From boarded bays to daylight.",
+      "caption": "Curtain wall / a matched corner-building concept.",
+      "before_alt": "Illustrative concept: plywood boards cover the openings of a white two-story corner office building.",
+      "after_alt": "Illustrative concept: the same corner office building with steel-blue glazing and graphite mullions."
     }
   ],
   "featured_photos": [

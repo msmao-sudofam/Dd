@@ -13,7 +13,7 @@ def build():
  for i,p in enumerate(manifest.get('concept_pairs',[])):
   pairs+=slider(i,p['before'],p['after'],p['before_alt'],p['after_alt'],p['caption'],p['title'],True)
  pairs+='</div><details class="documented-pairs"><summary>See the actual jobsite comparisons</summary><p>Original CGC photographs. The camera positions differ between visits.</p><div class="pairs-grid">'
- for i,p in enumerate(manifest.get('documented_pairs',manifest['pairs']),2):
+ for i,p in enumerate(manifest.get('documented_pairs',manifest['pairs']),len(manifest.get('concept_pairs',[]))):
   b,a=files[p['before']],files[p['after']];pairs+=slider(i,'media/'+b['file'],'media/'+a['file'],'Before: '+b['caption'],'After: '+a['caption'],p['caption'])
  pairs+='</div></details>'
  gallery='<div class="gallery-grid">\n'
