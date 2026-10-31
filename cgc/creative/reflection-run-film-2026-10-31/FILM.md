@@ -3,7 +3,7 @@
 **Status: completed generated concept film, ready for website review.**
 It is an illustrative visualization, **not a completed CGC project** and not evidence that CGC installed the building shown.
 
-The site hero now plays this film on request. The real CGC photographs and field clips remain in the separate Work gallery.
+The site hero now autoplays this film muted on load. The real CGC photographs and field clips remain in the separate Work gallery.
 
 ## What was delivered
 
@@ -44,7 +44,7 @@ The render/assembly helper is `../../_work/render_film.py`; the ComfyUI API help
 - The hero overlay reads **Concept film / generated visualization**.
 - A visible line beneath the player reads: “Generated concept film. Illustrative visualization, not a completed CGC project. See actual CGC work.”
 - The first caption cue repeats the disclosure; the video `aria-label` also states it.
-- The film is poster-first and **does not autoplay**. Play/pause, CC, progress and chapters are manual. Out-of-view and hidden-tab playback pause. Reduced-motion and JavaScript-off keep the poster and never load the film source.
+- The film **autoplays muted** on load; the poster remains until playback is ready and as the fallback. Play/pause, CC, progress and chapters remain available. Out-of-view and hidden-tab playback pause. Reduced-motion and JavaScript-off keep the poster and never load the film source.
 - The real project gallery and field clips are separate and unchanged.
 
 ## Verification
