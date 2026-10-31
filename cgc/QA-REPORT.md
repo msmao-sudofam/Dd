@@ -1,35 +1,29 @@
-# CGC redesign QA — October 31, 2026
+# CGC architectural revision QA — October 31, 2026
 
-Preview: https://cgc-glazing-kn63vbc7o-sdvsfbs.vercel.app/
+Preview: https://cgc-glazing-bcvesobuw-sdvsfbs.vercel.app/
 
 | Check | Result |
 | --- | --- |
-| API tests | 28/28 |
+| API regression suite (unchanged API in visual revision) | 31/31 |
 | Functional browser scenarios | 10/10 |
-| Widths | 360, 390, 430, 1440 |
-| Overflow / console errors | 0 / 0 at every width |
-| Measured controls below 44px / inputs below 16px | 0 / 0 |
-| Automated WCAG A/AA violations | 0 main, CRM sample and legal |
-| Lighthouse mobile Performance | 85 (previous run 86) |
-| Accessibility / Best Practices / SEO | 100 / 100 / 100 |
-| FCP / LCP | 1.1s / 4.3s |
-| TBT / CLS | 0ms / 0 |
-| Production audit vulnerabilities | 0 |
-| Film | 16 seconds, silent, 24fps |
-| Desktop / phone film size | 3,425,674 / 2,306,580 bytes |
-| Reduced motion | Still poster; no automatic film loading |
-| JavaScript off / 320px reflow | Passed |
-| Manifest injection | Idempotent |
-| Deployed app-browser film | Playing; readyState 4; no media error |
+| Viewports | 360, 390, 430, 1440 |
+| Horizontal overflow / console errors | 0 / 0 at every width |
+| Automated WCAG A/AA violations | 0 public page at four widths; functional legal checks also 0 |
+| Measured controls under 44px / inputs under 16px | 0 / 0 |
+| Concept tabs | Click, ArrowRight, Home/End mapping and panel selection |
+| Hero | Generated concept disclosed; no automatic film loading; manual actual footage + CC |
+| Field clips | Deferred poster/source loading, autoplay only in view, manual pause retained |
+| Reduced motion | Poster retained; no hero film source loaded |
+| JavaScript off / 320 CSS-pixel reflow | Passed |
+| Header | 60px desktop and phone |
+| Lighthouse mobile | 89 Performance / 100 Accessibility / 100 Best Practices / 100 SEO |
+| FCP / LCP / TBT / CLS | 1.2s / 3.8s / 0ms / 0 |
+| Static injection | Idempotent; unique element IDs |
+| Offline storyboard file | 8 shots, 3 embedded images, working JSON download |
+| Storyboard at 390 / 1440 | 0 external requests, 0 script errors, 0 overflow |
 
-Evidence: `qa/v2-*` screenshots, `v2-qa.json`, `v2-lighthouse.report.html/json` and `functional.json`. All captured hero/concept/scopes/gallery/form/CRM states were visually inspected. The film's source is supplied 720px phone footage; it is an edited real-video montage, not generated video.
+Evidence: `_test/results/v4-*`, `functional.json`, `threshold-handoff-*`. Screenshots were visually compared with `_work/ARCHITECTURAL-LOCK.md`: bold display hierarchy, white/graphite/steel-blue roles, rigid media, ruled scope index and honest separation of concepts from real projects. Responsive images and deferred field media raised the first performance result from 78 to 89. Final header revision was measured again at 89.
 
-The two generated before/after studies are labeled illustrative concepts; actual CGC photos remain in the documented work gallery. Four web assets plus provenance are under `assets/concepts/`. The prompts are in IMAGE-PROMPTS.md in the handoff outputs.
+The hero poster and comparison studies are generated illustrations, not documented jobs. Actual CGC photographs and field footage remain separately identified. The requested generated intro is not complete: the user will generate it with local models using the standalone Threshold handoff.
 
-Cloud storage, real CRM authentication and email delivery still require owner configuration and a launch test. The preview retains Vercel authentication. Reflow was checked to 320 CSS pixels (400% equivalent at a 1280px viewport); browser-toolbar zoom was not separately automated.
-
-## API follow-through and Vercel connection
-
-Vercel CLI authenticated as moquinmoreno-1021, with project cgc-glazing in scope sdvsfbs. Latest preview https://cgc-glazing-kn63vbc7o-sdvsfbs.vercel.app/ is READY; target is preview, productionUrl is null, and Vercel authentication remains enabled. Read-only environment listing found no project environment variables, confirming owner configuration is still required.
-
-Fixed malformed JSON bodies producing a CRM server error, and changed payload limits to count UTF-8 bytes for raw JSON, buffers and pre-parsed objects. Regression tests reproduced both issues before the fix. Current API suite: **31/31 passed**. Repeated functional browser scenarios: **10/10 passed**. Previous visual/Lighthouse figures above were not remeasured for this API-only change. No DNS or protection settings changed, no new credentials entered, and nothing pushed.
+Cloud storage, live CRM authentication, email delivery, public protection settings, production and DNS remain owner steps. Local tests do not establish cloud persistence. 320 CSS pixels approximates 400% reflow at a 1280px viewport; browser toolbar zoom was not separately automated. Lighthouse is a local lab result, not field measurement.

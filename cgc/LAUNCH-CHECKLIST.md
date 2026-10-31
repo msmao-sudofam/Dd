@@ -4,11 +4,11 @@ The website and CRM implementation are ready for owner configuration. The genera
 
 ## Generated intro
 
-- Creative direction: **The Reflection Run**, with **The Line** as the craft film. Both six-shot boards and twelve shot prompts are in `creative/video-concepts-2026-10-31/VIDEO-STORYBOARDS.md`.
-- Install/connect Runway and confirm its workspace allows video generation. Connection verification currently returns an unavailable-tool error; no video generation was submitted or charged through this build.
-- Generate individual shots from clean keyframes, inspect geometry and reflections, then edit the approved shots. Preserve the supplied logo; add typography in the edit.
-- Deliver a silent 16:9 website loop and a separately framed phone version, with matching posters and descriptive captions. Retain pause/play and reduced-motion behavior. Label generated concepts and keep them separate from CGC project evidence.
-- Current intro still uses the supplied CGC footage. Storyboard sheets and generated stills are not completed generated video.
+- Current production direction: **The Threshold**, eight shots / 16 seconds. Send `creative/the-threshold/CGC-The-Threshold-Handoff.html` alone to Rebuff. It embeds the board, entrance reference, logo, prompts, edit instructions and export contract.
+- The user will use local models. Follow installed model capabilities; this pack does not assume a particular model or executable ComfyUI graph. Generate clean stills, then individual video shots, inspect geometry/reflections and assemble the edit.
+- Deliver silent desktop/portrait MP4 + WebM, posters, descriptive captions and an edit provenance manifest. Preserve pause/play, reduced-motion fallback and clear generated-concept disclosure.
+- Current hero is a labeled generated entrance still. The old supplied-footage montage is available only on request. Neither the storyboard nor the still is completed generated video.
+- Earlier alternative boards remain in `creative/video-concepts-2026-10-31/` for reference.
 
 ## Owner account configuration
 
