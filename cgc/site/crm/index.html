@@ -766,7 +766,8 @@ function mapRows(text) {
       if (!k || k === 'id' || k === 'lane' && false) return;
       let v = (r[i] ?? '').trim(); if (v === '') return;
       v = v.replace(/^'(?=[=@+\-])/, '');
-      if (k === 'smsConsent' || k === 'archived') v = /^(true|yes|1)$/i.test(v);
+      if (k === 'smsConsent') v = false; // Imported rows never establish opt-in.
+      if (k === 'archived') v = /^(true|yes|1)$/i.test(v);
       if (k === 'stage') { const hit = Object.entries(STAGE_LABEL).find(([id, n]) => id === v.toLowerCase() || n.toLowerCase() === v.toLowerCase()); if (!hit) return; v = hit[0]; }
       if (k === 'projectType') { const hit = Object.entries(TYPES).find(([id, n]) => id === v.toLowerCase() || n.toLowerCase() === v.toLowerCase()); v = hit ? hit[0] : 'other'; }
       if (k === 'role') { const hit = ROLES.find(x => x.toLowerCase() === v.toLowerCase()); if (!hit) return; v = hit; }

@@ -22,6 +22,9 @@ for k,l,t,limit in fields:
  elif t=='textarea':control=f'<textarea id="f-{k}" name="{k}" rows="5" maxlength="{limit}" aria-describedby="err-{k}"></textarea>'
  else:control=f'<input id="f-{k}" name="{k}" type="{t}" '+(f'maxlength="{limit}" ' if limit else '')+('required ' if k=='name' else '')+(f'autocomplete="{dict(name="name",company="organization",email="email",phone="tel").get(k,"off")}" ')+f'aria-describedby="err-{k}">'
  fieldhtml+=f'<label class="field'+(' span' if k in ['scope','plansLink'] else '')+f'"><span>{l}</span>{control}<small id="err-{k}"></small></label>'
+smsblock=re.search(r'<div class="span"><label class="consent">.*?</small></div>',html).group(0)
+html=html.replace(smsblock,'')
+fieldhtml=fieldhtml.replace('<label class="field"><span>Your role',smsblock+'<label class="field"><span>Your role')
 html=html.replace('BIDFIELDS',fieldhtml).replace('FAQ',''.join(f'<details><summary>{q}</summary><p>{a}'+(' <a href="/license/">View license details.</a>' if 'licensed' in q else '')+'</p></details>' for q,a in faq),1) if False else html.replace('BIDFIELDS',fieldhtml)
 html=html.replace('>FAQ<','>'+''.join(f'<details><summary>{q}</summary><p>{a}'+(' <a href="/license/">View license details.</a>' if 'licensed' in q else '')+'</p></details>' for q,a in faq)+'<')
 legal=(S/'LEGAL-NOTES.md').read_text(encoding='utf-8');copies=re.findall(r'^> (.+)$',legal,re.M)[:2]
