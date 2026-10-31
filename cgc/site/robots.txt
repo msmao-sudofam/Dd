@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /crm
+Disallow: /api/
+Sitemap: https://cgcontractorsinc.com/sitemap.xml
