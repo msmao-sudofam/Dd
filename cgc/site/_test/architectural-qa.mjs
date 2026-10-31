@@ -24,6 +24,12 @@ for(const width of [360,390,430,1440]){
   const source=await page.locator('#intro-film').evaluate(v=>v.currentSrc);assert(source.includes(width<761?'portrait.mp4':'wide.mp4'));
   await page.locator('#film-toggle').click();assert(await page.locator('#intro-film').evaluate(v=>v.paused));
   await page.locator('#film-captions').click();assert.equal(await page.locator('#film-captions').getAttribute('aria-pressed'),'true');
+  if(width===390){
+    await page.locator('.field-films>summary').click();await page.locator('#clip-0').scrollIntoViewIfNeeded();
+    await page.waitForFunction(()=>{const v=document.querySelector('#clip-0');return v.readyState>=2&&!v.paused&&!!v.poster});
+    await page.locator('#clip-0 + button').click();assert(await page.locator('#clip-0').evaluate(v=>v.paused));
+    await page.locator('#bid').scrollIntoViewIfNeeded();assert(await page.locator('#clip-0').evaluate(v=>v.paused));
+  }
   results.push({width,...layout,consoleErrors:errors,axe:violations,manualFilm:true,keyboardTabs:true});await ctx.close();
 }
 const ctx=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce'});const page=await ctx.newPage();await page.goto('http://127.0.0.1:4173/');assert(await page.locator('#intro-film').evaluate(v=>v.paused&&!v.currentSrc));await page.screenshot({path:'_test/results/v4-reduced-motion.png'});results.push({reducedMotion:true,posterVisible:await page.locator('.cinema-poster img').isVisible(),filmSourceLoaded:false});
