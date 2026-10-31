@@ -17,7 +17,9 @@ def build():
   b,a=files[p['before']],files[p['after']];pairs+=slider(i,'media/'+b['file'],'media/'+a['file'],'Before: '+b['caption'],'After: '+a['caption'],p['caption'])
  pairs+='</div></details>'
  gallery='<div class="gallery-grid">\n'
- for f in files.values():
+ ordered=[files[k] for k in manifest.get('featured_photos',[]) if k in files]
+ ordered += [f for f in files.values() if f not in ordered]
+ for f in ordered:
   gallery+=f'''<figure class="gallery-item" data-category="{esc(f['category'])}"><button data-full="media/{esc(f['file'])}" aria-label="Enlarge: {esc(f['caption'])}"><img src="media/{esc(f['thumb'])}" alt="{esc(f['caption'])}" width="640" height="{round(f['height']/f['width']*640)}" loading="lazy" decoding="async"></button><figcaption>{esc(f['caption'])}</figcaption></figure>\n'''
  gallery+='</div><div class="actions"><button id="more-work">Show more work</button></div><div class="videos">\n'
  for i,v in enumerate(manifest['videos']):
