@@ -50,3 +50,9 @@ See `LAUNCH-CHECKLIST.md` and `site/CRM-SETUP.md`. Next: Spanish version, Google
 During the earlier build, `vercel curl` unexpectedly generated a protection-bypass token; the owner should review/revoke it. A later project-link command unexpectedly downloaded a local OIDC credential; that local file was deleted without opening or using its contents. Both incidents were disclosed. No additional bypass/link commands or credentials were used in this revision. DNS, Deployment Protection and production promotion remain unchanged.
 
 Changes are committed in small steps on the existing branch. Nothing was pushed.
+
+## Detailed local-video handoff v2
+
+The user reported poor first video results and identified Wan2GP plus other local models. The new standalone file is `creative/the-threshold-v2/CGC-Threshold-v2-Complete-Handoff.html`. It supersedes the earlier short motion directions with 9,410 words, eight detailed shot cards, three calibration tests, clean-keyframe/main/short/timeline prompts, fixed/moving element definitions, source timing, pass/fail criteria, fallbacks and finishing instructions. All reference media are embedded. Exact installed model/settings and the failed files were not supplied; the receiving operator is instructed to inspect them, not infer a diagnosis.
+
+The offline file passed 390/1440 layout, script, accessibility, reference loading, download and text-extraction checks. No website code, hosting, DNS, credentials or Deployment Protection changed in this handoff task.
