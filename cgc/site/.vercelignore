@@ -1,0 +1,8 @@
+_test/
+_build.py
+_build_legal.py
+*.md
+node_modules/
+media/*
+!media/cgc_*
+!media/manifest.json

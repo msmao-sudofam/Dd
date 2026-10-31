@@ -45,6 +45,8 @@ export default async function handler(req, res) {
   const record = buildRecord(lead, { origin: 'website' });
   record.meta = {
     ipHash: hashIp(ip),
+    smsConsentVersion: "2026-10-30",
+    smsConsentText: "Text me about this bid request. By checking this box, I agree to receive text messages from Commercial Glazing Contractors Inc. at the number I provided about my bid request and project, including messages sent with automated technology. Message frequency varies. Msg & data rates may apply. Reply STOP to opt out, HELP for help. Consent is not a condition of purchase. See our [Privacy Policy](/privacy/#sms) and [Terms](/terms/).",
     ua: String((req.headers && req.headers['user-agent']) || '').slice(0, 200),
   };
 

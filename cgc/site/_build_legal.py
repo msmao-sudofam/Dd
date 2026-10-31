@@ -1,6 +1,6 @@
 import os, re
 
-SITE = r"C:\Users\Moqui\Projects\Dd\cgc\site"
+SITE = os.path.dirname(os.path.abspath(__file__))
 UPDATED = "October 30, 2026"
 PHONE = '<a href="tel:+17146504185">(714) 650-4185</a>'
 EMAIL = '<a href="mailto:nathan@cgcontractorsinc.com">nathan@cgcontractorsinc.com</a>'
@@ -12,7 +12,7 @@ Phone: {PHONE}<br>
 Email: {EMAIL}
 </address>"""
 
-CSS = """
+CSS = """@font-face{font-family:Archivo;src:url('/assets/fonts/archivo.woff2') format('woff2');font-weight:100 900;font-stretch:62% 125%;font-display:swap}@font-face{font-family:'JetBrains Mono';src:url('/assets/fonts/jetbrains-mono.woff2') format('woff2');font-weight:100 800;font-display:swap}
 :root{
   --bg:#0a0b0d;--bg-2:#111317;--line:#262a31;--fg:#f3f4f6;--mute:#8b9099;
   --steel:#636466;--amber:#faac1a;--glass:#9ec9d6;
@@ -33,7 +33,7 @@ a:hover{color:var(--amber)}
 .bar{max-width:1120px;margin:0 auto;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:16px}
 .logo{font-family:var(--f-display);font-variation-settings:"wdth" 112;font-weight:800;font-size:1.5rem;letter-spacing:-0.03em;color:var(--amber);text-decoration:none;line-height:1}
 .logo:hover{color:var(--amber)}
-.btn{display:inline-block;background:var(--amber);color:#0a0b0d;border-radius:4px;padding:10px 16px;font-weight:600;font-size:.9375rem;line-height:1.2;text-decoration:none}
+.btn{min-height:44px;min-width:44px;display:inline-block;background:var(--amber);color:#0a0b0d;border-radius:4px;padding:10px 16px;font-weight:600;font-size:.9375rem;line-height:1.2;text-decoration:none}
 .btn:hover{background:#ffbf47;color:#0a0b0d}
 main{display:block;max-width:calc(68ch + 32px);margin:0 auto;padding:48px 16px 80px}
 .label{font-family:var(--f-mono);font-size:.75rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}

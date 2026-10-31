@@ -7,8 +7,8 @@ import leads from '../api/leads.js';
 import {setStore,memoryStore} from '../api/_lib/store.js';
 const root=fileURLToPath(new URL('../',import.meta.url));
 setStore(memoryStore());
-// Use only an owner-provided environment key. Never generate or print a key.
-const types={'.html':'text/html; charset=utf-8','.js':'text/javascript','.mjs':'text/javascript','.css':'text/css','.json':'application/json','.webp':'image/webp','.jpg':'image/jpeg','.png':'image/png','.svg':'image/svg+xml','.mp4':'video/mp4','.webm':'video/webm','.vtt':'text/vtt','.ico':'image/x-icon','.xml':'application/xml','.txt':'text/plain','.webmanifest':'application/manifest+json'};
+// Authentication uses only an owner-provided CRM_KEY environment variable.
+const types={'.woff2':'font/woff2','.html':'text/html; charset=utf-8','.js':'text/javascript','.mjs':'text/javascript','.css':'text/css','.json':'application/json','.webp':'image/webp','.jpg':'image/jpeg','.png':'image/png','.svg':'image/svg+xml','.mp4':'video/mp4','.webm':'video/webm','.vtt':'text/vtt','.ico':'image/x-icon','.xml':'application/xml','.txt':'text/plain','.webmanifest':'application/manifest+json'};
 const config=JSON.parse(await readFile(path.join(root,'vercel.json'),'utf8').catch(()=>'{}'));
 const server=http.createServer(async(req,res)=>{
  try {

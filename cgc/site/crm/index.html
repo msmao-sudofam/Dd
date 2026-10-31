@@ -1,34 +1,1036 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>CGC Team | Lead Desk</title><link rel="icon" href="/assets/favicon.ico"><style>
-:root{color-scheme:dark;--bg:#0a0b0d;--panel:#111317;--line:#262a31;--fg:#f3f4f6;--mute:#a3a8b0;--amber:#faac1a}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,sans-serif}button,input,select,textarea{font:inherit;color:inherit}button,.button{min-height:44px;min-width:44px;padding:10px 14px;border:1px solid var(--line);border-radius:4px;background:var(--panel);cursor:pointer}a{color:inherit;overflow-wrap:anywhere}button.active,.primary{background:var(--amber);color:#0a0b0d}input,select,textarea{display:block;width:100%;min-height:44px;padding:10px;border:1px solid #636466;background:var(--bg);border-radius:0;font-size:16px}label{display:block;margin:12px 0}header{border-bottom:1px solid var(--line);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}h1{font-size:26px;margin:0}h2{font-size:21px}small,.muted{color:var(--mute)}main{padding:20px;max-width:1600px;margin:auto}.tools,nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}.tools label{margin:0;flex:1 1 180px}.notice{padding:16px;border:1px solid var(--line);margin-bottom:16px;font-family:monospace}.board{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:12px}.column{border:1px solid var(--line);background:var(--panel);padding:12px;min-width:0}.column h2{font-size:14px;font-family:monospace}.card{width:100%;text-align:left;display:block;border-radius:0;margin:8px 0;background:var(--bg);overflow-wrap:anywhere}.card strong,.card small{display:block}.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:24px}.metric{background:var(--panel);padding:20px}.metric strong{display:block;font:28px monospace}dialog{background:var(--panel);color:var(--fg);border:1px solid #636466;width:min(620px,calc(100% - 24px));max-height:90dvh;padding:24px}dialog::backdrop{background:#000c}#auth{max-width:480px;margin:50px auto}#drawer{margin-right:12px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}.span{grid-column:1/-1}pre{white-space:pre-wrap;overflow-wrap:anywhere}#status{white-space:pre-wrap}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid white;outline-offset:3px}.list .card{display:grid;grid-template-columns:2fr 1fr;gap:8px}.hide,[hidden]{display:none!important}@media(max-width:480px){main{padding:12px}dialog{padding:16px}.grid{grid-template-columns:1fr}.span{grid-column:auto}header{padding:12px}}
-</style></head><body><header><h1>CGC / Lead desk</h1><a class="button" href="/">Website</a><button id="logout" hidden>Lock desk</button></header><main><section id="auth"><p class="muted">Team access. Your key is kept in memory for this tab only.</p><form id="login"><label for="key">CRM key<input id="key" type="password" autocomplete="off" required></label><button class="primary">Unlock desk</button></form><p>Look around without accessing client records.</p><button id="demo">Open SAMPLE-data demo</button></section><section id="app" hidden><div id="mode" class="notice"></div><nav aria-label="Desk views"><button data-view="pipeline" class="active">Pipeline</button><button data-view="service">Service lane</button><button data-view="list">List</button><button data-view="today">Today</button><button data-view="metrics">Metrics</button></nav><div class="tools"><label>Search leads<input id="search" type="search"></label><button id="new">New lead</button><button id="refresh">Refresh</button><button id="export">Export CSV</button><button id="import">Import CSV</button><label>Records<select id="archived"><option value="active">Active</option><option value="archived">Archived</option><option value="all">All</option></select></label></div><input type="file" id="csv" accept=".csv,text/csv" hidden><div id="content"></div></section><p id="status" role="status" aria-live="polite"></p></main><dialog id="drawer" aria-labelledby="drawer-title"><div class="tools"><h2 id="drawer-title">Lead</h2><button id="close">Close</button></div><form id="edit"><div id="fields" class="grid"></div><p id="consent"></p><div class="tools"><button class="primary">Save lead</button><button type="button" id="archive">Archive lead</button></div></form><h2>Follow-up templates</h2><label>Template<select id="template"><option value="plans">Request plans</option><option value="bid">Bid follow-up</option><option value="schedule">Schedule check</option></select></label><label>Draft message<textarea id="draft" rows="5"></textarea></label><div class="tools"><a id="email" class="button">Open email draft</a><a id="call" class="button">Call</a><a id="sms" class="button">Open text draft</a></div><h2>Notes & activity</h2><label>Add note<textarea id="note" maxlength="2000"></textarea></label><button id="addnote">Save note</button><div id="history"></div></dialog><script>
-const BID=['lead','plans','takeoff','bid-sent','follow-up','awarded','lost','submittals','glass-ordered','install-scheduled','installed-punch','invoiced-retention','closed'],SVC=['svc-new','svc-scheduled','svc-done','svc-invoiced'];
-const LABEL={'lead':'Lead','plans':'Plans received','takeoff':'Estimating','bid-sent':'Bid sent','follow-up':'Follow-up','awarded':'Awarded','lost':'Lost','submittals':'Submittals','glass-ordered':'Glass ordered','install-scheduled':'Install scheduled','installed-punch':'Installed / Punch','invoiced-retention':'Invoiced / Retention','closed':'Closed','svc-new':'Service: New','svc-scheduled':'Service: Scheduled','svc-done':'Service: Done','svc-invoiced':'Service: Invoiced'};
-const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let key='',demo=false,records=[],view='pipeline',current=null;
-const status=t=>$('#status').textContent=t,today=()=>{const d=new Date();return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10)},dollars=n=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(n||0);
-async function api(method='GET',body){const r=await fetch('/api/leads',{method,headers:{'Content-Type':'application/json','x-crm-key':key},...(body?{body:JSON.stringify(body)}:{})});const j=await r.json();if(!r.ok||!j.ok)throw Error(j.error||'Request failed');return j}
-function sample(){return ['lead','plans','bid-sent','awarded','svc-new','svc-scheduled'].map((stage,i)=>({id:'sample-'+i,name:'SAMPLE Contact '+(i+1),company:'SAMPLE Contractor',title:['Storefront opening','Office partition','Entrance replacement','Tenant improvement','Door closer service','Glass service'][i],email:'sample@example.com',phone:'',projectType:i>3?'service-repair':'storefront',role:'GC',scope:'SAMPLE record for demonstration only.',stage,lane:i>3?'service':'bid',bidDue:today(),nextFollowUp:today(),lastTouchAt:new Date(Date.now()-12*86400000).toISOString(),createdAt:new Date().toISOString(),bidAmount:10000*(i+1),awardValue:i===3?40000:null,notes:[],activity:[],archived:false,smsConsent:false}));}
-async function load(){if(!demo){const j=await api();records=j.leads;if(j.readErrors)status(j.readErrors+' records could not be read. Refresh before making decisions.')}render();if(location.hash.startsWith('#lead=')){const r=records.find(x=>x.id===location.hash.slice(6));if(r)open(r)}}
-function enter(){ $('#auth').hidden=true;$('#app').hidden=false;$('#logout').hidden=false;$('#mode').textContent=demo?'SAMPLE DATA DEMO — fictional records. Changes stay in memory; nothing is sent to the server.':'LIVE DESK — client records. Lock the desk when finished.';}
-$('#login').onsubmit=async e=>{e.preventDefault();key=$('#key').value;$('#key').value='';demo=false;try{await load();enter()}catch(e){key='';status(e.message)}};
-$('#demo').onclick=()=>{demo=true;records=sample();enter();render();status('')};$('#logout').onclick=()=>{key='';records=[];demo=false;$('#drawer').close();$('#app').hidden=true;$('#auth').hidden=false;$('#logout').hidden=true;status('Desk locked.')};
-function filtered(){const q=$('#search').value.toLowerCase(),a=$('#archived').value;return records.filter(r=>(a==='all'||!!r.archived===(a==='archived'))&&[r.name,r.company,r.title,r.city,r.scope].join(' ').toLowerCase().includes(q))}
-const card=r=>`<button class="card" data-id="${esc(r.id)}"><strong>${esc(r.title||r.company||r.name)}</strong><span>${esc(r.name)} · ${esc(LABEL[r.stage])}</span><small>${esc(r.city||'City not set')} / Due ${esc(r.bidDue||'—')} / Follow-up ${esc(r.nextFollowUp||'—')}</small></button>`;
-function render(){const rows=filtered(),content=$('#content');document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===view));if(view==='metrics'){const bid=rows.filter(r=>r.lane==='bid'),decided=bid.filter(r=>r.awardedAt||r.lostAt||['awarded','lost'].includes(r.stage)),won=decided.filter(r=>r.awardedAt||r.stage==='awarded');content.innerHTML=`<h2>Pipeline metrics</h2><p class="muted">Based on filtered records. Win rate = awarded ÷ (awarded + lost). Historical award dates count after a job advances.</p><div class="metrics">${[['Leads',rows.length],['Win rate',decided.length?Math.round(won.length/decided.length*100)+'%':'—'],['Total bid',dollars(rows.reduce((s,r)=>s+Number(r.bidAmount||0),0))],['Total awarded',dollars(rows.reduce((s,r)=>s+Number(r.awardValue||0),0))]].map(([l,v])=>`<div class="metric">${l}<strong>${v}</strong></div>`).join('')}</div>`;return}
-if(view==='today'){const groups=[['Bids due / overdue',rows.filter(r=>r.bidDue&&r.bidDue<=today()&&!['closed','lost'].includes(r.stage))],['Follow-ups due',rows.filter(r=>r.nextFollowUp&&r.nextFollowUp<=today())],['Stale bids · no touch for 7 days',rows.filter(r=>['bid-sent','follow-up'].includes(r.stage)&&Date.now()-Date.parse(r.lastTouchAt)>7*86400000)]];content.innerHTML=groups.map(([name,list])=>`<h2>${name} (${list.length})</h2>${list.map(card).join('')||'<p>No items.</p>'}`).join('')}
-else if(view==='list')content.innerHTML='<div class="list">'+(rows.map(card).join('')||'<p>No leads. Add one or import a CSV.</p>')+'</div>';
-else{const stages=view==='service'?SVC:BID;content.innerHTML='<div class="board">'+stages.map(s=>`<section class="column"><h2>${LABEL[s]} / ${rows.filter(r=>r.stage===s).length}</h2>${rows.filter(r=>r.stage===s).map(card).join('')||'<small>No leads</small>'}</section>`).join('')+'</div>'}
-content.querySelectorAll('[data-id]').forEach(b=>b.onclick=()=>open(records.find(r=>r.id===b.dataset.id)))}
-document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{view=b.dataset.view;render()});$('#search').oninput=render;$('#archived').onchange=render;$('#refresh').onclick=()=>load().catch(e=>status(e.message));
-const definitions=[['title','Job title'],['name','Contact name'],['company','Company'],['email','Email','email'],['phone','Phone','tel'],['city','City'],['role','Role',['GC','PM','Owner','Architect','Other']],['projectType','Project type',['storefront','curtain-wall','interior-glass','doors','service-repair','other']],['stage','Stage',[...BID,...SVC]],['bidDue','Bid due','date'],['nextFollowUp','Next follow-up','date'],['installDate','Install date','date'],['value','Estimated value','number'],['bidAmount','Bid amount','number'],['awardValue','Award value','number'],['assigned','Assigned to'],['tags','Tags (comma separated)'],['plansLink','Plans URL','url'],['source','Source'],['lostReason','Lost reason'],['scope','Scope','textarea']];
-function open(r){current=r?structuredClone(r):{role:'Other',projectType:'storefront',stage:'lead',notes:[],activity:[]};$('#drawer-title').textContent=r?'Lead / '+(r.title||r.name):'New lead';$('#fields').innerHTML=definitions.map(([k,l,t])=>`<label${t==='textarea'?' class="span"':''}>${l}${Array.isArray(t)?`<select name="${k}">${t.map(v=>`<option value="${v}" ${current[k]===v?'selected':''}>${esc(LABEL[v]||v)}</option>`).join('')}</select>`:t==='textarea'?`<textarea name="${k}" rows="4">${esc(current[k])}</textarea>`:`<input name="${k}" type="${t||'text'}" ${t==='number'?'min="0" step="0.01"':''} value="${esc(Array.isArray(current[k])?current[k].join(', '):current[k])}">`}</label>`).join('');$('#archive').hidden=!r;$('#archive').textContent=current.archived?'Restore lead':'Archive lead';$('#consent').textContent=current.smsConsent?'Text consent recorded '+(current.smsConsentAt||''):'No recorded text consent. Use phone or email.';$('#note').value='';$('#history').innerHTML=[...(current.notes||[]).map(n=>`${n.at} / ${n.by}: ${n.text}`),...(current.activity||[]).map(a=>`${a.at}: ${a.text}`)].reverse().map(s=>`<p>${esc(s)}</p>`).join('');draft();if(!$('#drawer').open)$('#drawer').showModal()}
-$('#new').onclick=()=>open(null);$('#close').onclick=()=>$('#drawer').close();
-async function save(patch){if(demo){if(current.id){Object.assign(current,patch);if(patch.stage){current.lane=SVC.includes(patch.stage)?'service':'bid';if(patch.stage==='awarded')current.awardedAt=new Date().toISOString();if(patch.stage==='lost')current.lostAt=new Date().toISOString()}}else current={...current,...patch,id:'sample-'+Date.now(),lane:SVC.includes(patch.stage)?'service':'bid',createdAt:new Date().toISOString()};if(patch.appendNote){current.notes.push({at:new Date().toISOString(),by:'demo',text:patch.appendNote});delete current.appendNote}current.lastTouchAt=new Date().toISOString();const i=records.findIndex(r=>r.id===current.id);if(i<0)records.unshift(current);else records[i]=current;}else{const result=await api(current.id?'PATCH':'POST',{...(current.id?{id:current.id}:{}),...patch});current=result.lead;if(result.fields||result.warnings)status('Saved with field warnings: '+JSON.stringify(result.fields||result.warnings));await load()}render();return current}
-$('#edit').onsubmit=async e=>{e.preventDefault();const p=Object.fromEntries(new FormData(e.target));if(!p.name&&!p.company&&!p.title){status('Enter a contact, company or job title.');return}try{await save(p);$('#drawer').close();status('Lead saved.')}catch(e){status(e.message)}};$('#archive').onclick=async()=>{try{await save({archived:!current.archived});$('#drawer').close();status(current.archived?'Lead archived.':'Lead restored.')}catch(e){status(e.message)}};$('#addnote').onclick=async()=>{if(!current.id)return status('Save the lead before adding notes.');if(!$('#note').value.trim())return status('Enter a note.');try{open(await save({appendNote:$('#note').value}));status('Note saved.')}catch(e){status(e.message)}};
-function draft(){const n=current.name||'there',job=current.title||current.projectType||'project',messages={plans:`Hi ${n}, please send the plans, project city, scope and bid due date for ${job}. Thank you, Nathan / Commercial Glazing Contractors Inc.`,bid:`Hi ${n}, checking on our glazing bid for ${job}. Are there scope revisions or a decision date we should know about? Nathan / Commercial Glazing Contractors Inc.`,schedule:`Hi ${n}, please confirm the opening readiness and target install date for ${job}. Nathan / Commercial Glazing Contractors Inc.`};$('#draft').value=messages[$('#template').value];links()}
-function links(){$('#email').href=current.email?'mailto:'+encodeURIComponent(current.email)+'?subject='+encodeURIComponent('Glazing / '+(current.title||'project'))+'&body='+encodeURIComponent($('#draft').value):'mailto:nathan@cgcontractorsinc.com';$('#call').hidden=!current.phone;$('#call').href='tel:'+String(current.phone||'').replace(/[^+\d]/g,'');$('#sms').hidden=!current.smsConsent||!current.phone;$('#sms').href='sms:'+String(current.phone||'').replace(/[^+\d]/g,'')+'?body='+encodeURIComponent($('#draft').value)}$('#template').onchange=draft;$('#draft').oninput=links;
-const CSVFIELDS=['name','company','title','email','phone','role','projectType','city','scope','plansLink','stage','bidDue','nextFollowUp','installDate','value','bidAmount','awardValue','assigned','tags','source','lostReason','createdAt','bidSentAt','awardedAt','lostAt','lastTouchAt','stageChangedAt','notes'];
-$('#export').onclick=()=>{const quote=v=>'"'+String(v??'').replace(/"/g,'""')+'"';const data=[CSVFIELDS,...filtered().map(r=>CSVFIELDS.map(k=>{let v=k==='notes'?(r.notes||[]).map(n=>n.text).join('\n'):Array.isArray(r[k])?r[k].join(','):r[k];return typeof v==='string'&&/^[=+@\-\t\r]/.test(v)?"'"+v:v}))].map(row=>row.map(quote).join(',')).join('\r\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type:'text/csv'}));a.download=demo?'cgc-SAMPLE-leads.csv':'cgc-leads.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)};
-function parseCSV(s){const rows=[];let row=[],v='',quoted=false;s=s.replace(/^\uFEFF/,'');for(let i=0;i<s.length;i++){let c=s[i];if(c==='"'){if(quoted&&s[i+1]==='"'){v+='"';i++}else quoted=!quoted}else if(c===','&&!quoted){row.push(v);v=''}else if((c==='\n'||c==='\r')&&!quoted){if(c==='\r'&&s[i+1]==='\n')i++;row.push(v);if(row.some(Boolean))rows.push(row);row=[];v=''}else v+=c}if(quoted)throw Error('Unclosed CSV quote.');row.push(v);if(row.some(Boolean))rows.push(row);const headers=rows.shift()||[];return rows.map(r=>Object.fromEntries(headers.map((h,i)=>[h,r[i]||'']).filter(([h])=>CSVFIELDS.includes(h))))}
-$('#import').onclick=()=>$('#csv').click();$('#csv').onchange=async e=>{try{const rows=parseCSV(await e.target.files[0].text());if(!rows.length||rows.length>1000)throw Error('Import needs 1–1000 rows with named columns.');if(demo){for(const r of rows)records.push({...r,id:'sample-'+Date.now()+'-'+Math.random(),notes:r.notes?[{text:r.notes}]:[],activity:[],lane:SVC.includes(r.stage)?'service':'bid',stage:[...BID,...SVC].includes(r.stage)?r.stage:'lead'});render();status(rows.length+' SAMPLE rows imported.')}else{const j=await api('POST',{import:rows});await load();status(j.created+' rows imported. '+JSON.stringify(j.errors||[]))}}catch(e){status(e.message)}finally{e.target.value=''}};
-</script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#0a0b0d">
+<title>CGC CRM</title>
+<link rel="icon" href="/assets/logo-mark.svg" type="image/svg+xml">
+
+
+
+<style>.skip{position:fixed;top:-100px;left:12px;z-index:200;background:white;color:black;padding:12px}.skip:focus{top:12px}@font-face{font-family:Archivo;src:url('/assets/fonts/archivo.woff2') format('woff2');font-weight:100 900;font-stretch:62% 125%;font-display:swap}@font-face{font-family:'JetBrains Mono';src:url('/assets/fonts/jetbrains-mono.woff2') format('woff2');font-weight:100 800;font-display:swap}
+:root{
+  --bg:#0a0b0d; --bg-2:#111317; --line:#262a31; --fg:#f3f4f6; --mute:#8b9099;
+  --steel:#636466; --amber:#faac1a; --glass:#9ec9d6; --danger:#e5736b; --ok:#8fc9a0;
+  --f-display:"Archivo",system-ui,sans-serif; --f-body:"Archivo",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,monospace;
+  --gut:16px; --nav-h:60px;
+}
+*{box-sizing:border-box;margin:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--fg);font:400 16px/1.45 var(--f-body);font-stretch:100%;min-height:100vh;overflow-x:hidden}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:inherit}
+[hidden]{display:none!important}
+.mono{font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);font-weight:500}
+h1,h2,h3{font-family:var(--f-display);font-stretch:112%;font-weight:700;letter-spacing:-.03em;line-height:1.1}
+h2{font-size:22px} h3{font-size:16px;letter-spacing:-.01em}
+:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+.sr{position:absolute;left:0;top:0;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;min-width:44px;padding:0 16px;border:1px solid var(--line);border-radius:4px;background:var(--bg-2);cursor:pointer;text-decoration:none;font-weight:600;font-size:15px;white-space:nowrap}
+.btn:hover{border-color:var(--steel)}
+.btn.primary{background:var(--amber);border-color:var(--amber);color:#0a0b0d}
+.btn.primary:hover{filter:brightness(1.07)}
+.btn.ghost{background:transparent}
+.btn.danger{color:var(--danger)}
+.btn[disabled]{opacity:.5;cursor:default}
+.btn.sm{padding:0 12px;font-size:14px}
+
+/* fields */
+label.f{display:block;min-width:0;position:relative}
+label.f>span,.lbl{display:block;font:500 11px/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin-bottom:6px}
+input[type=text],input[type=tel],input[type=email],input[type=url],input[type=date],input[type=search],input[type=password],input:not([type]),select,textarea{
+  width:100%;min-height:44px;padding:10px 12px;font-size:16px;background:var(--bg);border:1px solid var(--line);border-radius:4px;color:var(--fg)}
+textarea{resize:vertical;min-height:88px;line-height:1.4}
+select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--mute) 50%),linear-gradient(135deg,var(--mute) 50%,transparent 50%);background-position:calc(100% - 18px) 55%,calc(100% - 12px) 55%;background-size:6px 6px;background-repeat:no-repeat;padding-right:32px}
+input:focus,select:focus,textarea:focus{border-color:var(--amber);outline:none}
+input[type=checkbox]{width:22px;height:22px;accent-color:var(--amber)}
+.chk{display:flex;align-items:center;gap:10px;min-height:44px;cursor:pointer}
+::-webkit-calendar-picker-indicator{filter:invert(.7)}
+
+/* shell */
+header.top{position:sticky;top:0;z-index:30;background:var(--bg);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;padding:8px var(--gut);min-height:60px}
+.brand{display:flex;align-items:center;gap:10px;min-width:0;margin-right:auto}
+.brand img{width:28px;height:28px;display:block}
+.brand b{font:700 15px/1 var(--f-display);font-stretch:112%;letter-spacing:-.02em;white-space:nowrap}
+.brand .mono{white-space:nowrap}
+nav.tabs{display:none}
+nav.bottom{position:fixed;left:0;right:0;bottom:0;z-index:30;height:var(--nav-h);background:var(--bg-2);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr)}
+.tab{position:relative;background:none;border:0;border-top:2px solid transparent;color:var(--mute);font:500 11px/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;cursor:pointer;min-height:44px;padding:0 2px}
+.tab[aria-current=page]{color:var(--fg);border-top-color:var(--amber)}
+.tab .n{display:inline-block;margin-left:4px;min-width:18px;padding:2px 5px;border:1px solid var(--steel);color:var(--fg);font-size:10px;line-height:1.2}
+main{padding:16px var(--gut) calc(var(--nav-h) + 32px);max-width:1600px;margin:0 auto}
+.sample-banner{position:sticky;top:60px;z-index:25;background:var(--steel);color:#fff;display:flex;align-items:center;gap:12px;padding:8px var(--gut);font:500 12px/1.3 var(--f-mono);letter-spacing:.08em;text-transform:uppercase}
+.sample-banner span{flex:1;min-width:0}
+.sample-banner .btn{min-height:44px;background:#0a0b0d;color:#fff;border-color:#0a0b0d}
+.view-h{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-bottom:16px}
+.view-h h2{margin-right:auto}
+
+/* cards / sections */
+.card{background:var(--bg-2);border:1px solid var(--line);border-radius:0;padding:16px}
+.sec{margin-bottom:24px}
+.sec>h3{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.cnt{font:500 11px/1 var(--f-mono);border:1px solid var(--steel);padding:3px 6px;color:var(--fg)}
+.empty{border:1px dashed var(--line);padding:20px 16px;color:var(--mute);text-align:center}
+.err{border:1px solid var(--danger);padding:16px;color:var(--fg)}
+.err b{color:var(--danger)}
+.skel{height:64px;background:linear-gradient(90deg,var(--bg-2),#171a20,var(--bg-2));background-size:200% 100%;animation:sk 1.2s linear infinite;border:1px solid var(--line);margin-bottom:8px}
+@keyframes sk{to{background-position:-200% 0}}
+@media (prefers-reduced-motion:reduce){.skel{animation:none}*{scroll-behavior:auto!important}}
+
+/* rows */
+.item{display:flex;align-items:stretch;border:1px solid var(--line);background:var(--bg-2);margin-bottom:8px;min-width:0}
+.item-main{flex:1;min-width:0;text-align:left;background:none;border:0;padding:12px;cursor:pointer;display:block;min-height:44px}
+.item-main:hover{background:#15181d}
+.item .t1{font-weight:600;overflow-wrap:anywhere}
+.item .t2{color:var(--mute);font-size:14px;overflow-wrap:anywhere}
+.item .meta{display:flex;flex-wrap:wrap;gap:6px 8px;margin-top:6px;align-items:center}
+.item-call{display:flex;align-items:center;justify-content:center;width:52px;border-left:1px solid var(--line);text-decoration:none;font:500 11px/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--fg)}
+.item-call:hover{background:#15181d}
+.tag{display:inline-block;border:1px solid var(--line);padding:3px 6px;font:500 11px/1.1 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--mute);white-space:nowrap}
+.tag.hot{color:var(--fg);border-color:var(--danger)}
+.tag.warn{color:var(--fg);border-color:var(--steel)}
+.tag.st{color:var(--fg);border-color:var(--steel)}
+.money{font-family:var(--f-mono);font-size:13px}
+
+/* pipeline */
+.lane-toggle{display:inline-flex;border:1px solid var(--line);border-radius:4px;overflow:hidden}
+.lane-toggle button{min-height:44px;padding:0 16px;background:none;border:0;cursor:pointer;font:500 12px/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+.lane-toggle button[aria-pressed=true]{background:var(--amber);color:#0a0b0d;font-weight:500}
+.stagebar{display:flex;gap:6px;overflow-x:auto;margin:0 calc(var(--gut) * -1) 12px;padding:0 var(--gut) 4px;scrollbar-width:thin}
+.stagebar button{flex:none;min-height:44px;padding:0 12px;background:var(--bg-2);border:1px solid var(--line);border-radius:4px;cursor:pointer;font:500 11px/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--mute);white-space:nowrap}
+.stagebar button[aria-selected=true]{border-color:var(--amber);color:var(--fg)}
+.board{display:block;touch-action:pan-y}
+.col{display:none;min-width:0}
+.col.on{display:block}
+.col-h{display:flex;align-items:center;gap:8px;padding:8px 0;margin-bottom:8px;border-bottom:1px solid var(--line)}
+.col-h .mono{color:var(--fg)}
+.col-sum{margin-left:auto}
+.card.k{padding:12px;margin-bottom:8px;display:block}
+.card.k .open{display:block;width:100%;text-align:left;background:none;border:0;padding:0;cursor:pointer;min-height:44px}
+.card.k .t1{font-weight:600;overflow-wrap:anywhere}
+.card.k .t2{color:var(--mute);font-size:14px;overflow-wrap:anywhere}
+.card.k .meta{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.card.k select{margin-top:4px;font-size:16px}
+.col.over .col-body{outline:1px dashed var(--amber);outline-offset:2px}
+.col-body{min-height:60px}
+.card.k.dragging{opacity:.4}
+@media (pointer:fine){.card.k[draggable=true]{cursor:grab}}
+
+/* list toolbar */
+.toolbar{display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:12px}
+.toolbar .row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+
+/* metrics */
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.kpi{background:var(--bg-2);border:1px solid var(--line);padding:12px}
+.kpi b{display:block;font:700 26px/1.1 var(--f-display);font-stretch:112%;letter-spacing:-.03em;margin-top:6px;overflow-wrap:anywhere}
+.chart{width:100%;height:auto;display:block}
+.chart text{font-family:var(--f-mono);font-size:10px;fill:var(--mute)}
+.legend{display:flex;gap:16px;margin-bottom:8px}
+.legend i{display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:-1px}
+table.t{width:100%;border-collapse:collapse;font-size:14px}
+table.t th{font:500 11px/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--mute);text-align:left;padding:8px 6px;border-bottom:1px solid var(--line)}
+table.t td{padding:10px 6px;border-bottom:1px solid var(--line);overflow-wrap:anywhere}
+table.t td.r,table.t th.r{text-align:right;font-family:var(--f-mono)}
+.tw{overflow-x:auto}
+details>summary{cursor:pointer;min-height:44px;display:flex;align-items:center}
+
+/* drawer */
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:50}
+.drawer{position:fixed;z-index:51;top:0;right:0;bottom:0;width:100%;max-width:560px;background:var(--bg);border-left:1px solid var(--line);display:flex;flex-direction:column}
+.dr-h{display:flex;align-items:flex-start;gap:12px;padding:12px var(--gut);border-bottom:1px solid var(--line)}
+.dr-h h2{font-size:20px;overflow-wrap:anywhere}
+.dr-h .x{margin-left:auto;flex:none}
+.dr-b{flex:1;overflow-y:auto;padding:16px var(--gut) 24px;overscroll-behavior:contain}
+.dr-f{display:flex;gap:8px;padding:10px var(--gut);border-top:1px solid var(--line);background:var(--bg-2)}
+.dr-f .btn.primary{flex:1}
+.contact{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.grid2{display:grid;grid-template-columns:1fr;gap:12px}
+.dr-b h3{margin:24px 0 10px}
+.dr-b h3:first-child{margin-top:0}
+.cd{font:500 12px/1.2 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;margin-top:6px;color:var(--mute)}
+.cd.hot{color:var(--danger)} .cd.soon{color:var(--fg)}
+.quick{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.tl{list-style:none;padding:0}
+.tl li{border-left:1px solid var(--steel);padding:2px 0 14px 14px;position:relative}
+.tl li::before{content:"";position:absolute;left:-4px;top:7px;width:7px;height:7px;background:var(--steel)}
+.tl .when{display:block;font:500 11px/1.2 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--mute);margin-bottom:2px}
+.tl .txt{white-space:pre-wrap;overflow-wrap:anywhere}
+.note-add{display:grid;gap:8px;margin-bottom:16px}
+.note-add .btn{justify-self:start}
+
+/* dialogs */
+dialog{background:var(--bg);color:var(--fg);border:1px solid var(--steel);border-radius:0;padding:0;width:min(560px,100vw - 16px);max-height:calc(100vh - 16px);margin:auto;overflow:auto}
+dialog::backdrop{background:rgba(0,0,0,.7)}
+.dlg-b{padding:16px}
+.dlg-f{display:flex;gap:8px;justify-content:flex-end;padding:12px 16px;border-top:1px solid var(--line);background:var(--bg-2);position:sticky;bottom:0}
+
+/* gate */
+.gate{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:var(--gut)}
+.gate .card{width:100%;max-width:420px;display:grid;gap:14px}
+.gate h1{font-size:28px}
+.gate p{color:var(--mute);font-size:15px}
+.gate .or{display:flex;align-items:center;gap:12px}
+.gate .or::before,.gate .or::after{content:"";flex:1;height:1px;background:var(--line)}
+.gate .msg{color:var(--danger);font-size:14px;min-height:0}
+
+/* toasts */
+#toasts{position:fixed;left:var(--gut);right:var(--gut);bottom:calc(var(--nav-h) + 12px);z-index:80;display:grid;gap:8px;justify-items:center;pointer-events:none}
+.toast{pointer-events:auto;background:var(--fg);color:#0a0b0d;padding:12px 16px;font-weight:600;font-size:15px;max-width:480px;border-radius:4px;overflow-wrap:anywhere}
+.toast.bad{background:var(--danger)}
+
+/* desktop */
+@media (min-width:900px){
+  :root{--nav-h:0px}
+  nav.bottom{display:none}
+  nav.tabs{display:flex;gap:4px}
+  nav.tabs .tab{min-height:44px;padding:0 14px;border-top:0;border-bottom:2px solid transparent;font-size:12px}
+  nav.tabs .tab[aria-current=page]{border-bottom-color:var(--amber)}
+  main{padding:24px 32px 48px}
+  header.top{padding:8px 32px}
+  .sample-banner{padding:8px 32px}
+  .stagebar{display:none}
+  .board{display:flex;gap:12px;overflow-x:auto;padding-bottom:12px;align-items:flex-start;touch-action:auto}
+  .col,.col.on{display:block;flex:0 0 280px}
+  .toolbar{grid-template-columns:2fr 3fr}
+  .toolbar .row{grid-template-columns:repeat(4,1fr)}
+  .kpis{grid-template-columns:repeat(5,1fr)}
+  .grid2{grid-template-columns:1fr 1fr}
+  .grid2 .full{grid-column:1/-1}
+  .today{display:grid;grid-template-columns:1fr 1fr;gap:0 24px;align-items:start}
+  .metrics-g{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .metrics-g .wide{grid-column:1/-1}
+  .tools-g{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+  .item{max-width:none}
+  #toasts{bottom:24px}
+}
+main{width:100%;min-width:0}.board{width:100%;max-width:100%;contain:inline-size}
+</style>
+</head>
+<body><a href="#main" class="skip">Skip to content</a>
+
+<div id="gate" class="gate" hidden>
+  <form class="card" id="gate-form" autocomplete="off">
+    <div class="brand"><img src="/assets/logo-mark.svg" alt="" width="28" height="28"><b>CGC CRM</b></div>
+    <h1>Enter CRM key</h1>
+    <p>Private. The key is whatever passphrase was set as <span class="mono" style="text-transform:none">CRM_KEY</span> on the server. It stays in memory for this tab until you lock or reload.</p>
+    <label class="f"><span>CRM key</span><input type="password" id="gate-key" autocomplete="current-password" spellcheck="false" required></label>
+    <div class="msg" id="gate-msg" role="alert"></div>
+    <button class="btn primary" type="submit" id="gate-go">Open CRM</button>
+    <div class="or mono">or</div>
+    <button class="btn" type="button" id="gate-sample">Try sample data</button>
+    <p class="mono" style="color:var(--mute)">Sample data is fake and never saved.</p>
+  </form>
+</div>
+
+<div id="app" hidden>
+  <header class="top">
+    <div class="brand"><img src="/assets/logo-mark.svg" alt="" width="28" height="28"><b>CGC CRM</b><span class="mono" id="mode-tag"></span></div>
+    <nav class="tabs" id="tabs-top" aria-label="Sections"></nav>
+    <button class="btn primary" id="btn-add" type="button">+ Add</button>
+  </header>
+  <div class="sample-banner" id="sample-banner" role="status" hidden>
+    <span>Sample data. Fake leads, in memory only. Nothing is saved.</span>
+    <button class="btn sm" type="button" id="sample-exit">Exit</button>
+  </div>
+  <main id="main" tabindex="-1"></main>
+  <nav class="bottom" id="tabs-bot" aria-label="Sections"></nav>
+</div>
+
+<div id="drawer-root"></div>
+<div id="toasts" aria-live="polite" aria-atomic="false"></div>
+
+<dialog id="dlg-add" aria-labelledby="add-h">
+  <form method="dialog" id="add-form">
+    <div class="dlg-b">
+      <h2 id="add-h" style="margin-bottom:12px">Quick add</h2>
+      <div class="grid2">
+        <label class="f"><span>Company</span><input name="company" autocomplete="off"></label>
+        <label class="f"><span>Contact name</span><input name="name" autocomplete="off"></label>
+        <label class="f"><span>Job / project</span><input name="title" autocomplete="off"></label>
+        <label class="f"><span>Project type</span><select name="projectType" id="add-type"></select></label>
+        <label class="f"><span>Phone</span><input name="phone" type="tel" autocomplete="off"></label>
+        <label class="f"><span>Email</span><input name="email" type="email" autocomplete="off"></label>
+        <label class="f"><span>Role</span><select name="role" id="add-role"></select></label>
+        <label class="f"><span>City</span><input name="city" autocomplete="off"></label>
+        <label class="f"><span>Bid due</span><input name="bidDue" type="date"></label>
+        <label class="f full"><span>Scope / notes</span><textarea name="scope"></textarea></label>
+      </div>
+      <p class="mono" id="add-msg" style="color:var(--danger);margin-top:10px" role="alert"></p>
+    </div>
+    <div class="dlg-f">
+      <button class="btn ghost" type="button" id="add-cancel">Cancel</button>
+      <button class="btn primary" type="submit" id="add-save">Add</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="dlg-import" aria-labelledby="imp-h">
+  <div class="dlg-b">
+    <h2 id="imp-h" style="margin-bottom:12px">Import CSV</h2>
+    <p id="imp-sum" style="margin-bottom:8px"></p>
+    <p class="mono" style="margin-bottom:8px">Each row becomes a new lead. Rows already in the CRM are not matched, so re-importing an export makes duplicates.</p>
+    <pre id="imp-map" class="mono" style="white-space:pre-wrap;color:var(--mute);text-transform:none"></pre>
+  </div>
+  <div class="dlg-f">
+    <button class="btn ghost" type="button" id="imp-cancel">Cancel</button>
+    <button class="btn primary" type="button" id="imp-go">Import</button>
+  </div>
+</dialog>
+<input type="file" id="csv-file" accept=".csv,text/csv" hidden>
+
+<script>
+(() => {
+'use strict';
+
+/* ---------- schema (mirrors api/_lib/schema.js) ---------- */
+const ROLES = ['GC','PM','Owner','Architect','Other'];
+const TYPES = { 'storefront':'Storefront','curtain-wall':'Curtain wall','interior-glass':'Interior glass','doors':'Doors','service-repair':'Service / repair','other':'Other' };
+const BID_STAGES = ['lead','plans','takeoff','bid-sent','follow-up','awarded','lost','submittals','glass-ordered','install-scheduled','installed-punch','invoiced-retention','closed'];
+const SVC_STAGES = ['svc-new','svc-scheduled','svc-done','svc-invoiced'];
+const STAGE_LABEL = {
+  'lead':'Lead','plans':'Plans received','takeoff':'Estimating','bid-sent':'Bid sent','follow-up':'Follow-up','awarded':'Awarded','lost':'Lost',
+  'submittals':'Submittals','glass-ordered':'Glass ordered','install-scheduled':'Install scheduled','installed-punch':'Installed / punch',
+  'invoiced-retention':'Invoiced / retention','closed':'Closed',
+  'svc-new':'New call','svc-scheduled':'Scheduled','svc-done':'Done','svc-invoiced':'Invoiced'
+};
+const CLOSED = ['lost','closed','svc-invoiced'];
+const PRE_BID = ['lead','plans','takeoff'];
+const POST_BID = ['bid-sent','follow-up'];
+
+/* ---------- state ---------- */
+const S = {
+  key:'', mode:'live', leads:[], loading:false, loadErr:null,
+  view:'today', lane:'bid', stageTab:'lead', openId:null, tplLead:'',
+  f:{ q:'', stage:'', type:'', role:'', company:'', sort:'due', archived:false }
+};
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => [...r.querySelectorAll(s)];
+const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ls = {
+  get(k){ try { return localStorage.getItem(k); } catch { return null; } },
+  set(k,v){ try { localStorage.setItem(k,v); } catch {} },
+  del(k){ try { localStorage.removeItem(k); } catch {} }
+};
+const isoDay = d => { const z = new Date(d.getTime() - d.getTimezoneOffset()*60000); return z.toISOString().slice(0,10); };
+const today = () => isoDay(new Date());
+const dayNum = s => Math.round(Date.parse(s + 'T00:00:00Z') / 86400000);
+const daysUntil = s => s ? dayNum(s) - dayNum(today()) : null;
+const addDays = (n) => { const d = new Date(); d.setDate(d.getDate() + n); return isoDay(d); };
+const fmtDay = s => { if (!s) return ''; const d = new Date(s.length > 10 ? s : s + 'T12:00:00'); return d.toLocaleDateString('en-US', { month:'short', day:'numeric', year: d.getFullYear() === new Date().getFullYear() ? undefined : 'numeric' }); };
+const fmtWhen = iso => { const d = new Date(iso); return isNaN(d) ? '' : d.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }) + ' ' + d.toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit' }); };
+const money = n => (n === null || n === undefined || n === '') ? '' : '$' + Math.round(Number(n)).toLocaleString('en-US');
+const moneyShort = n => { n = Number(n) || 0; if (n >= 1e6) return '$' + (n/1e6).toFixed(n >= 1e7 ? 0 : 1) + 'M'; if (n >= 1e3) return '$' + Math.round(n/1e3) + 'k'; return '$' + Math.round(n); };
+const isOpen = l => !l.archived && !CLOSED.includes(l.stage);
+const primary = l => l.company || l.name || l.title || 'Untitled';
+const jobName = l => l.title || [TYPES[l.projectType] || 'Job', l.city].filter(Boolean).join(' · ');
+const sub = l => [l.company && l.name ? l.name : '', jobName(l)].filter(Boolean).join(' · ');
+const cdText = (s, past='overdue') => {
+  const d = daysUntil(s); if (d === null) return '';
+  if (d < 0) return `${-d} day${d === -1 ? '' : 's'} ${past}`;
+  if (d === 0) return 'today';
+  return `in ${d} day${d === 1 ? '' : 's'}`;
+};
+const telDigits = p => { const d = String(p || '').replace(/[^\d+]/g, ''); return d.length === 10 ? '+1' + d : d; };
+
+/* ---------- toast ---------- */
+function toast(msg, bad) {
+  const t = document.createElement('div'); t.className = 'toast' + (bad ? ' bad' : ''); t.textContent = msg;
+  if (bad) t.setAttribute('role', 'alert');
+  $('#toasts').appendChild(t);
+  setTimeout(() => t.remove(), bad ? 6000 : 2800);
+}
+
+/* ---------- API ---------- */
+async function api(method, path, body) {
+  let r;
+  try {
+    r = await fetch(path, { method, headers: { 'x-crm-key': S.key, ...(body ? { 'content-type':'application/json' } : {}) }, body: body ? JSON.stringify(body) : undefined, cache:'no-store' });
+  } catch { const e = new Error('Cannot reach the server. Check your connection.'); e.status = 0; throw e; }
+  let j = null; try { j = await r.json(); } catch {}
+  if (!r.ok || !j || j.ok === false) { const e = new Error((j && j.error) || `Server error (${r.status})`); e.status = r.status; e.data = j; throw e; }
+  return j;
+}
+
+/* ---------- sample data ---------- */
+function sampleLeads() {
+  const now = Date.now(); const iso = d => new Date(now + d*86400000).toISOString(); const day = d => addDays(d);
+  const mk = (i, o) => ({
+    id:'sample-' + String(i).padStart(4,'0'), createdAt: iso(-30), updatedAt: iso(-1), origin:'manual', lane:'bid', stage:'lead', stageChangedAt: iso(-3), lastTouchAt: iso(-3),
+    name:'', company:'', email:'', phone:'', role:'GC', projectType:'storefront', title:'', city:'', scope:'', bidDue:'', plansLink:'', smsConsent:false, source:'SAMPLE',
+    value:null, bidAmount:null, awardValue:null, assigned:'', tags:['sample'], nextFollowUp:'', installDate:'', lostReason:'', bidSentAt:'', awardedAt:'', lostAt:'', archived:false,
+    notes:[], activity:[{ at: iso(-30), type:'created', text:'SAMPLE record' }], ...o
+  });
+  const L = [
+    mk(1,{ name:'Sample Pat', company:'Sample GC Co.', phone:'(555) 010-2001', email:'pat@example.com', title:'Sample Plaza storefront', city:'Temecula', stage:'lead', createdAt: iso(-1), stageChangedAt: iso(-1), bidDue: day(5), value:42000, source:'SAMPLE website', origin:'website', scope:'Two storefront elevations, one pair of doors.' }),
+    mk(2,{ name:'Sample Dana', company:'Sample Builders Inc.', phone:'(555) 010-2002', email:'dana@example.com', title:'Sample Office TI, 12,000 SF', city:'Irvine', projectType:'interior-glass', role:'PM', stage:'takeoff', bidDue: day(2), value:68000, nextFollowUp: day(0), notes:[{ at: iso(-4), by:'crm', text:'Plans received. Need door hardware schedule.' }] }),
+    mk(3,{ name:'Sample Lee', company:'Sample Tenant Group', phone:'(555) 010-2003', title:'Sample Cafe frameless front', city:'Riverside', projectType:'storefront', role:'Owner', stage:'plans', bidDue: day(-2), value:18500 }),
+    mk(4,{ name:'Sample Chris', company:'Sample GC Co.', phone:'(555) 010-2004', email:'chris@example.com', title:'Sample Clinic curtain wall', city:'Murrieta', projectType:'curtain-wall', stage:'bid-sent', bidAmount:184000, bidSentAt: iso(-12), bidDue: day(-12), nextFollowUp: day(-2), notes:[{ at: iso(-13), by:'crm', text:'Sent plans takeoff to estimating.' }] }),
+    mk(5,{ name:'Sample Robin', company:'Sample Dev Partners', phone:'(555) 010-2005', title:'Sample Retail pad doors', city:'Wildomar', projectType:'doors', stage:'follow-up', bidAmount:23400, bidSentAt: iso(-9), bidDue: day(-9), notes:[{ at: iso(-9), by:'crm', text:'Bid emailed.' }, { at: iso(-3), by:'crm', text:'Left voicemail. Said decision by end of month.' }], nextFollowUp: day(3) }),
+    mk(6,{ name:'Sample Jordan', company:'Sample Builders Inc.', phone:'(555) 010-2006', title:'Sample School storefront', city:'Corona', stage:'bid-sent', bidAmount:96500, bidSentAt: iso(-3), bidDue: day(-3) }),
+    mk(7,{ name:'Sample Alex', company:'Sample Restaurant Group', phone:'(555) 010-2007', title:'Sample BBQ storefront + roll-up', city:'Temecula', stage:'awarded', bidAmount:57200, awardValue:55000, bidSentAt: iso(-40), awardedAt: iso(-20) }),
+    mk(8,{ name:'Sample Sam', company:'Sample GC Co.', phone:'(555) 010-2008', title:'Sample Medical TI', city:'Irvine', projectType:'interior-glass', stage:'install-scheduled', bidAmount:131000, awardValue:128000, bidSentAt: iso(-75), awardedAt: iso(-55), installDate: day(9) }),
+    mk(9,{ name:'Sample Kim', company:'Sample Builders Inc.', phone:'(555) 010-2009', title:'Sample Gym storefront', city:'Menifee', stage:'lost', bidAmount:48000, bidSentAt: iso(-100), lostAt: iso(-80), lostReason:'Went with a lower bid' }),
+    mk(10,{ name:'Sample Taylor', company:'Sample Dev Partners', phone:'(555) 010-2010', title:'Sample Bank curtain wall', city:'Riverside', projectType:'curtain-wall', stage:'closed', bidAmount:240000, awardValue:236000, bidSentAt: iso(-150), awardedAt: iso(-130) }),
+    mk(11,{ name:'Sample Jules', company:'Sample Tenant Group', phone:'(555) 010-2011', title:'Sample Pharmacy storefront', city:'Hemet', stage:'lost', bidAmount:31000, bidSentAt: iso(-60), lostAt: iso(-45), lostReason:'Owner bought direct' }),
+    mk(12,{ name:'Sample Morgan', company:'Sample GC Co.', phone:'(555) 010-2012', title:'Sample Hotel glass handrail', city:'Temecula', projectType:'other', stage:'closed', bidAmount:72000, awardValue:72000, bidSentAt: iso(-95), awardedAt: iso(-85) }),
+    mk(13,{ name:'Sample Front Desk', company:'Sample Restaurant Group', phone:'(555) 010-2013', title:'Cracked door glass, rear entry', city:'Murrieta', projectType:'service-repair', lane:'service', stage:'svc-new', createdAt: iso(0), nextFollowUp: day(0), value:1800 }),
+    mk(14,{ name:'Sample Manager', company:'Sample Tenant Group', phone:'(555) 010-2014', title:'Replace storefront closer', city:'Wildomar', projectType:'service-repair', lane:'service', stage:'svc-scheduled', nextFollowUp: day(1), value:650 }),
+    mk(15,{ name:'Sample Foreman', company:'Sample GC Co.', phone:'(555) 010-2015', title:'Broken lite, 3rd floor', city:'Irvine', projectType:'service-repair', lane:'service', stage:'svc-done', bidAmount:2200 })
+  ];
+  return L;
+}
+
+/* ---------- local patch (sample mode only; mirrors server rules) ---------- */
+function applyLocal(l, p) {
+  const now = new Date().toISOString(); const out = { ...l, notes:[...l.notes], activity:[...l.activity] };
+  const num = v => v === '' || v === null ? null : Number(String(v).replace(/[$,\s]/g, ''));
+  for (const k of ['name','company','title','email','phone','role','projectType','city','scope','plansLink','bidDue','nextFollowUp','installDate','assigned','lostReason','source','smsConsent','archived','stage','lane']) if (k in p) out[k] = p[k];
+  for (const k of ['value','bidAmount','awardValue']) if (k in p) out[k] = num(p[k]);
+  if ('tags' in p) out.tags = (Array.isArray(p.tags) ? p.tags : String(p.tags).split(',')).map(t => t.trim().toLowerCase()).filter(Boolean);
+  if (p.stage && p.stage !== l.stage) {
+    out.lane = SVC_STAGES.includes(p.stage) ? 'service' : 'bid'; out.stageChangedAt = now; out.lastTouchAt = now;
+    if (p.stage === 'bid-sent' && !out.bidSentAt) out.bidSentAt = now;
+    if (p.stage === 'awarded' && !out.awardedAt) out.awardedAt = now;
+    if (p.stage === 'lost' && !out.lostAt) out.lostAt = now;
+    out.activity.push({ at: now, type:'stage', text:'Stage → ' + p.stage });
+  }
+  if (p.appendNote) { out.notes.push({ at: now, by:'crm', text: p.appendNote }); out.lastTouchAt = now; }
+  out.updatedAt = now; return out;
+}
+
+/* ---------- data ops ---------- */
+const byId = id => S.leads.find(l => l.id === id);
+function replaceLead(nl) { const i = S.leads.findIndex(l => l.id === nl.id); if (i >= 0) S.leads[i] = nl; else S.leads.unshift(nl); }
+
+async function loadLeads(quiet) {
+  if (S.mode === 'sample') return;
+  if (!quiet) { S.loading = true; S.loadErr = null; render(); }
+  try {
+    const j = await api('GET', '/api/leads');
+    S.leads = j.leads || []; S.loadErr = null;
+    if (j.readErrors) toast(`${j.readErrors} lead file(s) could not be read.`, true);
+  } catch (e) {
+    if (e.status === 401 || e.status === 429) { lock(e.status === 429 ? e.message : 'That key was not accepted.'); return; }
+    if (!quiet || !S.leads.length) S.loadErr = e;
+    else toast('Refresh failed: ' + e.message, true);
+  }
+  S.loading = false; render(); renderDrawer(true);
+}
+
+async function patchLead(id, patch) {
+  const cur = byId(id); if (!cur) return null;
+  if (S.mode === 'sample') { const nl = applyLocal(cur, patch); replaceLead(nl); return nl; }
+  try {
+    const j = await api('PATCH', '/api/leads?id=' + encodeURIComponent(id), patch);
+    replaceLead(j.lead);
+    if (j.fields) toast('Some fields were rejected: ' + Object.keys(j.fields).join(', '), true);
+    return j.lead;
+  } catch (e) {
+    if (e.status === 401) { lock('Key rejected. Enter it again.'); return null; }
+    toast(e.data && e.data.fields ? 'Not saved: ' + Object.keys(e.data.fields).join(', ') + ' invalid' : e.message, true);
+    return null;
+  }
+}
+
+async function moveStage(id, stage) {
+  const cur = byId(id); if (!cur || cur.stage === stage) return;
+  const p = { stage };
+  if (stage === 'awarded' && cur.awardValue == null && cur.bidAmount != null) p.awardValue = cur.bidAmount;
+  const nl = await patchLead(id, p);
+  if (nl) toast(`${primary(nl)}: ${STAGE_LABEL[stage]}`);
+  render(); if (S.openId === id) renderDrawer();
+}
+
+/* ---------- key gate ---------- */
+function showGate(msg) {
+  $('#app').hidden = true; $('#gate').hidden = false; closeDrawer(true);
+  $('#gate-msg').textContent = msg || ''; $('#gate-key').value = ''; $('#gate-go').disabled = false; $('#gate-go').textContent = 'Open CRM';
+  setTimeout(() => $('#gate-key').focus(), 0);
+}
+function lock(msg) { S.key = ''; S.leads = []; S.mode = 'live'; ls.del('cgc_crm_key'); showGate(msg); }
+function enter() {
+  $('#gate').hidden = true; $('#app').hidden = false;
+  $('#sample-banner').hidden = S.mode !== 'sample';
+  $('#mode-tag').textContent = S.mode === 'sample' ? 'SAMPLE' : 'CRM';
+  buildNav(); render(); readHash();
+}
+async function tryKey(k) {
+  S.key = k; S.mode = 'live'; S.leads = []; S.loadErr = null;
+  const btn = $('#gate-go'); btn.disabled = true; btn.textContent = 'Checking…'; $('#gate-msg').textContent = '';
+  try {
+    const j = await api('GET', '/api/leads');
+    S.leads = j.leads || []; ls.del('cgc_crm_key'); enter();
+  } catch (e) {
+    S.key = ''; btn.disabled = false; btn.textContent = 'Open CRM';
+    $('#gate-msg').textContent = e.status === 401 ? 'That key was not accepted.' : e.status === 429 ? e.message : e.status === 503 ? e.message : e.message;
+  }
+}
+function startSample() {
+  S.mode = 'sample'; S.key = ''; S.leads = sampleLeads(); S.view = 'today'; enter();
+}
+
+/* ---------- nav ---------- */
+const TABS = [['today','Today'],['pipeline','Pipeline'],['list','List'],['metrics','Metrics'],['tools','Tools']];
+function buildNav() {
+  const html = TABS.map(([k, n]) => `<button class="tab" type="button" data-view="${k}" ${S.view === k ? 'aria-current="page"' : ''}>${n}${k === 'today' ? '<span class="n" id="today-n" hidden></span>' : ''}</button>`).join('');
+  $('#tabs-top').innerHTML = html; $('#tabs-bot').innerHTML = html;
+}
+function setView(v) {
+  S.view = v; $$('.tab').forEach(b => b.toggleAttribute('aria-current', b.dataset.view === v));
+  $$('.tab').forEach(b => { if (b.dataset.view === v) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
+  render(); window.scrollTo(0, 0); $('#main').focus({ preventScroll:true });
+}
+
+/* ---------- derived: today ---------- */
+function todayData() {
+  const open = S.leads.filter(isOpen);
+  const fresh = open.filter(l => ['lead','svc-new'].includes(l.stage)).sort((a,b) => String(b.createdAt).localeCompare(String(a.createdAt)));
+  const due = open.filter(l => l.lane === 'bid' && PRE_BID.includes(l.stage) && l.bidDue && daysUntil(l.bidDue) <= 7).sort((a,b) => a.bidDue.localeCompare(b.bidDue));
+  const follow = open.filter(l => l.nextFollowUp && daysUntil(l.nextFollowUp) <= 0).sort((a,b) => a.nextFollowUp.localeCompare(b.nextFollowUp));
+  const stale = open.filter(l => POST_BID.includes(l.stage) && l.bidSentAt && (Date.now() - Date.parse(l.bidSentAt)) > 7*86400000 && !(l.notes || []).some(n => Date.parse(n.at) >= Date.parse(l.bidSentAt))).sort((a,b) => a.bidSentAt.localeCompare(b.bidSentAt));
+  return { fresh, due, follow, stale, count: new Set([...due, ...follow, ...stale].map(l => l.id)).size + fresh.length };
+}
+function dueTag(l) {
+  if (!l.bidDue) return '';
+  const d = daysUntil(l.bidDue); const cls = d < 0 ? 'hot' : d <= 2 ? 'hot' : d <= 7 ? 'warn' : '';
+  return `<span class="tag ${cls}">Due ${esc(fmtDay(l.bidDue))} · ${esc(cdText(l.bidDue, 'late'))}</span>`;
+}
+function stageTag(l) { return `<span class="tag st">${esc(STAGE_LABEL[l.stage] || l.stage)}</span>`; }
+function itemHTML(l, extra) {
+  const call = l.phone ? `<a class="item-call" href="tel:${esc(telDigits(l.phone))}" aria-label="Call ${esc(primary(l))}">Call</a>` : '';
+  return `<div class="item"><button class="item-main" type="button" data-act="open" data-id="${esc(l.id)}">
+    <div class="t1">${esc(primary(l))}</div><div class="t2">${esc(sub(l))}</div>
+    <div class="meta">${stageTag(l)}${extra || ''}${l.bidAmount != null ? `<span class="money">${esc(money(l.bidAmount))}</span>` : ''}</div></button>${call}</div>`;
+}
+
+/* ---------- views ---------- */
+function render() {
+  if ($('#app').hidden) return;
+  const m = $('#main'); const v = S.view;
+  const td = todayData(); const n = $$('#today-n'); n.forEach(e => { e.textContent = td.count; e.hidden = !td.count; });
+  if (S.loading && !S.leads.length) { m.innerHTML = '<div class="skel"></div><div class="skel"></div><div class="skel"></div>'; return; }
+  if (S.loadErr) { m.innerHTML = `<div class="err" role="alert"><b>Could not load leads.</b><p style="margin:8px 0 12px">${esc(S.loadErr.message)}</p><button class="btn primary" type="button" data-act="reload">Try again</button></div>`; return; }
+  m.innerHTML = ({ today: viewToday, pipeline: viewPipeline, list: viewList, metrics: viewMetrics, tools: viewTools }[v])(td);
+  if (v === 'list') renderListResults();
+  if (v === 'tools') renderTplPanel();
+}
+
+function section(title, items, emptyMsg, html) {
+  return `<section class="sec"><h3>${title}<span class="cnt">${items.length}</span></h3>${items.length ? items.map(html).join('') : `<div class="empty">${emptyMsg}</div>`}</section>`;
+}
+function viewToday(td) {
+  if (!S.leads.length) return emptyAll();
+  const rows = (l) => itemHTML(l);
+  return `<div class="view-h"><h2>Today</h2><span class="mono">${esc(new Date().toLocaleDateString('en-US', { weekday:'long', month:'short', day:'numeric' }))}</span></div>
+  <div class="today"><div>
+    ${section('Bids due in 7 days', td.due, 'No bids due this week.', l => itemHTML(l, dueTag(l)))}
+    ${section('Follow-ups due', td.follow, 'No follow-ups due.', l => itemHTML(l, `<span class="tag ${daysUntil(l.nextFollowUp) < 0 ? 'hot' : 'warn'}">Follow up ${esc(cdText(l.nextFollowUp))}</span>`))}
+  </div><div>
+    ${section('Stale bids', td.stale, 'No stale bids.', l => itemHTML(l, `<span class="tag hot">Sent ${esc(fmtDay(l.bidSentAt))}, no follow-up note</span>`))}
+    ${section('New and unanswered', td.fresh, 'Nothing new.', l => itemHTML(l, `<span class="tag">In ${esc(fmtDay(l.createdAt))}</span>${l.source ? `<span class="tag">${esc(l.source)}</span>` : ''}`))}
+  </div></div>`;
+}
+function emptyAll() {
+  return `<div class="empty"><p style="color:var(--fg);font-weight:600;margin-bottom:6px">No leads yet.</p><p style="margin-bottom:14px">Website form submissions land here. You can also add a job by hand or import a CSV.</p><button class="btn primary" type="button" data-act="add">Add a job</button></div>`;
+}
+
+function viewPipeline() {
+  if (!S.leads.length) return `<div class="view-h"><h2>Pipeline</h2></div>` + emptyAll();
+  const stages = S.lane === 'bid' ? BID_STAGES : SVC_STAGES;
+  if (!stages.includes(S.stageTab)) S.stageTab = stages[0];
+  const items = S.leads.filter(l => !l.archived && l.lane === S.lane);
+  const by = st => items.filter(l => l.stage === st).sort((a,b) => (a.bidDue || '9999').localeCompare(b.bidDue || '9999') || String(b.updatedAt).localeCompare(String(a.updatedAt)));
+  const bar = stages.map(st => `<button type="button" role="tab" aria-selected="${S.stageTab === st}" data-act="stagetab" data-stage="${st}">${esc(STAGE_LABEL[st])} ${by(st).length}</button>`).join('');
+  const cols = stages.map(st => {
+    const arr = by(st); const sum = arr.reduce((t,l) => t + (Number(l.awardValue ?? l.bidAmount) || 0), 0);
+    return `<section class="col ${S.stageTab === st ? 'on' : ''}" data-stage="${st}" aria-label="${esc(STAGE_LABEL[st])}"><div class="col-h"><span class="mono">${esc(STAGE_LABEL[st])}</span><span class="cnt">${arr.length}</span>${sum ? `<span class="mono col-sum">${esc(moneyShort(sum))}</span>` : ''}</div>
+      <div class="col-body">${arr.length ? arr.map(kcard).join('') : '<div class="empty">None</div>'}</div></section>`;
+  }).join('');
+  return `<div class="view-h"><h2>Pipeline</h2><div class="lane-toggle" role="group" aria-label="Lane">
+    <button type="button" aria-pressed="${S.lane === 'bid'}" data-act="lane" data-lane="bid">Bids</button>
+    <button type="button" aria-pressed="${S.lane === 'service'}" data-act="lane" data-lane="service">Service</button></div></div>
+    <div class="stagebar" role="tablist" aria-label="Stages">${bar}</div><div class="board" id="board">${cols}</div>`;
+}
+function stageOptions(sel) {
+  return `<optgroup label="Bids">${BID_STAGES.map(s => `<option value="${s}" ${s === sel ? 'selected' : ''}>${esc(STAGE_LABEL[s])}</option>`).join('')}</optgroup>
+    <optgroup label="Service">${SVC_STAGES.map(s => `<option value="${s}" ${s === sel ? 'selected' : ''}>${esc(STAGE_LABEL[s])}</option>`).join('')}</optgroup>`;
+}
+function kcard(l) {
+  const fine = matchMedia('(pointer:fine)').matches;
+  return `<article class="card k" ${fine ? 'draggable="true"' : ''} data-id="${esc(l.id)}">
+    <button class="open" type="button" data-act="open" data-id="${esc(l.id)}"><div class="t1">${esc(primary(l))}</div><div class="t2">${esc(sub(l))}</div></button>
+    <div class="meta">${PRE_BID.includes(l.stage) || l.stage === 'svc-new' ? dueTag(l) : ''}${l.bidAmount != null ? `<span class="money">${esc(money(l.awardValue ?? l.bidAmount))}</span>` : ''}${l.nextFollowUp && daysUntil(l.nextFollowUp) <= 0 ? '<span class="tag hot">Follow up</span>' : ''}</div>
+    <label class="f"><span class="sr">Move ${esc(primary(l))} to</span><select data-act="move" data-id="${esc(l.id)}" aria-label="Move ${esc(primary(l))} to stage">${stageOptions(l.stage)}</select></label></article>`;
+}
+
+function companies() { return [...new Set(S.leads.map(l => l.company).filter(Boolean))].sort((a,b) => a.localeCompare(b)); }
+function viewList() {
+  if (!S.leads.length) return `<div class="view-h"><h2>List</h2></div>` + emptyAll();
+  const f = S.f;
+  const opt = (arr, cur, all) => `<option value="">${all}</option>` + arr.map(([v,n]) => `<option value="${esc(v)}" ${cur === v ? 'selected' : ''}>${esc(n)}</option>`).join('');
+  return `<div class="view-h"><h2>List</h2><span class="mono" id="list-count"></span></div>
+  <div class="toolbar">
+    <label class="f"><span>Search</span><input type="search" id="f-q" value="${esc(f.q)}" placeholder="Name, company, job, city, phone" autocomplete="off"></label>
+    <div class="row">
+      <label class="f"><span>Stage</span><select id="f-stage">${opt(Object.entries(STAGE_LABEL), f.stage, 'All stages')}</select></label>
+      <label class="f"><span>Project type</span><select id="f-type">${opt(Object.entries(TYPES), f.type, 'All types')}</select></label>
+      <label class="f"><span>Role</span><select id="f-role">${opt(ROLES.map(r => [r,r]), f.role, 'All roles')}</select></label>
+      <label class="f"><span>Company</span><select id="f-company">${opt(companies().map(c => [c,c]), f.company, 'All companies')}</select></label>
+    </div>
+    <div class="row">
+      <label class="f"><span>Sort</span><select id="f-sort">${opt([['due','Bid due, soonest'],['new','Newest first'],['amount','Bid amount'],['name','Company A-Z']], f.sort, 'Bid due, soonest').replace('<option value="">Bid due, soonest</option>', '')}</select></label>
+      <label class="chk" style="align-self:end"><input type="checkbox" id="f-arch" ${f.archived ? 'checked' : ''}> Show archived</label>
+    </div>
+  </div><div id="list-res"></div>`;
+}
+function filtered() {
+  const f = S.f; const q = f.q.trim().toLowerCase();
+  let r = S.leads.filter(l => (f.archived || !l.archived) && (!f.stage || l.stage === f.stage) && (!f.type || l.projectType === f.type) && (!f.role || l.role === f.role) && (!f.company || l.company === f.company)
+    && (!q || [l.name,l.company,l.title,l.city,l.phone,l.email,l.scope,(l.tags||[]).join(' ')].join(' ').toLowerCase().includes(q)));
+  const cmp = {
+    due: (a,b) => (a.bidDue || '9999-99-99').localeCompare(b.bidDue || '9999-99-99') || String(b.createdAt).localeCompare(String(a.createdAt)),
+    new: (a,b) => String(b.createdAt).localeCompare(String(a.createdAt)),
+    amount: (a,b) => (Number(b.bidAmount) || 0) - (Number(a.bidAmount) || 0),
+    name: (a,b) => primary(a).localeCompare(primary(b))
+  }[f.sort] || (() => 0);
+  return r.sort(cmp);
+}
+function renderListResults() {
+  const r = filtered(); const el = $('#list-res'); if (!el) return;
+  $('#list-count').textContent = `${r.length} of ${S.leads.length}`;
+  el.innerHTML = r.length ? r.map(l => itemHTML(l, (l.bidDue ? dueTag(l) : '') + (l.archived ? '<span class="tag">Archived</span>' : ''))).join('') : '<div class="empty">No leads match these filters.</div>';
+}
+
+/* ---------- metrics ---------- */
+function monthKey(iso) { return iso ? iso.slice(0,7) : ''; }
+function metrics() {
+  const L = S.leads.filter(l => !l.archived || l.bidSentAt);
+  const sent = L.filter(l => l.bidSentAt);
+  const awarded = L.filter(l => l.awardedAt);
+  const lost = L.filter(l => l.lostAt);
+  const decided = awarded.length + lost.length;
+  const bidTot = sent.reduce((t,l) => t + (Number(l.bidAmount) || 0), 0);
+  const awTot = awarded.reduce((t,l) => t + (Number(l.awardValue ?? l.bidAmount) || 0), 0);
+  const openPipe = S.leads.filter(l => isOpen(l) && l.lane === 'bid' && POST_BID.includes(l.stage)).reduce((t,l) => t + (Number(l.bidAmount) || 0), 0);
+  const months = {};
+  const bump = (k, f, v) => { if (!k) return; (months[k] = months[k] || { bid:0, aw:0 })[f] += v; };
+  sent.forEach(l => bump(monthKey(l.bidSentAt), 'bid', Number(l.bidAmount) || 0));
+  awarded.forEach(l => bump(monthKey(l.awardedAt), 'aw', Number(l.awardValue ?? l.bidAmount) || 0));
+  const group = keyFn => {
+    const g = {};
+    L.forEach(l => { const k = keyFn(l); if (!k) return; const r = g[k] = g[k] || { k, sent:0, bid:0, won:0, lost:0, aw:0 };
+      if (l.bidSentAt) { r.sent++; r.bid += Number(l.bidAmount) || 0; } if (l.awardedAt) { r.won++; r.aw += Number(l.awardValue ?? l.bidAmount) || 0; } if (l.lostAt) r.lost++; });
+    return Object.values(g).filter(r => r.sent || r.won || r.lost).sort((a,b) => b.bid - a.bid);
+  };
+  return { sent: sent.length, winRate: decided ? Math.round(awarded.length / decided * 100) : null, decided, bidTot, awTot, openPipe, months, byCo: group(l => l.company), byType: group(l => TYPES[l.projectType] || l.projectType) };
+}
+function chartSVG(months, n) {
+  const keys = []; const d = new Date(); d.setDate(1);
+  for (let i = n - 1; i >= 0; i--) { const x = new Date(d.getFullYear(), d.getMonth() - i, 1); keys.push(x.getFullYear() + '-' + String(x.getMonth()+1).padStart(2,'0')); }
+  const max = Math.max(1, ...keys.flatMap(k => [months[k]?.bid || 0, months[k]?.aw || 0]));
+  const W = n * 50, H = 190, top = 20, base = 160, bw = 17;
+  let g = `<line x1="0" y1="${base}" x2="${W}" y2="${base}" stroke="#262a31"/><line x1="0" y1="${top}" x2="${W}" y2="${top}" stroke="#262a31" stroke-dasharray="2 4"/><text x="2" y="${top - 6}">${esc(moneyShort(max))}</text>`;
+  keys.forEach((k, i) => {
+    const x = i * 50 + 6; const b = months[k]?.bid || 0, a = months[k]?.aw || 0;
+    const hb = b / max * (base - top), ha = a / max * (base - top);
+    g += `<rect x="${x}" y="${base - hb}" width="${bw}" height="${hb}" fill="#636466"><title>${k} bid ${money(b)}</title></rect>`;
+    g += `<rect x="${x + bw + 2}" y="${base - ha}" width="${bw}" height="${ha}" fill="#f3f4f6"><title>${k} awarded ${money(a)}</title></rect>`;
+    g += `<text x="${x + bw}" y="${base + 14}" text-anchor="middle">${new Date(k + '-15T12:00').toLocaleDateString('en-US', { month:'short' }).toUpperCase()}</text>`;
+    if (new Date(k + '-15').getMonth() === 0) g += `<text x="${x + bw}" y="${base + 27}" text-anchor="middle">${k.slice(0,4)}</text>`;
+  });
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Dollars bid versus dollars awarded by month, last ${n} months">${g}</svg>`;
+}
+function groupTable(rows, label) {
+  if (!rows.length) return '<div class="empty">No bids yet.</div>';
+  return `<div class="tw"><table class="t"><thead><tr><th>${label}</th><th class="r">Bids</th><th class="r">$ bid</th><th class="r">Won</th><th class="r">Win %</th></tr></thead><tbody>${rows.map(r => {
+    const dec = r.won + r.lost; return `<tr><td>${esc(r.k)}</td><td class="r">${r.sent}</td><td class="r">${esc(moneyShort(r.bid))}</td><td class="r">${r.won}</td><td class="r">${dec ? Math.round(r.won / dec * 100) + '%' : '–'}</td></tr>`; }).join('')}</tbody></table></div>`;
+}
+function viewMetrics() {
+  if (!S.leads.length) return `<div class="view-h"><h2>Metrics</h2></div>` + emptyAll();
+  const m = metrics(); const n = matchMedia('(min-width:900px)').matches ? 12 : 6;
+  const monthRows = Object.keys(m.months).sort().reverse().map(k => `<tr><td>${k}</td><td class="r">${esc(money(m.months[k].bid))}</td><td class="r">${esc(money(m.months[k].aw))}</td></tr>`).join('');
+  return `<div class="view-h"><h2>Metrics</h2><span class="mono">All time unless noted</span></div>
+  <div class="kpis">
+    <div class="kpi"><span class="mono">Bids sent</span><b>${m.sent}</b></div>
+    <div class="kpi"><span class="mono">Win rate</span><b>${m.winRate === null ? '–' : m.winRate + '%'}</b><span class="mono">${m.decided} decided</span></div>
+    <div class="kpi"><span class="mono">$ bid</span><b>${esc(moneyShort(m.bidTot))}</b></div>
+    <div class="kpi"><span class="mono">$ awarded</span><b>${esc(moneyShort(m.awTot))}</b></div>
+    <div class="kpi"><span class="mono">Out for decision</span><b>${esc(moneyShort(m.openPipe))}</b></div>
+  </div>
+  <div class="metrics-g">
+    <section class="card wide"><h3 style="margin-bottom:8px">$ bid vs $ awarded by month</h3>
+      <div class="legend mono"><span><i style="background:#636466"></i>Bid</span><span><i style="background:#f3f4f6"></i>Awarded</span></div>
+      ${chartSVG(m.months, n)}
+      <details><summary class="mono">Show numbers</summary><div class="tw"><table class="t"><thead><tr><th>Month</th><th class="r">Bid</th><th class="r">Awarded</th></tr></thead><tbody>${monthRows || '<tr><td colspan="3">No data</td></tr>'}</tbody></table></div></details>
+    </section>
+    <section class="card"><h3 style="margin-bottom:8px">By company</h3>${groupTable(m.byCo, 'Company')}</section>
+    <section class="card"><h3 style="margin-bottom:8px">By project type</h3>${groupTable(m.byType, 'Type')}</section>
+  </div>`;
+}
+
+/* ---------- tools: templates, csv ---------- */
+const TEMPLATES = {
+  'bid-follow-up': ['Bid follow-up', 'Hi {name}, Nathan at CGC Commercial Glazing. Checking in on our bid for {project} ({amount}). Do you need anything else from me to make a decision, or want me to walk through scope and alternates? Happy to revise. (714) 650-4185'],
+  'plans-request': ['Plans request', 'Hi {name}, Nathan at CGC Commercial Glazing (CSLB C-17 #1109661). We want to bid {project} for {company}. Can you send the plans, the glazing spec sections, and any addenda? Bid due {bidDue}. Thanks. (714) 650-4185'],
+  'award-thanks': ['Award thank-you', 'Hi {name}, thank you for the award on {project} ({amount}). Send the contract when you have it and we will start submittals and shop drawings. Let me know what schedule dates we should lock in now. Nathan, CGC'],
+  'review-request': ['Google review request', 'Hi {name}, Nathan at CGC. Thanks for working with us on {project}. If we earned it, a short Google review helps other contractors find us: {reviewLink} Thank you.']
+};
+function mergeFields(text, l) {
+  const first = (l.name || '').trim().split(/\s+/)[0] || l.company || '';
+  const v = {
+    name: first, company: l.company, project: jobName(l) || '', bidDue: l.bidDue ? fmtDay(l.bidDue) : '',
+    amount: money(l.awardValue ?? l.bidAmount), reviewLink: ls.get('cgc_review_link') || ''
+  };
+  return text.replace(/\{(\w+)\}/g, (_, k) => (v[k] ? v[k] : `[${k === 'reviewLink' ? 'Google review link' : k}]`));
+}
+function tplPanelHTML(prefix, withLeadPick) {
+  const opts = Object.entries(TEMPLATES).map(([k, [n]]) => `<option value="${k}">${esc(n)}</option>`).join('');
+  const leadPick = withLeadPick ? `<label class="f"><span>Lead</span><select id="${prefix}-lead">${S.leads.filter(l => !l.archived).map(l => `<option value="${esc(l.id)}" ${S.tplLead === l.id ? 'selected' : ''}>${esc(primary(l) + ' · ' + jobName(l))}</option>`).join('')}</select></label>` : '';
+  return `${leadPick}<label class="f"><span>Template</span><select id="${prefix}-tpl">${opts}</select></label>
+  <label class="f"><span>Message (edit before copying)</span><textarea id="${prefix}-txt" rows="6"></textarea></label>
+  ${withLeadPick || true ? `<label class="f"><span>Google review link (saved in this browser)</span><input type="url" id="${prefix}-rev" value="${esc(ls.get('cgc_review_link') || '')}" placeholder="https://g.page/..."></label>` : ''}
+  <div class="quick"><button class="btn primary" type="button" data-act="copy" data-prefix="${prefix}">Copy message</button></div>`;
+}
+function fillTpl(prefix, lead) {
+  const t = $('#' + prefix + '-tpl'); const x = $('#' + prefix + '-txt'); if (!t || !x || !lead) return;
+  x.value = mergeFields(TEMPLATES[t.value][1], lead);
+}
+function renderTplPanel() {
+  const root = $('#tools-tpl'); if (!root) return;
+  if (!S.leads.length) { root.innerHTML = '<div class="empty">Add a lead to build a message.</div>'; return; }
+  if (!byId(S.tplLead)) S.tplLead = (S.leads.find(l => !l.archived) || S.leads[0]).id;
+  root.innerHTML = `<div class="grid2" style="grid-template-columns:1fr">${tplPanelHTML('tt', true)}</div>`;
+  fillTpl('tt', byId(S.tplLead));
+}
+function viewTools() {
+  return `<div class="view-h"><h2>Tools</h2></div>
+  <div class="tools-g">
+    <section class="card"><h3 style="margin-bottom:12px">Follow-up messages</h3><div id="tools-tpl"></div></section>
+    <div style="display:grid;gap:16px">
+      <section class="card"><h3 style="margin-bottom:8px">CSV</h3><p style="color:var(--mute);margin-bottom:12px">Export everything, or import rows from a spreadsheet. Columns match the lead fields.</p>
+        <div class="quick"><button class="btn" type="button" data-act="export">Export CSV</button><button class="btn" type="button" data-act="import" ${S.mode === 'sample' ? 'disabled' : ''}>Import CSV</button></div>
+        ${S.mode === 'sample' ? '<p class="mono" style="margin-top:8px">Import is off in sample mode.</p>' : ''}</section>
+      <section class="card"><h3 style="margin-bottom:8px">Data</h3><div class="quick"><button class="btn" type="button" data-act="reload" ${S.mode === 'sample' ? 'disabled' : ''}>Refresh</button>
+        ${S.mode === 'sample' ? '<button class="btn" type="button" data-act="exitsample">Exit sample mode</button>' : '<button class="btn danger" type="button" data-act="lock">Lock and forget key</button>'}</div>
+        <p class="mono" style="margin-top:12px">${S.leads.length} leads loaded</p></section>
+    </div>
+  </div>`;
+}
+
+const EXPORT_COLS = ['id','createdAt','stage','lane','name','company','role','phone','email','title','projectType','city','scope','bidDue','nextFollowUp','installDate','value','bidAmount','awardValue','assigned','tags','lostReason','source','smsConsent','archived','bidSentAt','awardedAt','lostAt','lastTouchAt','stageChangedAt','notes'];
+function csvCell(v) {
+  let s = v === null || v === undefined ? '' : String(v);
+  if (/^[=@\t\r]/.test(s) || /^[+\-][^0-9(.\s]/.test(s)) s = "'" + s;
+  return /[",\r\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+}
+function exportCSV() {
+  const rows = [EXPORT_COLS.join(',')];
+  S.leads.forEach(l => rows.push(EXPORT_COLS.map(c => csvCell(c === 'tags' ? (l.tags || []).join(', ') : c === 'notes' ? (l.notes || []).map(n => `${n.at.slice(0,10)}: ${n.text}`).join('\n---\n') : l[c])).join(',')));
+  const blob = new Blob(['﻿' + rows.join('\r\n')], { type:'text/csv;charset=utf-8' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `cgc-leads-${S.mode === 'sample' ? 'SAMPLE-' : ''}${today()}.csv`;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  toast(`Exported ${S.leads.length} leads`);
+}
+function parseCSV(t) {
+  const rows = []; let row = [], cur = '', q = false;
+  t = t.replace(/^﻿/, '');
+  for (let i = 0; i < t.length; i++) {
+    const c = t[i];
+    if (q) { if (c === '"') { if (t[i+1] === '"') { cur += '"'; i++; } else q = false; } else cur += c; }
+    else if (c === '"') q = true;
+    else if (c === ',') { row.push(cur); cur = ''; }
+    else if (c === '\n' || c === '\r') { if (c === '\r' && t[i+1] === '\n') i++; row.push(cur); cur = ''; if (row.some(x => x.trim() !== '')) rows.push(row); row = []; }
+    else cur += c;
+  }
+  row.push(cur); if (row.some(x => x.trim() !== '')) rows.push(row);
+  return rows;
+}
+const ALIAS = { phonenumber:'phone', mobile:'phone', cell:'phone', contact:'name', contactname:'name', job:'title', jobname:'title', project:'title', projectname:'title', companyname:'company', gc:'company', bidamt:'bidAmount', bid:'bidAmount', award:'awardValue', awardamount:'awardValue', due:'bidDue', followup:'nextFollowUp', note:'notes', status:'stage' };
+function mapRows(text) {
+  const rows = parseCSV(text); if (rows.length < 2) return { rows: [], mapped: [], ignored: [] };
+  const keys = {}; EXPORT_COLS.concat(['plansLink','smsConsent']).forEach(c => keys[c.toLowerCase()] = c);
+  const mapped = [], ignored = [];
+  const cols = rows[0].map(h => { const n = h.trim().toLowerCase().replace(/[^a-z0-9]/g, ''); const k = keys[n] || ALIAS[n]; (k ? mapped : ignored).push(h.trim()); return k; });
+  const out = [];
+  for (const r of rows.slice(1)) {
+    const o = {};
+    cols.forEach((k, i) => {
+      if (!k || k === 'id' || k === 'lane' && false) return;
+      let v = (r[i] ?? '').trim(); if (v === '') return;
+      v = v.replace(/^'(?=[=@+\-])/, '');
+      if (k === 'smsConsent' || k === 'archived') v = /^(true|yes|1)$/i.test(v);
+      if (k === 'stage') { const hit = Object.entries(STAGE_LABEL).find(([id, n]) => id === v.toLowerCase() || n.toLowerCase() === v.toLowerCase()); if (!hit) return; v = hit[0]; }
+      if (k === 'projectType') { const hit = Object.entries(TYPES).find(([id, n]) => id === v.toLowerCase() || n.toLowerCase() === v.toLowerCase()); v = hit ? hit[0] : 'other'; }
+      if (k === 'role') { const hit = ROLES.find(x => x.toLowerCase() === v.toLowerCase()); if (!hit) return; v = hit; }
+      if (['bidDue','nextFollowUp','installDate'].includes(k)) { const d = new Date(v); if (/^\d{4}-\d{2}-\d{2}$/.test(v)) {} else if (!isNaN(d)) v = isoDay(d); else return; }
+      o[k] = v;
+    });
+    if (o.name || o.company || o.title) out.push(o);
+  }
+  return { rows: out, mapped, ignored, total: rows.length - 1 };
+}
+let pendingImport = null;
+async function pickCSV(file) {
+  const text = await file.text(); const r = mapRows(text);
+  if (!r.rows.length) { toast('No usable rows. Each row needs a name, company or job title.', true); return; }
+  pendingImport = r.rows;
+  $('#imp-sum').textContent = `${r.rows.length} of ${r.total} rows can be imported.`;
+  $('#imp-map').textContent = `Matched columns: ${r.mapped.join(', ') || 'none'}\nIgnored columns: ${r.ignored.join(', ') || 'none'}`;
+  $('#dlg-import').showModal();
+}
+async function runImport() {
+  const rows = pendingImport; if (!rows) return;
+  const btn = $('#imp-go'); btn.disabled = true; btn.textContent = 'Importing…';
+  let created = 0; const errs = [];
+  try {
+    for (let i = 0; i < rows.length; i += 200) {
+      const j = await api('POST', '/api/leads', { import: rows.slice(i, i + 200) });
+      created += j.created || 0; (j.errors || []).forEach(e => errs.push(e)); (j.leads || []).forEach(replaceLead);
+    }
+    toast(`Imported ${created} lead${created === 1 ? '' : 's'}${errs.length ? `, ${errs.length} skipped` : ''}`, errs.length > 0);
+  } catch (e) { toast('Import stopped: ' + e.message, true); }
+  btn.disabled = false; btn.textContent = 'Import'; pendingImport = null; $('#dlg-import').close(); render();
+}
+
+/* ---------- quick add ---------- */
+function openAdd() {
+  $('#add-type').innerHTML = Object.entries(TYPES).map(([k, n]) => `<option value="${k}">${esc(n)}</option>`).join('');
+  $('#add-role').innerHTML = ROLES.map(r => `<option>${r}</option>`).join('');
+  $('#add-form').reset(); $('#add-msg').textContent = ''; $('#dlg-add').showModal(); $('#add-form [name=company]').focus();
+}
+async function submitAdd(ev) {
+  ev.preventDefault();
+  const fd = new FormData($('#add-form')); const b = {};
+  for (const [k, v] of fd.entries()) if (String(v).trim()) b[k] = String(v).trim();
+  if (!b.name && !b.company && !b.title) { $('#add-msg').textContent = 'Add a company, contact name or job name.'; return; }
+  const btn = $('#add-save'); btn.disabled = true;
+  try {
+    let lead;
+    if (S.mode === 'sample') { lead = { ...sampleLeads()[0], id:'sample-new-' + Date.now(), name:'', company:'', title:'', bidDue:'', value:null, notes:[], ...b, stage: b.projectType === 'service-repair' ? 'svc-new' : 'lead', lane: b.projectType === 'service-repair' ? 'service' : 'bid', createdAt: new Date().toISOString(), source:'SAMPLE manual' }; }
+    else { lead = (await api('POST', '/api/leads', b)).lead; }
+    replaceLead(lead); $('#dlg-add').close(); toast('Added ' + primary(lead)); render();
+  } catch (e) {
+    if (e.status === 401) { $('#dlg-add').close(); lock('Key rejected. Enter it again.'); }
+    else $('#add-msg').textContent = e.data && e.data.fields ? 'Check: ' + Object.keys(e.data.fields).join(', ') : e.message;
+  }
+  btn.disabled = false;
+}
+
+/* ---------- drawer ---------- */
+let lastFocus = null;
+const FIELDS = [
+  ['name','Contact name','text'],['company','Company','text'],['role','Role','select'],['phone','Phone','tel'],['email','Email','email'],
+  ['title','Job / project name','text'],['projectType','Project type','select'],['city','City','text'],['plansLink','Plans link','url'],
+  ['bidDue','Bid due','date'],['nextFollowUp','Next follow-up','date'],['installDate','Install date','date'],
+  ['value','Estimated value ($)','money'],['bidAmount','Bid amount ($)','money'],['awardValue','Award value ($)','money'],
+  ['assigned','Assigned to','text'],['tags','Tags (comma separated)','text'],['lostReason','Lost reason','text'],['scope','Scope','textarea']
+];
+function fieldHTML(f, l) {
+  const [k, label, type] = f; const id = 'd-' + k; let v = l[k];
+  if (k === 'tags') v = (l.tags || []).join(', ');
+  if (v === null || v === undefined) v = '';
+  let ctl;
+  if (type === 'select') ctl = `<select id="${id}" data-k="${k}">${(k === 'role' ? ROLES.map(r => [r,r]) : Object.entries(TYPES)).map(([val, n]) => `<option value="${val}" ${val === v ? 'selected' : ''}>${esc(n)}</option>`).join('')}</select>`;
+  else if (type === 'textarea') ctl = `<textarea id="${id}" data-k="${k}">${esc(v)}</textarea>`;
+  else if (type === 'money') ctl = `<input id="${id}" data-k="${k}" type="text" inputmode="decimal" value="${esc(v)}" autocomplete="off">`;
+  else ctl = `<input id="${id}" data-k="${k}" type="${type}" value="${esc(v)}" autocomplete="off">`;
+  const cls = ['scope','plansLink'].includes(k) ? 'full' : '';
+  let extra = '';
+  if (k === 'bidDue' && l.bidDue) { const d = daysUntil(l.bidDue); extra = `<div class="cd ${d <= 2 ? 'hot' : d <= 7 ? 'soon' : ''}">${esc(cdText(l.bidDue, 'overdue'))}</div>`; }
+  if (k === 'nextFollowUp') extra = `<div class="quick"><button class="btn sm" type="button" data-act="fu" data-days="3">+3 days</button><button class="btn sm" type="button" data-act="fu" data-days="7">+1 week</button><button class="btn sm ghost" type="button" data-act="fu" data-days="">Clear</button></div>`;
+  if (k === 'plansLink' && /^https?:\/\//.test(l.plansLink || '')) extra = `<div class="quick"><a class="btn sm" href="${esc(l.plansLink)}" target="_blank" rel="noopener noreferrer">Open plans</a></div>`;
+  return `<label class="f ${cls}"><span>${esc(label)}</span>${ctl}${extra}</label>`;
+}
+function drawerHTML(l) {
+  const tel = telDigits(l.phone);
+  const contact = `<div class="contact">
+    ${l.phone ? `<a class="btn" href="tel:${esc(tel)}">Call</a>${l.smsConsent ? `<a class="btn" href="sms:${esc(tel)}">Text</a>` : ''}` : '<span class="btn" aria-disabled="true" style="opacity:.4">Call</span><span class="btn" aria-disabled="true" style="opacity:.4">Text</span>'}
+    ${l.email ? `<a class="btn" href="mailto:${esc(l.email)}">Email</a>` : '<span class="btn" aria-disabled="true" style="opacity:.4">Email</span>'}</div>`;
+  const hide = k => (k === 'lostReason' && l.stage !== 'lost' && !l.lostReason) || (k === 'installDate' && !l.installDate && !['awarded','submittals','glass-ordered','install-scheduled','installed-punch'].includes(l.stage));
+  return `<div class="dr-h"><div style="min-width:0"><span class="mono">${esc(S.mode === 'sample' ? 'SAMPLE · ' : '')}${esc(l.lane === 'service' ? 'Service' : 'Bid')} · ${esc(l.origin || '')}${l.archived ? ' · ARCHIVED' : ''}</span><h2 id="dr-title">${esc(primary(l))}</h2></div>
+    <button class="btn x" type="button" data-act="close" aria-label="Close">Close</button></div>
+  <div class="dr-b" id="dr-body">
+    ${contact}
+    <label class="f"><span>Stage</span><select id="d-stage" data-act="dstage">${stageOptions(l.stage)}</select></label>
+    <div class="cd" style="margin-bottom:16px">In stage since ${esc(fmtDay(l.stageChangedAt || l.createdAt))}${l.source ? ' · source: ' + esc(l.source) : ''}</div>
+    <h3>Details</h3>
+    <form id="d-form" class="grid2" onsubmit="return false">
+      ${FIELDS.filter(f => !hide(f[0])).map(f => fieldHTML(f, l)).join('')}
+      <label class="chk full"><input type="checkbox" id="d-smsConsent" data-k="smsConsent" ${l.smsConsent ? 'checked' : ''}> Agreed to receive texts${l.smsConsentAt ? ' (' + esc(fmtDay(l.smsConsentAt)) + ')' : ''}</label>
+    </form>
+    <h3>Notes</h3>
+    <div class="note-add"><label class="f"><span>Add a note</span><textarea id="d-note" rows="3" placeholder="Called, left voicemail. Sent revised bid."></textarea></label><button class="btn" type="button" data-act="addnote">Add note</button></div>
+    <ul class="tl" id="d-notes">${notesHTML(l)}</ul>
+    <h3>Message</h3><div class="grid2" style="grid-template-columns:1fr" id="d-tpl">${tplPanelHTML('dt', false)}</div>
+    <details style="margin-top:24px"><summary class="mono">Activity log (${(l.activity || []).length})</summary><ul class="tl" id="d-act" style="margin-top:12px">${activityHTML(l)}</ul></details>
+  </div>
+  <div class="dr-f"><button class="btn primary" type="button" data-act="save">Save changes</button>
+    <button class="btn ${l.archived ? '' : 'danger'}" type="button" data-act="archive">${l.archived ? 'Restore' : 'Archive'}</button></div>`;
+}
+const notesHTML = l => (l.notes || []).length ? [...l.notes].reverse().map(n => `<li><span class="when">${esc(fmtWhen(n.at))} · ${esc(n.by || 'crm')}</span><span class="txt">${esc(n.text)}</span></li>`).join('') : '<li><span class="txt" style="color:var(--mute)">No notes yet.</span></li>';
+const activityHTML = l => [...(l.activity || [])].reverse().map(a => `<li><span class="when">${esc(fmtWhen(a.at))}</span><span class="txt">${esc(a.text)}</span></li>`).join('');
+
+function openDrawer(id) {
+  if (!byId(id)) return;
+  lastFocus = document.activeElement; S.openId = id; renderDrawer(); history.replaceState(null, '', '#lead=' + encodeURIComponent(id));
+}
+function renderDrawer(keepScroll) {
+  const root = $('#drawer-root'); const l = S.openId && byId(S.openId);
+  if (!l) { if (S.openId) closeDrawer(true); return; }
+  const sc = keepScroll && $('#dr-body') ? $('#dr-body').scrollTop : 0;
+  if (keepScroll && $('#d-form') && dirtyPatch(l) && Object.keys(dirtyPatch(l)).length) return; // never clobber unsaved edits
+  let aside = $('#drawer'); const fresh = !aside;
+  if (fresh) {
+    root.innerHTML = `<div class="scrim" data-act="close"></div><aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dr-title"></aside>`;
+    aside = $('#drawer'); document.body.style.overflow = 'hidden';
+  }
+  aside.innerHTML = drawerHTML(l);
+  if (!$('#dt-tpl').value) $('#dt-tpl').value = 'bid-follow-up';
+  fillTpl('dt', l);
+  if (sc) $('#dr-body').scrollTop = sc;
+  if (fresh) aside.querySelector('[data-act=close]').focus();
+}
+function closeDrawer(silent) {
+  S.openId = null; $('#drawer-root').innerHTML = ''; document.body.style.overflow = '';
+  if (!silent) { history.replaceState(null, '', location.pathname + location.search); if (lastFocus && document.contains(lastFocus)) lastFocus.focus(); }
+}
+function dirtyPatch(l) {
+  const p = {};
+  $$('#d-form [data-k]').forEach(el => {
+    const k = el.dataset.k; let nv = el.type === 'checkbox' ? el.checked : el.value.trim(); let ov = l[k];
+    if (k === 'tags') { nv = nv.split(',').map(t => t.trim().toLowerCase()).filter(Boolean); ov = l.tags || []; if (JSON.stringify(nv) !== JSON.stringify(ov)) p[k] = nv; return; }
+    if (['value','bidAmount','awardValue'].includes(k)) { const n = nv === '' ? null : Number(nv.replace(/[$,\s]/g, '')); if (nv !== '' && !Number.isFinite(n)) { p[k] = nv; return; } if (n !== (ov ?? null)) p[k] = nv === '' ? null : n; return; }
+    if (nv !== (ov ?? '')) p[k] = nv;
+  });
+  return p;
+}
+async function saveDrawer(extra) {
+  const l = byId(S.openId); if (!l) return;
+  const p = { ...dirtyPatch(l), ...(extra || {}) };
+  if (!Object.keys(p).length) { toast('No changes to save'); return; }
+  const btn = $('[data-act=save]'); if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
+  const nl = await patchLead(l.id, p);
+  if (btn) { btn.disabled = false; btn.textContent = 'Save changes'; }
+  if (nl) { toast('Saved'); render(); renderDrawer(); }
+}
+
+/* ---------- events ---------- */
+document.addEventListener('click', async ev => {
+  const t = ev.target.closest('[data-act],[data-view]'); if (!t) return;
+  if (t.dataset.view) return setView(t.dataset.view);
+  const a = t.dataset.act;
+  switch (a) {
+    case 'open': return openDrawer(t.dataset.id);
+    case 'close': return closeDrawer();
+    case 'add': return openAdd();
+    case 'lane': S.lane = t.dataset.lane; S.stageTab = (S.lane === 'bid' ? BID_STAGES : SVC_STAGES)[0]; return render();
+    case 'stagetab': S.stageTab = t.dataset.stage; return render();
+    case 'reload': return loadLeads();
+    case 'lock': return lock('');
+    case 'exitsample': case 'sample-exit': S.mode = 'live'; S.leads = []; return showGate('');
+    case 'export': return exportCSV();
+    case 'import': return $('#csv-file').click();
+    case 'save': return saveDrawer();
+    case 'archive': { const l = byId(S.openId); if (!l) return; const nl = await patchLead(l.id, { ...dirtyPatch(l), archived: !l.archived }); if (nl) { toast(nl.archived ? 'Archived' : 'Restored'); render(); renderDrawer(); } return; }
+    case 'fu': { const i = $('#d-nextFollowUp'); i.value = t.dataset.days ? addDays(Number(t.dataset.days)) : ''; return; }
+    case 'addnote': {
+      const x = $('#d-note'); const text = x.value.trim(); if (!text) { toast('Write the note first', true); x.focus(); return; }
+      const nl = await patchLead(S.openId, { appendNote: text });
+      if (nl) { x.value = ''; $('#d-notes').innerHTML = notesHTML(nl); $('#d-act').innerHTML = activityHTML(nl); toast('Note added'); render(); }
+      return;
+    }
+    case 'copy': {
+      const p = t.dataset.prefix; const txt = $('#' + p + '-txt').value;
+      try { await navigator.clipboard.writeText(txt); toast('Copied'); }
+      catch { const x = $('#' + p + '-txt'); x.focus(); x.select(); try { document.execCommand('copy'); toast('Copied'); } catch { toast('Select the text and copy it', true); } }
+      return;
+    }
+  }
+});
+document.addEventListener('change', async ev => {
+  const t = ev.target; const a = t.dataset && t.dataset.act;
+  if (a === 'move') { await moveStage(t.dataset.id, t.value); return; }
+  if (a === 'dstage') {
+    const l = byId(S.openId); if (!l || t.value === l.stage) return;
+    const p = { ...dirtyPatch(l), stage: t.value };
+    if (t.value === 'awarded' && l.awardValue == null && l.bidAmount != null && !('awardValue' in p)) p.awardValue = l.bidAmount;
+    const nl = await patchLead(l.id, p); if (nl) { toast('Moved to ' + STAGE_LABEL[nl.stage]); render(); renderDrawer(); } else renderDrawer();
+    return;
+  }
+  const id = t.id;
+  if (['f-stage','f-type','f-role','f-company','f-sort'].includes(id)) { S.f[id.slice(2)] = t.value; renderListResults(); }
+  else if (id === 'f-arch') { S.f.archived = t.checked; renderListResults(); }
+  else if (id === 'tt-lead') { S.tplLead = t.value; fillTpl('tt', byId(t.value)); }
+  else if (id === 'tt-tpl') fillTpl('tt', byId(S.tplLead));
+  else if (id === 'dt-tpl') fillTpl('dt', byId(S.openId));
+  else if (id === 'tt-rev' || id === 'dt-rev') { ls.set('cgc_review_link', t.value.trim()); fillTpl(id.slice(0,2), byId(id === 'tt-rev' ? S.tplLead : S.openId)); }
+});
+document.addEventListener('input', ev => {
+  if (ev.target.id === 'f-q') { S.f.q = ev.target.value; renderListResults(); }
+});
+document.addEventListener('keydown', ev => {
+  if (ev.key === 'Escape' && S.openId && !document.querySelector('dialog[open]')) { ev.preventDefault(); closeDrawer(); }
+  if (ev.key === 'Tab' && S.openId && !document.querySelector('dialog[open]')) {
+    const f = $$('#drawer button:not([disabled]), #drawer a[href], #drawer input, #drawer select, #drawer textarea, #drawer summary').filter(e => e.offsetParent !== null);
+    if (!f.length) return; const first = f[0], last = f[f.length - 1];
+    if (!$('#drawer').contains(document.activeElement)) { ev.preventDefault(); first.focus(); }
+    else if (ev.shiftKey && document.activeElement === first) { ev.preventDefault(); last.focus(); }
+    else if (!ev.shiftKey && document.activeElement === last) { ev.preventDefault(); first.focus(); }
+  }
+});
+
+// drag and drop (desktop pointers)
+let dragId = null;
+document.addEventListener('dragstart', ev => { const c = ev.target.closest && ev.target.closest('.card.k'); if (!c) return; dragId = c.dataset.id; c.classList.add('dragging'); ev.dataTransfer.effectAllowed = 'move'; ev.dataTransfer.setData('text/plain', dragId); });
+document.addEventListener('dragend', ev => { $$('.dragging').forEach(e => e.classList.remove('dragging')); $$('.col.over').forEach(e => e.classList.remove('over')); dragId = null; });
+document.addEventListener('dragover', ev => { const c = ev.target.closest && ev.target.closest('.col'); if (!c || !dragId) return; ev.preventDefault(); $$('.col.over').forEach(e => e !== c && e.classList.remove('over')); c.classList.add('over'); });
+document.addEventListener('drop', ev => { const c = ev.target.closest && ev.target.closest('.col'); if (!c || !dragId) return; ev.preventDefault(); const id = dragId; dragId = null; c.classList.remove('over'); moveStage(id, c.dataset.stage); });
+
+// swipe between stages on phones
+let sx = 0, sy = 0;
+document.addEventListener('touchstart', ev => { if (!ev.target.closest('#board')) return; sx = ev.touches[0].clientX; sy = ev.touches[0].clientY; }, { passive:true });
+document.addEventListener('touchend', ev => {
+  if (!ev.target.closest('#board') || matchMedia('(min-width:900px)').matches) return;
+  const dx = ev.changedTouches[0].clientX - sx, dy = ev.changedTouches[0].clientY - sy;
+  if (Math.abs(dx) < 70 || Math.abs(dx) < Math.abs(dy) * 2) return;
+  const st = S.lane === 'bid' ? BID_STAGES : SVC_STAGES; const i = st.indexOf(S.stageTab) + (dx < 0 ? 1 : -1);
+  if (i >= 0 && i < st.length) { S.stageTab = st[i]; render(); const b = $('.stagebar [aria-selected=true]'); if (b) b.scrollIntoView({ inline:'center', block:'nearest' }); }
+}, { passive:true });
+
+$('#gate-form').addEventListener('submit', ev => { ev.preventDefault(); const k = $('#gate-key').value.trim(); if (k) tryKey(k); });
+$('#gate-sample').addEventListener('click', startSample);
+$('#btn-add').addEventListener('click', openAdd);
+$('#sample-exit').addEventListener('click', () => { S.mode = 'live'; S.leads = []; showGate(''); });
+$('#add-form').addEventListener('submit', submitAdd);
+$('#add-cancel').addEventListener('click', () => $('#dlg-add').close());
+$('#imp-cancel').addEventListener('click', () => { pendingImport = null; $('#dlg-import').close(); });
+$('#imp-go').addEventListener('click', runImport);
+$('#csv-file').addEventListener('change', ev => { const f = ev.target.files[0]; ev.target.value = ''; if (f) pickCSV(f); });
+matchMedia('(min-width:900px)').addEventListener('change', () => { if (S.view === 'metrics' || S.view === 'pipeline') render(); });
+document.addEventListener('visibilitychange', () => { if (!document.hidden && S.mode === 'live' && S.key && !$('#app').hidden && !S.openId && !document.querySelector('dialog[open]')) loadLeads(true); });
+window.addEventListener('hashchange', readHash);
+
+function readHash() {
+  const m = /^#lead=([\w-]+)/.exec(location.hash); if (m && byId(m[1]) && S.openId !== m[1]) openDrawer(m[1]);
+}
+
+/* ---------- boot ---------- */
+(async function boot() {
+  ls.del('cgc_crm_key'); const k = ''; // Keys stay in tab memory only.
+  if (k) { S.key = k; S.mode = 'live'; $('#app').hidden = false; $('#sample-banner').hidden = true; $('#mode-tag').textContent = 'CRM'; buildNav(); S.loading = true; render();
+    try { const j = await api('GET', '/api/leads'); S.leads = j.leads || []; S.loading = false; render(); readHash(); }
+    catch (e) { if (e.status === 401 || e.status === 429) { lock(e.status === 401 ? 'Saved key was not accepted. Enter it again.' : e.message); } else { S.loading = false; S.loadErr = e; render(); } }
+  } else showGate('');
+})();
+})();
+</script>
+</body>
+</html>

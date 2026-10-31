@@ -2,7 +2,7 @@ const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 const escapeHTML=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 // Static content is the baseline, including when module loading or WebGL fails.
-document.body.classList.add('static-film');
+if(reduced.matches){document.body.classList.add('static-film');document.querySelector('.film-image').src='media/cgc_DeP_8slkrom_02-thumb.webp';document.querySelector('.film-image').alt='Finished restaurant storefront with black frames and glass';}
 $$('.pair input').forEach(input=>{const comparison=input.closest('.pair').querySelector('.comparison');const update=()=>comparison.style.setProperty('--split',input.value+'%');input.addEventListener('input',update);update();comparison.addEventListener('pointerdown',e=>{comparison.setPointerCapture(e.pointerId);move(e)});comparison.addEventListener('pointermove',e=>{if(comparison.hasPointerCapture(e.pointerId))move(e)});function move(e){const r=comparison.getBoundingClientRect();input.value=Math.max(0,Math.min(100,(e.clientX-r.left)/r.width*100));update()}});
 let filter='all';$$('[data-filter]').forEach(b=>b.onclick=()=>{filter=b.dataset.filter;$$('[data-filter]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));$$('.gallery-item').forEach(item=>item.hidden=filter!=='all'&&item.dataset.category!==filter)});
 const box=$('#lightbox');let selected=0,returnFocus=null;const gallery=()=>$$('.gallery-item:not([hidden]) button');
