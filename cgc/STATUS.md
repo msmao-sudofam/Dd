@@ -8,23 +8,27 @@ Vercel project `cgc-glazing`, scope `sdvsfbs`, authenticated CLI account `moquin
 
 The user's selected white, graphite and steel-blue palette supersedes the original dark/amber interface. The current architectural revision uses bold Archivo display type, a white masthead, a high-quality generated entrance concept, a 60px header, dark ruled scope rows, an asymmetric real-project gallery and a direct bid form. No shadows, rounded cards, 3D scene or scroll trap.
 
-The hero image is visibly labeled **Architectural concept / generated visualization**. The old 16-second montage of actual CGC footage now plays only on request; its label switches to actual field footage when loaded. It is not presented as the requested generated intro. Three before/after concepts share keyboard-operated tabs; original jobsite comparisons remain available separately. All 76 retained real photographs are present in static HTML, with six initially displayed and Show more. Five field clips are in an expandable section and defer loading until visible. The CRM, exact consent copy, unchecked SMS checkbox, facts, calculator, SEO and legal pages remain intact.
+The hero now plays a **generated concept film** on request, visibly labeled **Concept film / generated visualization** with a second disclosure line. It is not presented as actual CGC footage or as a completed CGC project. The earlier supplied-footage montage is no longer the hero intro; real photographs and five field clips remain in the separate Work gallery and expandable field-clip section. Three before/after concepts share keyboard-operated tabs; original jobsite comparisons remain available separately. All 76 retained real photographs are present in static HTML, with six initially displayed and Show more. The CRM, exact consent copy, unchecked SMS checkbox, facts, calculator, SEO and legal pages remain intact.
 
 Rebuild current public design: `python cgc/_work/architectural.py`. For manifest injection only: `python cgc/site/_build.py`. Earlier generators remain as dependencies and historical versions; do not run `redesign.py` alone to rebuild the current visual design.
 
-## Intro handoff for local models
+## Generated intro film
 
-**The Threshold**: eight shots, two seconds each, 16 seconds / 384 frames at 24fps. A luminous glass edge leads through reflections, framing detail and the threshold into the lobby, ending at the blue-hour entrance.
+**The Reflection Run** is implemented as a 16.04-second silent generated concept film: five shots from the Film B storyboard in `creative/video-concepts-2026-10-31/VIDEO-STORYBOARDS.md`, rendered locally with Wan 2.2 TI2V 5B at 1280×704 and edited to 1600×900 and 720×1100. Files are `site/assets/film/wide.mp4`, `portrait.mp4`, matching posters and captions plus `edit.json`. Provenance, exact prompts, seeds, crop rectangles and limitations are in `creative/reflection-run-film-2026-10-31/FILM.md` and `film.json`.
 
-Send the one file `creative/the-threshold/CGC-The-Threshold-Handoff.html` to Rebuff. It embeds the generated eight-frame storyboard, entrance reference, supplied logo, eight clean-keyframe prompts, eight motion prompts, timing, camera moves, edit/loop guidance, caption draft, export contract and Rebuff instructions. It works offline and offers image/JSON downloads. Sources, provenance and builder are in the same directory. It is a production plan, **not completed generated video** or an executable local-model workflow. The user's local models will generate the footage.
+The hero is poster-first and does not autoplay. Play/pause, CC, progress and five chapter labels are manual; reduced motion and JavaScript-off keep the poster and never load the film. The generated film is kept separate from the real project gallery.
+
+**The Threshold** remains an alternative eight-shot, two-second-per-shot direction. Its handoff file `creative/the-threshold/CGC-The-Threshold-Handoff.html` embeds the board, reference, logo and prompts. It is a production plan, not generated video, and is not the film implemented here.
 
 ## Current verification
 
 - API suite: **31/31 passed** after fixing malformed JSON request bodies and UTF-8 byte limits. API code is unchanged in this visual revision.
 - Functional browser scenarios: **10/10 passed**, including local form submission and populated email fallback, labeled errors, calculator, slider keys, lightbox, legal pages and CRM SAMPLE editing.
 - 360 / 390 / 430 / 1440: **0px overflow, 0 console errors, 0 automated WCAG A/AA violations, 0 measured controls under 44px, 0 inputs under 16px**.
-- Concept tab arrow/Home/End keys, manual hero playback, responsive film source, CC, deferred field clips and pause behavior passed. Reduced motion retains the poster without loading the hero film. JavaScript-off and 320px reflow passed.
-- Latest Lighthouse mobile: **89 Performance / 100 Accessibility / 100 Best Practices / 100 SEO**. FCP 1.2s, LCP 3.8s, TBT 0ms, CLS 0. Local lab measurements, not field data.
+- Concept tab arrow/Home/End keys, manual film playback, responsive 1600×900 / 720×1100 sources, CC, chapters, deferred field clips and pause behavior passed. The fifth caption cue and chapter `05 / Reveal the building` were reached by seek; the concept label and disclosure are present. Reduced motion retains the poster without loading the film. JavaScript-off and 320px reflow passed.
+- Generated film: 16.04s, silent, 24fps, 1600×900 desktop / 720×1100 phone. Wide 5.4MB; portrait 2.4MB. Local Wan test renders were reviewed for stable framing before the edit.
+- Latest Lighthouse mobile (before the generated film; **not rerun after it**): **89 Performance / 100 Accessibility / 100 Best Practices / 100 SEO**. FCP 1.2s, LCP 3.8s, TBT 0ms, CLS 0. Local lab measurements, not field data.
+- The deployed preview URL above predates this generated film. No Vercel deploy, DNS change, Deployment Protection change or production promotion was performed in this step.
 - Static injection idempotent; IDs unique. Desktop and phone hero/concept/scope/gallery/form views visually inspected.
 - Single-file storyboard tested offline at 390 and 1440: 8 shots, 3 embedded images loaded, JSON download passed, 0 external requests, 0 script errors, 0 overflow.
 
