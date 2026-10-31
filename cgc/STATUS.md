@@ -1,6 +1,6 @@
 # CGC status — October 31, 2026
 
-Current preview: **https://cgc-glazing-bcvesobuw-sdvsfbs.vercel.app/**
+Current generated-film preview: **https://cgc-glazing-8pqhd14kw-sdvsfbs.vercel.app/** (target `preview`, Ready). Deployment Protection returns a 302 to Vercel SSO, so the live page and film could not be verified without signing in. The earlier preview **https://cgc-glazing-bcvesobuw-sdvsfbs.vercel.app/** predates the generated film.
 
 Vercel project `cgc-glazing`, scope `sdvsfbs`, authenticated CLI account `moquinmoreno-1021`. This is a preview; no client domain/DNS or production promotion is included. Deployment Protection remains enabled. The read-only project environment listing found no configured environment variables.
 
@@ -28,7 +28,8 @@ The hero is poster-first and does not autoplay. Play/pause, CC, progress and fiv
 - Concept tab arrow/Home/End keys, manual film playback, responsive 1600×900 / 720×1100 sources, CC, chapters, deferred field clips and pause behavior passed. The fifth caption cue and chapter `05 / Reveal the building` were reached by seek; the concept label and disclosure are present. Reduced motion retains the poster without loading the film. JavaScript-off and 320px reflow passed.
 - Generated film: 16.04s, silent, 24fps, 1600×900 desktop / 720×1100 phone. Wide 5.4MB; portrait 2.4MB. Local Wan test renders were reviewed for stable framing before the edit.
 - Latest Lighthouse mobile (before the generated film; **not rerun after it**): **89 Performance / 100 Accessibility / 100 Best Practices / 100 SEO**. FCP 1.2s, LCP 3.8s, TBT 0ms, CLS 0. Local lab measurements, not field data.
-- The deployed preview URL above predates this generated film. No Vercel deploy, DNS change, Deployment Protection change or production promotion was performed in this step.
+- The generated-film preview above is Ready with target `preview`; its page and film return a Vercel SSO redirect, so deployed playback, captions and the concept label remain unverified. Local checks above ran against the same build. No DNS change, Deployment Protection change or production promotion of `cgc-glazing` was performed.
+- Incident: a first deploy attempt from `cgc/site` without an explicit project flag created a separate Vercel project named `site` and auto-promoted its deployment to production (`https://site-gao33kud9-sdvsfbs.vercel.app`). It is not `cgc-glazing` and should not be used as the CGC preview. Removing that project or deployment requires owner approval; it was not deleted here.
 - Static injection idempotent; IDs unique. Desktop and phone hero/concept/scope/gallery/form views visually inspected.
 - Single-file storyboard tested offline at 390 and 1440: 8 shots, 3 embedded images loaded, JSON download passed, 0 external requests, 0 script errors, 0 overflow.
 

@@ -1,13 +1,14 @@
 # CGC launch checklist — October 31, 2026
 
-The website and CRM implementation are ready for owner configuration. A generated concept film is complete locally and integrated, but it is not deployed, owner-approved or a substitute for real project evidence. Cloud launch is not complete. Do not treat a passing local test as proof that cloud leads are stored.
+The website and CRM implementation are ready for owner configuration. A generated concept film is integrated and deployed only to a protected preview; it is not owner-approved and is not a substitute for real project evidence. Cloud launch is not complete. Do not treat a passing local test as proof that cloud leads are stored.
 
 ## Generated intro
 
 - Implemented: **The Reflection Run**, five shots / 16.04 seconds, silent. Local Wan 2.2 TI2V 5B from the Film B storyboard in `creative/video-concepts-2026-10-31/VIDEO-STORYBOARDS.md`; edit provenance in `creative/reflection-run-film-2026-10-31/`.
 - Site files: `site/assets/film/wide.mp4` (1600×900), `portrait.mp4` (720×1100), posters, five-cue captions and `edit.json`. Desktop 5.4MB, portrait 2.4MB, H.264, 24fps, no audio.
 - The hero is visibly labeled **Concept film / generated visualization**, with a separate disclosure line and first-caption disclosure. It does not autoplay; play/pause, CC, chapters and reduced-motion poster fallback are retained. It is kept separate from the actual project gallery.
-- The film is a generated visualization, **not a completed CGC project** and not evidence of installed work. It is not deployed. Owner review is required before any preview deploy or production consideration.
+- The film is a generated visualization, **not a completed CGC project** and not evidence of installed work. It is deployed only to a protected preview (`https://cgc-glazing-8pqhd14kw-sdvsfbs.vercel.app/`, target `preview`). The preview redirects unauthenticated visitors to Vercel SSO, so live playback/captions were not verified. Owner review is still required before production consideration.
+- A separate Vercel project named `site` was created accidentally by the first deploy attempt and auto-promoted to production. It is not the CGC project; review/removal needs owner approval.
 - **The Threshold** remains an alternative eight-shot direction and handoff (`creative/the-threshold/CGC-The-Threshold-Handoff.html`); it is a production plan, not generated video.
 - The earlier supplied CGC footage is no longer the hero intro; real photos and field clips remain in the Work gallery.
 - Not produced: WebM alternates and a 9:16 native/independently generated phone edit. The portrait film is a reframed crop. The website uses a single MP4 source, which Safari plays; the film was not owner-approved and no social sound mix exists.
