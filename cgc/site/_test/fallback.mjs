@@ -1,0 +1,3 @@
+import {chromium} from 'playwright';import assert from 'node:assert/strict';
+const b=await chromium.launch();const out=[];
+for(const mode of ['no-webgl','no-js','reflow-400']){const ctx=await b.newContext({viewport:{width:360,height:844},javaScriptEnabled:mode!=='no-js'});if(mode==='no-webgl')await ctx.addInitScript(()=>{window.WebGLRenderingContext=undefined});const p=await ctx.newPage();await p.goto('http://127.0.0.1:4173/');await p.waitForTimeout(300);assert.equal(await p.evaluate(()=>document.documentElement.scrollWidth-innerWidth),0);if(mode!=='reflow-400')assert(await p.locator('.stage-list').isVisible());out.push({mode,overflow:0,stageList:await p.locator('.stage-list').isVisible()});await ctx.close()}console.log(out);await b.close();
