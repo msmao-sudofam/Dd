@@ -1,1 +1,1 @@
-import './redesign-qa.mjs';
+import './architectural-qa.mjs';
