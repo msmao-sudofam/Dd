@@ -1,6 +1,6 @@
 # CGC redesign QA — October 31, 2026
 
-Preview: https://cgc-glazing-fj5kwdnks-sdvsfbs.vercel.app/
+Preview: https://cgc-glazing-kn63vbc7o-sdvsfbs.vercel.app/
 
 | Check | Result |
 | --- | --- |
@@ -27,3 +27,9 @@ Evidence: `qa/v2-*` screenshots, `v2-qa.json`, `v2-lighthouse.report.html/json` 
 The two generated before/after studies are labeled illustrative concepts; actual CGC photos remain in the documented work gallery. Four web assets plus provenance are under `assets/concepts/`. The prompts are in IMAGE-PROMPTS.md in the handoff outputs.
 
 Cloud storage, real CRM authentication and email delivery still require owner configuration and a launch test. The preview retains Vercel authentication. Reflow was checked to 320 CSS pixels (400% equivalent at a 1280px viewport); browser-toolbar zoom was not separately automated.
+
+## API follow-through and Vercel connection
+
+Vercel CLI authenticated as moquinmoreno-1021, with project cgc-glazing in scope sdvsfbs. Latest preview https://cgc-glazing-kn63vbc7o-sdvsfbs.vercel.app/ is READY; target is preview, productionUrl is null, and Vercel authentication remains enabled. Read-only environment listing found no project environment variables, confirming owner configuration is still required.
+
+Fixed malformed JSON bodies producing a CRM server error, and changed payload limits to count UTF-8 bytes for raw JSON, buffers and pre-parsed objects. Regression tests reproduced both issues before the fix. Current API suite: **31/31 passed**. Repeated functional browser scenarios: **10/10 passed**. Previous visual/Lighthouse figures above were not remeasured for this API-only change. No DNS or protection settings changed, no new credentials entered, and nothing pushed.

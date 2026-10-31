@@ -1,6 +1,6 @@
 # CGC status — redesigned preview, October 31, 2026
 
-Preview: **https://cgc-glazing-bim8hnpeg-sdvsfbs.vercel.app/**
+Preview: **https://cgc-glazing-kn63vbc7o-sdvsfbs.vercel.app/**
 
 The deployment is READY in Vercel project `cgc-glazing`, scope `sdvsfbs`. This updated preview is READY. The preceding redesign preview was opened in the app browser and its film verified playing; the latest comparison addition was verified locally and deployed successfully. Deployment Protection remains enabled. No client domain/DNS was changed and no production promotion was performed for this redesign.
 
@@ -53,3 +53,9 @@ Added the third generated comparison to the public site with visible disclosure.
 The newly generated cinematic intro is **not complete**. Two six-shot boards, twelve video prompts and five additional still/storyboard images are saved under creative/video-concepts-2026-10-31/. Runway was discovered and suggested; its newly exposed connection check returned Unknown tool twice, so no video task was submitted. Current intro still uses actual supplied CGC footage. See LAUNCH-CHECKLIST.md for remaining video and owner-account steps.
 
 During project linking, the Vercel CLI unexpectedly downloaded a local OIDC credential. The file was removed immediately without opening or using its contents. This was disclosed to the user. No additional protection-bypass operation was performed, and DNS, Deployment Protection and production promotion remain unchanged.
+
+## API follow-through and Vercel connection
+
+Vercel CLI authenticated as moquinmoreno-1021, with project cgc-glazing in scope sdvsfbs. Latest preview https://cgc-glazing-kn63vbc7o-sdvsfbs.vercel.app/ is READY; target is preview, productionUrl is null, and Vercel authentication remains enabled. Read-only environment listing found no project environment variables, confirming owner configuration is still required.
+
+Fixed malformed JSON bodies producing a CRM server error, and changed payload limits to count UTF-8 bytes for raw JSON, buffers and pre-parsed objects. Regression tests reproduced both issues before the fix. Current API suite: **31/31 passed**. Repeated functional browser scenarios: **10/10 passed**. Previous visual/Lighthouse figures above were not remeasured for this API-only change. No DNS or protection settings changed, no new credentials entered, and nothing pushed.
