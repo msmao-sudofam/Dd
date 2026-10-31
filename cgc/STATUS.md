@@ -1,50 +1,47 @@
-# CGC build status — October 31, 2026
+# CGC status — redesigned preview, October 31, 2026
 
-## Deployed state
+Preview: **https://cgc-glazing-fj5kwdnks-sdvsfbs.vercel.app/**
 
-Preview: **https://cgc-glazing-f9eci8hiq-sdvsfbs.vercel.app**
+The deployment is READY in Vercel project `cgc-glazing`, scope `sdvsfbs`. The redesigned page was opened in the existing app-browser tab; its film was verified playing there with readyState 4 and no media error. Deployment Protection remains enabled. No client domain/DNS was changed and no production promotion was performed for this redesign.
 
-Vercel project: `cgc-glazing`, scope `sdvsfbs`. Preview build is READY. Deployment Protection remains enabled, so unauthenticated visitors may see Vercel sign-in until the owner changes that setting. No client domain is attached and no DNS was changed. The client primary domain was not promoted or replaced.
+## Current design
 
-Vercel unexpectedly classified the project's first deployment as production despite `--target preview`. That initial deployment (`cgc-glazing-jtaj7eco6-sdvsfbs.vercel.app`) was removed. The retained deployment above is a separate preview. The generated production alias is not the delivery URL.
+The user selected **clean and bright: white, graphite and steel blue**. This supersedes the original dark/amber UI and Three.js hero direction.
 
-**Owner action:** the Vercel CLI's `vercel curl` verification command automatically generated a Deployment Protection bypass token. This was unintended; no token value was printed or manually entered. Revoke that newly generated automation bypass token in the project's Deployment Protection settings. Protection itself was not disabled. Do not distribute a bypass token with the preview link.
+- White architectural layout, graphite type and steel-blue actions. The supplied logo keeps its original colors. Legal pages and CRM use the matching light palette.
+- The 3D hero is replaced with a **16-second silent film**, edited from CGC's actual supplied footage. Desktop: 1600×900, 3,425,674 bytes. Phone: 720×1100, 2,306,580 bytes. Both encode at 24fps. Source footage is 720px phone footage; it is not a newly filmed commercial or 4K source.
+- Poster-first presentation, responsive video source, pause/play, chapter descriptions, progress and optional CC captions. Playback pauses out of view or when the tab is hidden. Reduced motion and JavaScript-off retain the poster without automatic motion; no WebGL dependency remains.
+- Two new matched **generated concept** before/after studies: boarded storefront → glazing; open conference area → glass enclosure. The built-in image generator created the after images and edited them into matching before views. Each is clearly labeled illustrative and is not presented as a completed CGC job. Final WebP images and provenance are under `site/assets/concepts/`; prompt set is in `_work/IMAGE-PROMPTS.md`.
+- The original jobsite comparisons are still available in an expandable section. Real project gallery photos are separate, curated with 12 initial selections and Show more. All 76 retained photographs remain available and statically present in the HTML.
+- All existing verified facts, five scope rows, bidding workflow, calculator, bid ticket/form, exact consent text, FAQs, legal pages, CRM features and SEO files are retained. SMS remains unchecked by default.
 
-## Built
+## Latest QA
 
-- Single-file public page with scroll-driven Three.js storefront assembly, dimension HUD, aluminum framing, glass lites/reflection, sealant trace, doors and interior lighting. A boarded-opening still paints immediately; the scene loads on interaction. Phone uses the same camera path with a wider FOV.
-- Proof strip, two real photo comparisons, five scope rows, static category gallery and accessible lightbox, five silent video loops, bidding process, glass weight calculator, bid form with live ticket, seven FAQs, footer and mobile Call/Bid/Text bar.
-- Exact supplied consent copy, optional unchecked SMS box beside contact fields, labeled errors, schema-matched JSON submission and populated mailto fallback. Added consent copy/version to stored metadata; existing field/stage contracts remain intact.
-- CRM key gate, pipeline/service lane, list, Today, metrics, drawer, notes, templates, CSV import/export and clearly marked fictional SAMPLE data. Key stays in tab memory. No SMS sender is connected; imported CSV rows do not establish consent.
-- All 90 photos classified; 76 retained as WebP at up to 1600px plus up to 640px thumbs. Five 6-second loops have MP4/WebM, 1080px short side, no audio, posters, visible captions and VTT descriptions. Maximum encoded file: 1,372,999 bytes.
-- Logo checked against supplied PNG; icons/OG image; local licensed variable fonts; SEO/schema, canonical/social tags, robots, sitemap, llms.txt, manifest, security headers and CRM noindex.
-- Idempotent `_build.py`, in-memory dev server, owner setup and DNS plan. Existing legal copy preserved; local fonts, 44px legal buttons and relocatable generator added.
+- API: **28/28 tests passed**.
+- Functional scenarios: **10/10 passed**, including local bid POST, populated mailto failure fallback, labeled errors, calculator, slider keys, lightbox and CRM sample edits.
+- Viewports **360 / 390 / 430 / 1440**: **0px overflow, 0 console errors, 0 measured controls below 44px, 0 inputs below 16px**.
+- Automated WCAG A/AA: **0 violations** on the public page at four widths, CRM sample screen and four legal pages.
+- Verified video autoplay, responsive source selection, pause/play, CC toggle, out-of-view behavior, and reduced-motion mode (poster visible, video paused, no film source loaded).
+- JavaScript-off and 320px reflow passed. 320 CSS pixels corresponds to 400% zoom on a 1280px desktop viewport; browser-toolbar zoom itself was not separately automated.
+- Latest Lighthouse mobile: **85 Performance / 100 Accessibility / 100 Best Practices / 100 SEO**. FCP 1.1s; LCP 4.3s; TBT 0ms; CLS 0. A preceding run scored 86 Performance. These are local lab scores, not field measurements.
+- Both film outputs verified silent and approximately 16 seconds. `_build.py` remains idempotent. Production dependency audit: **0 vulnerabilities**.
+- Desktop/mobile screenshots were visually reviewed for the hero, concepts, scopes, gallery, form, reduced-motion and CRM views.
 
-## QA
+Rebuild public page: `python cgc/_work/redesign.py` from the repository root (the script also works from other directories). After a manifest-only change: `python cgc/site/_build.py`. The older `_work/site.py` is retained as the factual/form base, not the final visual build command.
 
-- Existing API suite: **28/28 passed**.
-- Functional browser scenarios: **10/10 passed** (including real local form POST, failure fallback, calculator, comparison keys, lightbox and CRM sample edits).
-- Public page at **360 / 390 / 430 / 1440px**: **0px horizontal overflow, 0 console errors, 0 undersized measured controls, 0 inputs below 16px**. No maximum-scale restriction.
-- CRM pipeline: 0px overflow at all four widths. Main page and all four legal pages also reflow at **320px** (the CSS width corresponding to 400% zoom on a 1280px viewport); 360px corresponds to 400% on 1440px. Browser toolbar zoom was not separately automated.
-- Automated WCAG A/AA checks: **0 violations** on the public page at all four widths, CRM sample view and four legal pages.
-- Captured and visually inspected all **five hero stages on desktop and mobile**, plus intro, bid form, CRM and reduced-motion states. Mobile bar/CTA overlap fixed.
-- Reduced motion, JavaScript disabled and missing WebGL: static presentation and readable stage list verified. Silent clips have visible descriptions and caption tracks; autoplay pauses out of view and has manual pause controls.
-- Lighthouse mobile: **Performance 88 / Accessibility 100 / Best Practices 100 / SEO 100**. FCP 1.2s, LCP 3.8s, TBT 0ms, CLS 0. Local lab results, not field data; the initial still loads before the interaction-driven 3D module.
-- Media dimensions/duration/audio/size verified for all ten encodes. Gallery build repeated without changing the output hash. Production dependency audit: **0 vulnerabilities**.
+## Owner launch work
 
-## Owner launch steps
+1. Revoke the unintended protection bypass token generated by `vercel curl` during the earlier build. No new bypass tokens were generated or used for this redesign. Deployment Protection itself remains enabled.
+2. Create/connect a **Private Vercel Blob store** for Preview and Production. Owner adds a strong `CRM_KEY` of at least 12 characters. These credentials/store were not created or entered by this build.
+3. Optional email notifications: owner configures `RESEND_API_KEY`, `LEAD_NOTIFY_TO` and `REPORT_FROM` with a verified sender domain. No email or SMS sender was configured.
+4. Redeploy after environment changes and submit a marked cloud test request. Verify storage, authenticated CRM editing and optional email delivery. Local tests do not verify cloud persistence; requests offer mailto fallback when storage/email are unavailable.
+5. Owner disables Deployment Protection for the intended public audience. Complete LEGAL-NOTES.md's owner checklist, including address/publicity review. CRM currently provides soft archive, not permanent erasure: delete expired private blobs/backups on the documented retention schedule.
+6. After review, approve/promote production and attach the domains. Apply `DNS-PLAN.md`, preserving every mail MX/TXT and mail-related CNAME. The primary is cgcontractorsinc.com; both alternates 308 to it once hosting and DNS are configured.
 
-1. Revoke the automatically generated bypass token noted above.
-2. Connect a **Private Vercel Blob** store to Preview and Production. Use Vercel's connected store/OIDC or the owner-managed Blob environment variable described in `site/CRM-SETUP.md`.
-3. Owner adds a strong `CRM_KEY` (minimum 12 characters). No CRM key or Blob credentials were created or entered by this build.
-4. Optional email: owner configures `RESEND_API_KEY`, `LEAD_NOTIFY_TO`, `REPORT_FROM` with a verified sender domain. No email/SMS provider was configured by this build.
-5. Redeploy after environment changes; submit a marked test request and verify private storage, CRM edits and optional notification delivery. Cloud persistence/email were **not** verified because owner credentials/store are not configured. The form offers email fallback if neither can capture a lead.
-6. Owner turns off Deployment Protection for the intended public audience. Review the legal checklist, mailing address, publicity permissions and COI wording before launch.
-7. Approve/promote production, attach domains and follow `DNS-PLAN.md`. Preserve every existing email MX/TXT and mail-related CNAME. Both alternate domains 308 to the primary after DNS/hosting setup.
-8. Review expired leads quarterly. Archive is reversible, not permanent deletion; owner must remove expired private blobs and backups to meet the privacy retention commitments.
+The project's original first deployment was unexpectedly auto-promoted by Vercel despite `--target preview`; it was removed. The current URL above is a separate preview.
 
-## Next
+## Next steps
 
-Spanish website/legal version; Google Business Profile setup/verification; a review QR pointing to the owner's real review URL. Do not add fabricated reviews or claims. Add real customer feedback only with permission.
+Spanish version; Google Business Profile verification/setup; review QR using the owner's actual review URL. No fabricated reviews, awards, years or project totals have been added.
 
-All work is committed in small steps on `claude/install-claude-code-cli-Px3YJ`. Nothing was pushed. Concurrent alternate media exports were preserved outside the deployed manifest and excluded from deployment; the reviewed 90-photo classification is authoritative.
+Changes are committed in small steps on the existing branch. Nothing was pushed.

@@ -1,27 +1,29 @@
-# CGC QA evidence
+# CGC redesign QA — October 31, 2026
 
-See STATUS.md for the full outcome and owner tasks.
+Preview: https://cgc-glazing-fj5kwdnks-sdvsfbs.vercel.app/
 
 | Check | Result |
 | --- | --- |
-| API tests | 28 / 28 |
-| Browser functional scenarios | 10 / 10 |
-| Public widths | 360, 390, 430, 1440 |
-| Horizontal overflow | 0px at each width |
-| Console errors | 0 at each width |
-| Measured tap controls below 44px | 0 |
-| Inputs below 16px | 0 |
-| Automated WCAG violations | 0 public/CRM sample/legal |
-| Lighthouse mobile performance | 88 |
-| Lighthouse accessibility / best practices / SEO | 100 / 100 / 100 |
-| FCP / LCP | 1.2s / 3.8s |
-| Total blocking time / layout shift | 0ms / 0 |
-| Production dependency vulnerabilities | 0 |
-| Video formats verified | 10 / 10 |
-| Video duration / short side | 6s / 1080px |
-| Largest video file | 1,372,999 bytes |
-| Build injection | Idempotent |
+| API tests | 28/28 |
+| Functional browser scenarios | 10/10 |
+| Widths | 360, 390, 430, 1440 |
+| Overflow / console errors | 0 / 0 at every width |
+| Measured controls below 44px / inputs below 16px | 0 / 0 |
+| Automated WCAG A/AA violations | 0 main, CRM sample and legal |
+| Lighthouse mobile Performance | 85 (previous run 86) |
+| Accessibility / Best Practices / SEO | 100 / 100 / 100 |
+| FCP / LCP | 1.1s / 4.3s |
+| TBT / CLS | 0ms / 0 |
+| Production audit vulnerabilities | 0 |
+| Film | 16 seconds, silent, 24fps |
+| Desktop / phone film size | 3,425,674 / 2,306,580 bytes |
+| Reduced motion | Still poster; no automatic film loading |
+| JavaScript off / 320px reflow | Passed |
+| Manifest injection | Idempotent |
+| Deployed app-browser film | Playing; readyState 4; no media error |
 
-Screenshots: hero-1440-1 through -5 and hero-360-1 through -5 show rough opening, framed, glazed, sealed and open. Stage 0 is the introduction. All were inspected. Additional screenshots include bid widths, CRM sample and reduced motion. `lighthouse.report.html` is the complete local mobile lab report. JSON files retain measured responsive/accessibility, functional and media results.
+Evidence: `qa/v2-*` screenshots, `v2-qa.json`, `v2-lighthouse.report.html/json` and `functional.json`. All captured hero/concept/scopes/gallery/form/CRM states were visually inspected. The film's source is supplied 720px phone footage; it is an edited real-video montage, not generated video.
 
-Reflow was measured down to 320 CSS pixels, corresponding to 400% zoom on a 1280px desktop viewport. Actual browser toolbar zoom was not separately automated. These checks support the stated behaviors but are not an independent accessibility certification. Cloud Blob storage, real CRM authentication and email delivery require owner configuration and a launch test. Preview remains protected by Vercel authentication.
+The two generated before/after studies are labeled illustrative concepts; actual CGC photos remain in the documented work gallery. Four web assets plus provenance are under `assets/concepts/`. The prompts are in IMAGE-PROMPTS.md in the handoff outputs.
+
+Cloud storage, real CRM authentication and email delivery still require owner configuration and a launch test. The preview retains Vercel authentication. Reflow was checked to 320 CSS pixels (400% equivalent at a 1280px viewport); browser-toolbar zoom was not separately automated.
