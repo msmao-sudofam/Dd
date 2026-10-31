@@ -1,0 +1,17 @@
+{
+  "name": "cgc-site",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Commercial Glazing Contractors Inc. static site + lead intake and CRM API (Vercel functions).",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node _test/run.mjs",
+    "dev:crm": "node _test/dev-server.mjs"
+  },
+  "dependencies": {
+    "@vercel/blob": "^2.8.2"
+  }
+}

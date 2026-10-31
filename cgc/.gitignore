@@ -1,0 +1,6 @@
+_raw/
+_work/vf/
+site/node_modules/
+site/.vercel/
+site/_test/results/
+__pycache__/
