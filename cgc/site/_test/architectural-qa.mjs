@@ -3,12 +3,13 @@ import AxeBuilder from '@axe-core/playwright';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 
+const baseURL=process.env.CGC_BASE_URL||'http://127.0.0.1:4173/';
 const browser=await chromium.launch();const results=[];
 for(const width of [360,390,430,1440]){
   const ctx=await browser.newContext({viewport:{width,height:width===1440?1000:844}});
   const page=await ctx.newPage();const errors=[];
   page.on('pageerror',e=>errors.push(e.message));page.on('console',e=>{if(e.type()==='error')errors.push(e.text())});
-  await page.goto('http://127.0.0.1:4173/');await page.evaluate(()=>document.fonts.ready);
+  await page.goto(baseURL);await page.evaluate(()=>document.fonts.ready);
   await page.screenshot({path:`_test/results/v4-hero-${width}.png`});
   await page.waitForFunction(()=>{const v=document.querySelector('#intro-film');return !v.paused&&v.readyState>=2&&!!v.currentSrc},null,{timeout:15000});
   const autoSource=await page.locator('#intro-film').evaluate(v=>v.currentSrc);assert(autoSource.includes(width<761?'portrait.mp4':'wide.mp4'),'Autoplay uses the responsive film source');
@@ -37,6 +38,6 @@ for(const width of [360,390,430,1440]){
   }
   results.push({width,...layout,consoleErrors:errors,axe:violations,manualFilm:true,keyboardTabs:true});await ctx.close();
 }
-const ctx=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce'});const page=await ctx.newPage();await page.goto('http://127.0.0.1:4173/');assert(await page.locator('#intro-film').evaluate(v=>v.paused&&!v.currentSrc));await page.screenshot({path:'_test/results/v4-reduced-motion.png'});results.push({reducedMotion:true,posterVisible:await page.locator('.cinema-poster img').isVisible(),filmSourceLoaded:false});
+const ctx=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce'});const page=await ctx.newPage();await page.goto(baseURL);assert(await page.locator('#intro-film').evaluate(v=>v.paused&&!v.currentSrc));await page.screenshot({path:'_test/results/v4-reduced-motion.png'});results.push({reducedMotion:true,posterVisible:await page.locator('.cinema-poster img').isVisible(),filmSourceLoaded:false});
 await browser.close();await fs.writeFile('_test/results/v4-qa.json',JSON.stringify(results,null,2));console.log(JSON.stringify(results,null,2));
 for(const r of results.filter(r=>r.width)){assert.equal(r.overflow,0);assert.deepEqual(r.smallTargets,[]);assert.deepEqual(r.smallInputs,[]);assert.deepEqual(r.consoleErrors,[]);assert.deepEqual(r.axe,[])}
