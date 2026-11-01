@@ -3,14 +3,14 @@
 **Status: completed generated concept film, ready for website review.**
 It is an illustrative visualization, **not a completed CGC project** and not evidence that CGC installed the building shown.
 
-The site hero now autoplays this film muted on load. The real CGC photographs and field clips remain in the separate Work gallery.
+The site hero now autoplays this film muted on load. The delivered files are compressed for web delivery and the video paints the same poster as the hero picture before its first frame, so the poster remains the LCP candidate. The real CGC photographs and field clips remain in the separate Work gallery.
 
 ## What was delivered
 
 | Deliverable | Path | Spec |
 | --- | --- | --- |
-| Desktop film | `../../site/assets/film/wide.mp4` | 1600×900, 24 fps, 16.04 s, silent, H.264 |
-| Phone film | `../../site/assets/film/portrait.mp4` | 720×1100, 24 fps, 16.04 s, silent, H.264 |
+| Desktop film | `../../site/assets/film/wide.mp4` | 1600×900, 24 fps, 16.04 s, silent, H.264 High, CRF 28, 3.02 MB |
+| Phone film | `../../site/assets/film/portrait.mp4` | 720×1100, 24 fps, 16.04 s, silent, H.264 High, CRF 28, 1.47 MB |
 | Posters | `../../site/assets/film/wide-poster.webp`, `portrait-poster.webp` | first-shot stills |
 | Captions | `../../site/assets/film/captions.vtt` | five cues incl. generated-concept disclosure |
 | Edit record | `../../site/assets/film/edit.json` and `film.json` | timings, keyframes, seeds, prompts |
@@ -26,6 +26,10 @@ Five shots, 3.2 seconds each:
 | B06 Reveal the building | 00:12.8–00:16.0 | curtain-wall-after crop | pullback to the complete facade |
 
 The edit follows **Film B / The Reflection Run** in `../video-concepts-2026-10-31/VIDEO-STORYBOARDS.md`. It uses five of the six boards; the optional macro B01 was replaced by a close entrance crop because no clean full-resolution macro keyframe existed. The generated clips did not produce a true blue-hour B06; the caption and edit record say afternoon light rather than claiming blue hour.
+
+## Web delivery encode
+
+The delivered MP4s are a web re-encode of the CRF 24 edit masters: x264 `-preset slower -crf 28`, H.264 High, `yuv420p`, `+faststart`, no audio. Dimensions, 24 fps timing, the five cuts and the captions are unchanged. The desktop file fell from 5.38 MB to 3.02 MB (43.9% smaller); the phone file fell from 2.56 MB to 1.47 MB (42.7% smaller). VMAF against the previous masters scored 91.8 desktop / 92.3 phone; SSIM was 0.982 / 0.983. Key frames were inspected at 1:1. The video poster mirrors the hero picture so the poster remains the LCP image while the first frame decodes; JavaScript-off and reduced motion keep the picture fallback.
 
 ## How it was generated
 
@@ -49,12 +53,14 @@ The render/assembly helper is `../../_work/render_film.py`; the ComfyUI API help
 
 ## Verification
 
+- Compressed-film browser QA: **360 / 390 / 430 / 1440** autoplay with the responsive `portrait.mp4` / `wide.mp4`, 0 px overflow, 0 console errors, 0 automated WCAG A/AA violations, pause/play, CC and keyboard tabs passed. Reduced motion kept the poster without loading the film; JavaScript-off at 390px kept the poster visible with video opacity 0 and no film source.
+- Lighthouse 13.6.0 mobile, three runs: **88–90 Performance / 100 Accessibility / 100 Best Practices / 100 SEO**; FCP 1.35 s, LCP 3.68–3.83 s, TBT 0 ms, CLS 0. A click-to-play baseline under the same current environment also measured 88–90 with LCP 3.83–3.90 s, so the earlier 90-vs-88 gap was environment variance. Page transfer fell from 3,258 KiB for the uncompressed autoplay build to 2,190 KiB; the film remains 1.47 MB on phone and 3.02 MB on desktop.
 - `npm test`: **31/31 API tests passed** (no cloud credentials used).
 - `_test/functional.mjs`: **10/10 scenarios passed**, including bid POST, mailto fallback, calculator, slider keys, lightbox, legal pages and CRM sample edits.
 - `_test/qa.mjs`: 360 / 390 / 430 / 1440 — **0 px overflow, 0 console errors, 0 automated WCAG A/AA violations, 0 measured controls under 44 px, 0 inputs under 16 px**. Reduced-motion test: poster visible, film source not loaded.
-- Film-specific check: desktop source 1600×900, portrait 720×1100, 16.04 s, muted and looping; chapter `05 / Reveal the building` reached on seek; fifth caption cue present; concept label and disclosure present.
+- Film-specific check: compressed desktop source 1600×900, portrait 720×1100, 16.04 s, muted and looping; chapter `05 / Reveal the building` reached on seek; fifth caption cue present; concept label and disclosure present.
 
-These are local lab tests. The film has not been reviewed by the owner, and no cloud deploy or production promotion was performed.
+These are local lab tests plus a protected Vercel preview deployment; no production promotion was performed. The film has not been reviewed by the owner.
 
 ## Limitations
 
