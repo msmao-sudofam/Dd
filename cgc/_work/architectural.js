@@ -5,6 +5,8 @@ if(conceptTabs.length){$('.concept-tabs').hidden=false;conceptTabs.forEach((tab,
 
 // The generated concept film plays muted on load. The poster remains the fallback for reduced motion and failed playback.
 const filmVideo=$('#intro-film'),filmToggle=$('#film-toggle');let filmLoaded=false;
+// Mirror the visible poster on the video so the poster, not the delayed first video frame, is the LCP candidate.
+filmVideo.poster=matchMedia('(max-width:760px)').matches?'assets/concepts/entrance-light-sm.webp':'assets/concepts/entrance-light.webp';filmVideo.classList.add('poster-ready');
 const filmChapters=['A world in the edge','The moving mirror','Reflection becomes a place','The invisible corner','Reveal the building'];
 function filmButton(){filmToggle.textContent=filmVideo.paused?'Play concept film':'Pause film';filmToggle.setAttribute('aria-pressed',String(!filmVideo.paused))}
 function loadFilm(){if(filmLoaded)return;filmLoaded=true;filmVideo.src=matchMedia('(max-width:760px)').matches?'assets/film/portrait.mp4':'assets/film/wide.mp4';filmVideo.load()}
