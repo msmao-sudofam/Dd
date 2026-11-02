@@ -34,10 +34,11 @@ PROMPTS = {
             "where the hinges are visible; its long vertical stainless pull is mounted near its LEFT free edge, "
             "beside the closed left leaf. One pull per leaf. Same columns, frames, glass, lobby and terrazzo. "
             "No people."),
-    "S05END": ("The same photograph, identical in every detail and camera position, except that the right-hand "
-               "door leaf has rotated about its right-edge hinges to open roughly fifteen degrees farther toward "
-               "the camera. The leaf stays rigid; its pull handle stays at the same place on the leaf. The left "
-               "leaf, frames, columns, floor, lobby and light do not change."),
+    "S05END": ("The same photograph with the same camera position, lens and framing. Only the right-hand door "
+               "leaf has moved: it has swung open toward the camera to about forty degrees, rotating on its hinges "
+               "at the right jamb, so its free edge with the pull now stands clearly forward of the facade and the "
+               "gap beside the left leaf is much wider. The leaf is rigid and keeps its single pull. The left leaf, "
+               "frames, columns, floor, sunlight, lobby and sky are unchanged."),
     "S08": ("The same photograph from the same camera position and framing, rephotographed at blue hour about "
             "twenty minutes after sunset. The sun is gone: no sunlight, no sun flare, no shadows from the sun. The "
             "sky is an even deep steel blue; trees and columns outside are dim and cool blue. The lobby ceiling "

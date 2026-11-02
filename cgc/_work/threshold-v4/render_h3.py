@@ -30,16 +30,17 @@ def keyframe(name):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--job", action="append", required=True, help="SHOT:keyframe.png:seed[:end=last.png][:prompt=file.txt]")
+    ap.add_argument("--job", action="append", required=True, help="SHOT:keyframe.png:seed[:end=last.png;prompt=C:/path/file.txt]")
     ap.add_argument("--frames", type=int, default=124)
     a = ap.parse_args()
     OUT.mkdir(parents=True, exist_ok=True)
     from shared.api import init
     session = init(console_output=False)
     for job in a.job:
-        parts = job.split(":")
+        parts = job.split(":", 3)
         shot, kf, seed = parts[0], keyframe(parts[1]), int(parts[2])
-        opts = dict(x.split("=", 1) for x in parts[3:])
+        # options are ";"-separated so Windows paths keep their drive colon
+        opts = dict(x.split("=", 1) for x in parts[3].split(";")) if len(parts) > 3 else {}
         prompt = Path(opts["prompt"]).read_text(encoding="utf-8") if "prompt" in opts else CARDS[shot]["h3_prompt"]
         end = keyframe(opts["end"]) if "end" in opts else None
         tag = f"{shot}_{kf.stem}_s{seed}" + ("_FL" if end else "")
