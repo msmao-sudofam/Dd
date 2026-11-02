@@ -15,6 +15,7 @@ also comes from looking at the frames, not only the numbers.
 | S03 slide, attempt 1 | `renders/S03_S03_joint_final_s7301.mp4` | Static until ~f60, then ~2% upward drift with the door's bottom rail reshaping. Keyframe is a door bottom corner at the floor, not the card's mid-height mullion/transom joint | **Fail**. Rebuild the keyframe as a real joint, re-render |
 | S03 slide, attempt 2 | `renders/S03_S03_v4_joint_crop_s7302.mp4` (new joint keyframe) | Camera descends along the mullion; the transom rises steadily across the frame while the far lobby barely moves (real near/far parallax). Mullion width constant (50 px), joint rigid. Slight 1-2% scale creep over the full 5 s | **Pass** (subject to full-speed watch). Production source: use a 48-frame window from the early part |
 | S05 hinge, attempt 2 (v4) | `renders/S05_S05_v4_s9102_s7502.mp4` (new keyframe) | Camera locked. Leaf starts ~20° ajar, then swings **closed** to flush with the frame | **Fail**: wrong direction. End frames S05END s9211/s9212 tried as last-frame anchors: Qwen did not open the leaf wider (one added a floating handle), not used |
+| S05 hinge, attempt 3 (v4, revised prompt "keeps swinging OPEN... never closes", seeds 7503/7504) | `renders/S05_S05_v4_s9102_s7503.mp4`, `..._s7504.mp4` | Camera locked in both. In both seeds the ajar leaf swings shut to flush with the frame by the last frame | **Fail**: wrong direction. Bounded attempts for the ajar start are used up |
 
 ## Keyframes (v4)
 
@@ -27,3 +28,9 @@ Generated with Qwen-Image-Edit-2511 from the entrance reference (`keyframes_v4.p
 | S05 | `keyframes/S05_v4_s9102.png` | Right leaf ~20° ajar, hinged on its right jamb, pull near the free edge | s9101 (ambiguous hinge side). End frames S05END s9201 (reframed camera, would cause a morph) and s9202 (leaf barely moved, edge smear) not used |
 | S08 | v3 `S08_exterior_v01.png` | Already a genuine blue-hour still of the same entrance; v3's failure was the held plate, not this image | v4 S08 s9101/9102/9301/9302: Qwen kept daylight and sun on the columns |
 | S02, S04, S06, S07 | v3 keyframes | Match their cards | — |
+
+## S05 status
+
+With the card's ajar start, H3 closes the leaf in all four v4 renders (two keyframes, two prompt wordings). The only
+H3 clip that shows a correct rigid opening is Freebuff's `S05_h3_r2`, which starts with the leaf closed. Not
+substituted; waiting for the owner's decision on the start position.
