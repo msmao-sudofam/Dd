@@ -39,3 +39,18 @@ substituted; waiting for the owner's decision on the start position.
 small rigid arc, camera locked". New start `keyframes/S05CLOSED_v4_s9222.png` (both leaves closed, right leaf hinged at
 the right jamb, pull at its free edge), prompt `prompt_S05_closed.txt`. Production batch 1 queued with it:
 S05 x2 seeds, S01, S02, S04, S06, S07, S08 (card prompts verbatim, log `batch1.log`).
+
+## Production batch 1 (2026-11-02)
+
+Accepted windows (48 native frames each) and observations are in `accepted.json`; window sheet `review/windows.jpg`.
+
+| Shot | Render | Verdict |
+| --- | --- | --- |
+| S01 | `S01_S01_v4_s9102_s7101` f20-67 | Pass: slow rightward truck, edge drifts left (~1.7% per 2 s), no zoom. Travel is gentle, below the card's 8-12% blocking target |
+| S02 | `S02_S02_reflection_v01_s7201` f60-107 | Pass: truck, mullion moves left, tree keeps size |
+| S03 | `S03_S03_v4_joint_crop_s7302` f20-67 | Pass: descent, transom rises |
+| S04 | `S04_S04_threshold_v01_s7401` f40-87 | Pass: low push toward the sill, light band steady |
+| S05 | `S05_S05CLOSED_v4_s9222_s7512` f36-83 | Pass: locked camera, right leaf opens ~30° on fixed right-jamb hinges, pull attached. Seed 7511 over-swings to ~90°, not used |
+| S06 | `S06_S06_passage_v01_s7601` f76-123 | Pass: short push into the open doorway, jambs expand with depth. Movement is modest |
+| S07 | `S07_S07_interior_v01_s7701` f76-123 | Pass: rightward truck with foreground parallax, easing |
+| S08 | `S08_S08_exterior_v01_s7801` | **Fail**: ~1% pullback then held; lobby lights dim between f0 and f31 (exposure pulse). Re-rendering with `prompt_S08_r2.txt`, seeds 7802/7803 |

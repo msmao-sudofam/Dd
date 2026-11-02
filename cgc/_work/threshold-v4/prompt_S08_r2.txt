@@ -1,0 +1,3 @@
+integrated_multimodal_description: [Shot 1] One continuous photorealistic architectural shot from the supplied clean first frame. At blue hour, the camera dollies slowly and steadily straight backward away from the glass entrance for the whole shot, at constant height, so the entrance, columns and open door become gradually smaller and more of the terrazzo floor enters the bottom of the frame, with natural depth parallax. The warm interior lights stay exactly as bright as at the start; the blue sky and exposure stay constant. The doors do not move. No orbit, no time-lapse, no zoom, no freeze frame, no scene change, no additional action.
+overall_soundscape: Quiet natural ambience only. No speech.
+non_diegetic_music: None.

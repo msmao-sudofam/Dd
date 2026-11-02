@@ -1,0 +1,58 @@
+{
+  "S01": {
+    "clip": "renders/S01_S01_v4_s9102_s7101.mp4",
+    "start": 20,
+    "phone_x": 0.45,
+    "verdict": "pass",
+    "observed": "Rightward truck along the glass edge: edge drifts left (~4% over 5 s), blurred background shifts less, no zoom",
+    "caption": "The edge of the glass, catching the light."
+  },
+  "S02": {
+    "clip": "renders/S02_S02_reflection_v01_s7201.mp4",
+    "start": 60,
+    "phone_x": 0.55,
+    "verdict": "pass",
+    "observed": "Rightward truck beside the pane: near mullion moves left, reflected tree holds its size, glass rigid",
+    "caption": "Along the pane, sky and a single tree held in the glass."
+  },
+  "S03": {
+    "clip": "renders/S03_S03_v4_joint_crop_s7302.mp4",
+    "start": 20,
+    "phone_x": 0.55,
+    "verdict": "pass",
+    "observed": "Camera slides down the mullion; transom rises on screen; mullion width constant; far lobby nearly still",
+    "caption": "Down the mullion, past a square, sealed joint."
+  },
+  "S04": {
+    "clip": "renders/S04_S04_threshold_v01_s7401.mp4",
+    "start": 40,
+    "phone_x": 0.5,
+    "verdict": "pass",
+    "observed": "Low forward push toward the threshold (~6% growth over 5 s) with near terrazzo moving faster; sill and light band steady",
+    "caption": "Toward the threshold, in a hard diagonal of afternoon light."
+  },
+  "S05": {
+    "clip": "renders/S05_S05CLOSED_v4_s9222_s7512.mp4",
+    "start": 36,
+    "phone_x": 0.68,
+    "verdict": "pass",
+    "observed": "Locked camera (0 px). Closed right leaf begins to open on its right-jamb hinges; free edge with pull comes toward camera; pull attached, left leaf still. Owner-approved closed start",
+    "caption": "A door opens on its hinges."
+  },
+  "S06": {
+    "clip": "renders/S06_S06_passage_v01_s7601.mp4",
+    "start": 76,
+    "phone_x": 0.5,
+    "verdict": "pass",
+    "observed": "Short level push into the open doorway: near jambs and leaves expand outward with depth, lobby stays put; leaves move only with the camera",
+    "caption": "Through the clear opening."
+  },
+  "S07": {
+    "clip": "renders/S07_S07_interior_v01_s7701.mp4",
+    "start": 76,
+    "phone_x": 0.4,
+    "verdict": "pass",
+    "observed": "Restrained rightward interior truck: foreground door frame moves left faster than the column and lobby, then eases",
+    "caption": "Inside, the lobby and its glass office fronts."
+  }
+}
