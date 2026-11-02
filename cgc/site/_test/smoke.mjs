@@ -1,0 +1,3 @@
+import {chromium} from 'playwright';
+import fs from 'node:fs/promises';
+const browser=await chromium.launch({headless:true});const page=await browser.newPage({viewport:{width:1440,height:1000}});const errors=[];page.on('pageerror',e=>errors.push(e.message));page.on('console',e=>{if(e.type()==='error')errors.push(e.text())});await page.goto('http://127.0.0.1:4173/');await page.waitForTimeout(5000);await fs.mkdir('_test/results',{recursive:true});await page.screenshot({path:'_test/results/initial.png'});console.log({errors,static:await page.locator('body').getAttribute('class'),title:await page.title(),gallery:await page.locator('.gallery-item').count(),faq:await page.locator('details').count()});await browser.close();

@@ -1,3 +1,12 @@
 node_modules/
 .vercel
 .env*
+
+# CGC render intermediates and local test output (large, regenerable; kept on disk)
+cgc/_work/film-raw/
+cgc/_work/threshold-v3/
+cgc/_work/lh/
+cgc/_work/film-compress/
+cgc/_work/poster-check/
+/_test/
+/_work/

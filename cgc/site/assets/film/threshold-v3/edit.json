@@ -1,0 +1,81 @@
+{
+  "title": "THE THRESHOLD",
+  "note": "Generated concept film, not a CGC project. Silent, 16 seconds, 24fps.",
+  "model": "Wan2.2 Image2video 14B GGUF Q4_K_M (i2v_2_2_gguf_q4_k_m) via WanGP",
+  "keyframes": "Qwen-Image-Edit-2511 (ComfyUI), crop-anchored on the supplied entrance reference",
+  "edit_rate": 24,
+  "shots_per_second": 2.0,
+  "shots": [
+    {
+      "shot": "S01",
+      "source": "04_accepted/S01_edge.mp4",
+      "start": 0.0,
+      "end": 2.0,
+      "caption": "The polished edge, where the light line becomes glass.",
+      "note": "generated shot, Wan2GP"
+    },
+    {
+      "shot": "S02",
+      "source": "04_accepted/S02_reflection.mp4",
+      "start": 2.0,
+      "end": 4.0,
+      "caption": "Sky and a single tree, held in the pane.",
+      "note": "generated shot, Wan2GP"
+    },
+    {
+      "shot": "S03",
+      "source": "04_accepted/S03_joint.mp4",
+      "start": 4.0,
+      "end": 6.0,
+      "caption": "Graphite meeting graphite, with a gasket that never moves.",
+      "note": "fallback: stable rightward truck on the joint keyframe (vertical slide moved the seam the wrong way twice)"
+    },
+    {
+      "shot": "S04",
+      "source": "04_accepted/S04_threshold.mp4",
+      "start": 6.0,
+      "end": 8.0,
+      "caption": "Terrazzo and the hard diagonal of afternoon.",
+      "note": "generated shot, Wan2GP"
+    },
+    {
+      "shot": "S05",
+      "source": "04_accepted/S05_door.mp4",
+      "start": 8.0,
+      "end": 10.0,
+      "caption": "The doors stand open.",
+      "note": "held plate: model would not keep the door leaves still (2 attempts); 3.5% scale drift, no scene motion"
+    },
+    {
+      "shot": "S06",
+      "source": "04_accepted/S06_passage.mp4",
+      "start": 10.0,
+      "end": 12.0,
+      "caption": "The opening is clear, and the floor leads straight in.",
+      "note": "generated shot, Wan2GP"
+    },
+    {
+      "shot": "S07",
+      "source": "04_accepted/S07_interior.mp4",
+      "start": 12.0,
+      "end": 14.0,
+      "caption": "Inside, the room holds its light.",
+      "note": "generated shot, Wan2GP"
+    },
+    {
+      "shot": "S08",
+      "source": "04_accepted/S08_exterior.mp4",
+      "start": 14.0,
+      "end": 16.0,
+      "caption": "Blue hour, warm behind the glass.",
+      "note": "held plate: locked-ending fallback; model still moved the leaves and exposure; 3.5% scale drift"
+    }
+  ],
+  "deliverables": {
+    "desktop": "06_web/desktop.mp4",
+    "phone": "06_web/mobile.mp4",
+    "desktop_poster": "06_web/desktop-poster.webp",
+    "phone_poster": "06_web/mobile-poster.webp",
+    "captions": "06_web/captions.vtt"
+  }
+}
