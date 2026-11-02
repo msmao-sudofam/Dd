@@ -1,0 +1,4 @@
+file 'C:/Users/Moqui/Projects/Dd/cgc/_work/film-portrait-0.mp4'
+file 'C:/Users/Moqui/Projects/Dd/cgc/_work/film-portrait-1.mp4'
+file 'C:/Users/Moqui/Projects/Dd/cgc/_work/film-portrait-2.mp4'
+file 'C:/Users/Moqui/Projects/Dd/cgc/_work/film-portrait-3.mp4'

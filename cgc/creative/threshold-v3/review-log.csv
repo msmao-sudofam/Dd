@@ -1,0 +1,15 @@
+shot,version,model,seed,start_image,changed_variable,source_fps,source_frames,score,rejected_defect,accepted_in,accepted_out,note
+S01,v01,i2v_2_2_gguf_q4_k_m,5201,S01_edge_v01.png,baseline,16,49,9,none rejected,"0.0s","2.0s",reads as slow push rather than truck; rigid and stable
+S02,v01,i2v_2_2_gguf_q4_k_m,5202,S02_reflection_v01.png,baseline,16,49,10,none rejected,"0.0s","2.0s",near mullion parallax; reflected tree coherent
+S03,v01,i2v_2_2_gguf_q4_k_m,5203,S03_joint_final.png,baseline,16,49,8,horizontal seam moved down instead of up,-,-,rejected on card's direction test
+S03,v02,i2v_2_2_gguf_q4_k_m,6203,S03_joint_final.png,short alternate prompt,16,49,8,seam still moved down,-,-,rejected; revision limit reached
+S03,vB,i2v_2_2_gguf_q4_k_m,4102,S03_joint_final.png,card alternate (rightward truck),16,49,9,none rejected,"0.0s","2.0s",stable truck from calibration B used as the joint shot
+S04,v01,i2v_2_2_gguf_q4_k_m,5204,S04_threshold_v01.png,baseline,16,49,10,none rejected,"0.0s","2.0s",rigid rail and stable aggregate
+S05,v01,i2v_2_2_gguf_q4_k_m,5205,S05_door_final.png,camera-only fallback,16,49,3,door leaves swung and bent,-,-,rejected; card's hinge warning
+S05,v02,i2v_2_2_gguf_q4_k_m,6205,entrance-reference.png,wider framing,16,49,3,leaves still swung,-,-,rejected
+S05,plate,-,-,-,S05_door_final.png,held plate 3% drift,-,-,6,no scene motion (documented hold),"0.0s","2.0s",hold; no door animation claimed
+S06,v01,i2v_2_2_gguf_q4_k_m,5206,S06_passage_v01.png,baseline,16,49,9,slight leaf drift,"0.0s","2.0s",clear push through the opening
+S07,v01,i2v_2_2_gguf_q4_k_m,5207,S07_interior_v01.png,baseline,16,49,10,none rejected,"0.0s","2.0s",restrained truck; stable light
+S08,v01,i2v_2_2_gguf_q4_k_m,5208,S08_exterior_v01.png,baseline,16,49,3,leaves moved and exposure drifted,-,-,rejected
+S08,v02,i2v_2_2_gguf_q4_k_m,6208,S08_exterior_v01.png,locked-off prompt,16,49,3,leaves still moved,-,-,rejected
+S08,plate,-,-,-,S08_exterior_v01.png,held plate 3% drift,-,-,7,no scene motion (documented hold),"0.0s","2.0s",fixed ending fallback
