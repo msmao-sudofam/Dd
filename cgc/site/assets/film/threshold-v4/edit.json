@@ -1,0 +1,88 @@
+{
+  "title": "THE THRESHOLD v4",
+  "note": "Generated concept film, not a CGC project. Silent, 16 s, 24 fps.",
+  "model": "MiniMax H3 FL2VA Pruned 20B (minimax_h3_fl2va_pruned) via WanGP, native 832x480 24fps",
+  "upscale": "Lanczos to 1600x900 (desktop) and 720x1280 (phone crop); no interpolation",
+  "shots": [
+    {
+      "shot": "S01",
+      "start_s": 0,
+      "clip": "renders/S01_S01_v4_s9102_s7101.mp4",
+      "start": 20,
+      "phone_x": 0.45,
+      "verdict": "pass",
+      "observed": "Rightward truck along the glass edge: edge drifts left (~4% over 5 s), blurred background shifts less, no zoom",
+      "caption": "The edge of the glass, catching the light."
+    },
+    {
+      "shot": "S02",
+      "start_s": 2,
+      "clip": "renders/S02_S02_reflection_v01_s7201.mp4",
+      "start": 60,
+      "phone_x": 0.72,
+      "verdict": "pass",
+      "observed": "Rightward truck beside the pane: near mullion moves left, reflected tree holds its size, glass rigid",
+      "caption": "Along the pane, sky and a single tree held in the glass."
+    },
+    {
+      "shot": "S03",
+      "start_s": 4,
+      "clip": "renders/S03_S03_v4_joint_crop_s7302.mp4",
+      "start": 20,
+      "phone_x": 0.55,
+      "verdict": "pass",
+      "observed": "Camera slides down the mullion; transom rises on screen; mullion width constant; far lobby nearly still",
+      "caption": "Down the mullion, past a square, sealed joint."
+    },
+    {
+      "shot": "S04",
+      "start_s": 6,
+      "clip": "renders/S04_S04_threshold_v01_s7401.mp4",
+      "start": 40,
+      "phone_x": 0.5,
+      "verdict": "pass",
+      "observed": "Low forward push toward the threshold (~6% growth over 5 s) with near terrazzo moving faster; sill and light band steady",
+      "caption": "Toward the threshold, in a hard diagonal of afternoon light."
+    },
+    {
+      "shot": "S05",
+      "start_s": 8,
+      "clip": "renders/S05_S05CLOSED_v4_s9222_s7512.mp4",
+      "start": 36,
+      "phone_x": 0.68,
+      "verdict": "pass",
+      "observed": "Locked camera (0 px). Closed right leaf begins to open on its right-jamb hinges; free edge with pull comes toward camera; pull attached, left leaf still. Owner-approved closed start",
+      "caption": "A door opens on its hinges."
+    },
+    {
+      "shot": "S06",
+      "start_s": 10,
+      "clip": "renders/S06_S06_passage_v01_s7601.mp4",
+      "start": 76,
+      "phone_x": 0.5,
+      "verdict": "pass",
+      "observed": "Short level push into the open doorway: near jambs and leaves expand outward with depth, lobby stays put; leaves move only with the camera",
+      "caption": "Through the clear opening."
+    },
+    {
+      "shot": "S07",
+      "start_s": 12,
+      "clip": "renders/S07_S07_interior_v01_s7701.mp4",
+      "start": 76,
+      "phone_x": 0.3,
+      "verdict": "pass",
+      "observed": "Restrained rightward interior truck: foreground door frame moves left faster than the column and lobby, then eases",
+      "caption": "Inside, the lobby and its glass office fronts."
+    },
+    {
+      "shot": "S08",
+      "start_s": 14,
+      "clip": "renders/S08_S08_exterior_v01_s7803.mp4",
+      "start": 40,
+      "phone_x": 0.62,
+      "verdict": "pass",
+      "observed": "Continuous blue-hour pullback (~2% per 2 s) with parallax; doors still; lobby brightness drifts down ~4% gradually, no pulse. Revised prompt prompt_S08_r2.txt; seeds 7801 (held after 1%) and 7802 (back-and-forth) rejected",
+      "caption": "Blue hour, warm behind the glass."
+    }
+  ]
+}

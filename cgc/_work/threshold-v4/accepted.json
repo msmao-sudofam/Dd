@@ -10,7 +10,7 @@
   "S02": {
     "clip": "renders/S02_S02_reflection_v01_s7201.mp4",
     "start": 60,
-    "phone_x": 0.55,
+    "phone_x": 0.72,
     "verdict": "pass",
     "observed": "Rightward truck beside the pane: near mullion moves left, reflected tree holds its size, glass rigid",
     "caption": "Along the pane, sky and a single tree held in the glass."
@@ -50,9 +50,17 @@
   "S07": {
     "clip": "renders/S07_S07_interior_v01_s7701.mp4",
     "start": 76,
-    "phone_x": 0.4,
+    "phone_x": 0.3,
     "verdict": "pass",
     "observed": "Restrained rightward interior truck: foreground door frame moves left faster than the column and lobby, then eases",
     "caption": "Inside, the lobby and its glass office fronts."
+  },
+  "S08": {
+    "clip": "renders/S08_S08_exterior_v01_s7803.mp4",
+    "start": 40,
+    "phone_x": 0.62,
+    "verdict": "pass",
+    "observed": "Continuous blue-hour pullback (~2% per 2 s) with parallax; doors still; lobby brightness drifts down ~4% gradually, no pulse. Revised prompt prompt_S08_r2.txt; seeds 7801 (held after 1%) and 7802 (back-and-forth) rejected",
+    "caption": "Blue hour, warm behind the glass."
   }
 }

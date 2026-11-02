@@ -1,0 +1,6 @@
+[GGUF][llama.cpp CUDA] kernels available.
+[INT8] Backend: Comfy Kitchen CUDA (setting: auto).
+=== S08_S08_exterior_v01_s7802
+    348s -> ['C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v4\\renders\\S08_S08_exterior_v01_s7802.mp4'] []
+=== S08_S08_exterior_v01_s7803
+    325s -> ['C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v4\\renders\\S08_S08_exterior_v01_s7803.mp4'] []

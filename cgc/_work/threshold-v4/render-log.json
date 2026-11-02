@@ -128,5 +128,225 @@
       "flow_shift": 12.0
     },
     "at": "2026-11-02T12:48:26"
+  },
+  {
+    "shot": "S05",
+    "keyframe": "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v4\\keyframes\\S05CLOSED_v4_s9222.png",
+    "end_frame": null,
+    "seed": 7511,
+    "frames": 124,
+    "elapsed_s": 218.7,
+    "outputs": [
+      "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v4\\renders\\S05_S05CLOSED_v4_s9222_s7511.mp4"
+    ],
+    "errors": [],
+    "prompt": "integrated_multimodal_description: [Shot 1] One continuous photorealistic architectural shot from the supplied clean first frame. Locked camera on a tripod. The closed right-hand glass door leaf, hinged at the right jamb, slowly swings open toward the camera, rotating about its fixed hinges by roughly twenty-five degrees, then settles open. Its free edge with the long stainless pull moves forward and a widening gap opens beside the closed left leaf. The leaf stays rigid; its pull stays attached and traces a short arc with it. The left leaf, frames, columns, floor, sunlight and camera remain completely still. No scene change, digital image zoom, freeze frame or additional action.\noverall_soundscape: Quiet natural ambience only. No speech.\nnon_diegetic_music: None.\n",
+    "settings": {
+      "resolution": "832x480",
+      "video_length": 124,
+      "num_inference_steps": 20,
+      "guidance_scale": 1.0,
+      "sample_solver": "euler",
+      "flow_shift": 12.0
+    },
+    "at": "2026-11-02T12:58:43"
+  },
+  {
+    "shot": "S05",
+    "keyframe": "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v4\\keyframes\\S05CLOSED_v4_s9222.png",
+    "end_frame": null,
+    "seed": 7512,
+    "frames": 124,
+    "elapsed_s": 173.2,
+    "outputs": [
+      "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v4\\renders\\S05_S05CLOSED_v4_s9222_s7512.mp4"
+    ],
+    "errors": [],
+    "prompt": "integrated_multimodal_description: [Shot 1] One continuous photorealistic architectural shot from the supplied clean first frame. Locked camera on a tripod. The closed right-hand glass door leaf, hinged at the right jamb, slowly swings open toward the camera, rotating about its fixed hinges by roughly twenty-five degrees, then settles open. Its free edge with the long stainless pull moves forward and a widening gap opens beside the closed left leaf. The leaf stays rigid; its pull stays attached and traces a short arc with it. The left leaf, frames, columns, floor, sunlight and camera remain completely still. No scene change, digital image zoom, freeze frame or additional action.\noverall_soundscape: Quiet natural ambience only. No speech.\nnon_diegetic_music: None.\n",
+    "settings": {
+      "resolution": "832x480",
+      "video_length": 124,
+      "num_inference_steps": 20,
+      "guidance_scale": 1.0,
+      "sample_solver": "euler",
+      "flow_shift": 12.0
+    },
+    "at": "2026-11-02T13:01:36"
+  },
+  {
+    "shot": "S01",
+    "keyframe": "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v4\\keyframes\\S01_v4_s9102.png",
+    "end_frame": null,
+    "seed": 7101,
+    "frames": 124,
+    "elapsed_s": 304.3,
+    "outputs": [
+      "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v4\\renders\\S01_S01_v4_s9102_s7101.mp4"
+    ],
+    "errors": [],
+    "prompt": "integrated_multimodal_description: [Shot 1] One continuous photorealistic architectural shot from the supplied clean first frame. The camera trucks slowly to the right along the fixed polished glass edge. The nearby edge drifts slightly left in the image while the dark background shifts less. A narrow natural reflection changes with the viewing angle. The pane stays rigid and straight. One continuous level move with steady light and fixed focus. Preserve the supplied geometry, materials and composition except for the specified real camera/door movement. No scene change, digital image zoom, freeze frame or additional action.\noverall_soundscape: Quiet natural ambience only. No speech.\nnon_diegetic_music: None.",
+    "settings": {
+      "resolution": "832x480",
+      "video_length": 124,
+      "num_inference_steps": 20,
+      "guidance_scale": 1.0,
+      "sample_solver": "euler",
+      "flow_shift": 12.0
+    },
+    "at": "2026-11-02T13:06:40"
+  },
+  {
+    "shot": "S02",
+    "keyframe": "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v3\\01_keyframes\\S02_reflection_v01.png",
+    "end_frame": null,
+    "seed": 7201,
+    "frames": 124,
+    "elapsed_s": 317.6,
+    "outputs": [
+      "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v4\\renders\\S02_S02_reflection_v01_s7201.mp4"
+    ],
+    "errors": [],
+    "prompt": "integrated_multimodal_description: [Shot 1] One continuous photorealistic architectural shot from the supplied clean first frame. The camera trucks slowly to the right parallel to the stationary glass facade. The nearby graphite mullion moves left across the image while the reflected distant tree changes more gently with the viewing angle. The glass plane and framing remain rigid. Fixed camera orientation, steady daylight, one continuous lateral move. Preserve the supplied geometry, materials and composition except for the specified real camera/door movement. No scene change, digital image zoom, freeze frame or additional action.\noverall_soundscape: Quiet natural ambience only. No speech.\nnon_diegetic_music: None.",
+    "settings": {
+      "resolution": "832x480",
+      "video_length": 124,
+      "num_inference_steps": 20,
+      "guidance_scale": 1.0,
+      "sample_solver": "euler",
+      "flow_shift": 12.0
+    },
+    "at": "2026-11-02T13:11:58"
+  },
+  {
+    "shot": "S04",
+    "keyframe": "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v3\\01_keyframes\\S04_threshold_v01.png",
+    "end_frame": null,
+    "seed": 7401,
+    "frames": 124,
+    "elapsed_s": 312.5,
+    "outputs": [
+      "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v4\\renders\\S04_S04_threshold_v01_s7401.mp4"
+    ],
+    "errors": [],
+    "prompt": "integrated_multimodal_description: [Shot 1] One continuous photorealistic architectural shot from the supplied clean first frame. The low camera makes one short smooth push forward toward the fixed entrance threshold. Nearby terrazzo detail shifts slightly faster than the frame ahead. The threshold, seal and floor joints remain rigid and unchanged. The diagonal sunlight and exposure stay constant. Fixed angle and focus. Preserve the supplied geometry, materials and composition except for the specified real camera/door movement. No scene change, digital image zoom, freeze frame or additional action.\noverall_soundscape: Quiet natural ambience only. No speech.\nnon_diegetic_music: None.",
+    "settings": {
+      "resolution": "832x480",
+      "video_length": 124,
+      "num_inference_steps": 20,
+      "guidance_scale": 1.0,
+      "sample_solver": "euler",
+      "flow_shift": 12.0
+    },
+    "at": "2026-11-02T13:17:10"
+  },
+  {
+    "shot": "S06",
+    "keyframe": "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v3\\01_keyframes\\S06_passage_v01.png",
+    "end_frame": null,
+    "seed": 7601,
+    "frames": 124,
+    "elapsed_s": 317.4,
+    "outputs": [
+      "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v4\\renders\\S06_S06_passage_v01_s7601.mp4"
+    ],
+    "errors": [],
+    "prompt": "integrated_multimodal_description: [Shot 1] One continuous photorealistic architectural shot from the supplied clean first frame. The camera makes one smooth short push forward through the already-open clear doorway. The nearby jamb moves outward toward the image edge faster than the distant lobby. The door stays open and motionless. Columns, floor joints and glass framing remain rigid. Level camera, fixed lens, steady light; finish just inside the same entrance. Preserve the supplied geometry, materials and composition except for the specified real camera/door movement. No scene change, digital image zoom, freeze frame or additional action.\noverall_soundscape: Quiet natural ambience only. No speech.\nnon_diegetic_music: None.",
+    "settings": {
+      "resolution": "832x480",
+      "video_length": 124,
+      "num_inference_steps": 20,
+      "guidance_scale": 1.0,
+      "sample_solver": "euler",
+      "flow_shift": 12.0
+    },
+    "at": "2026-11-02T13:22:28"
+  },
+  {
+    "shot": "S07",
+    "keyframe": "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v3\\01_keyframes\\S07_interior_v01.png",
+    "end_frame": null,
+    "seed": 7701,
+    "frames": 124,
+    "elapsed_s": 553.9,
+    "outputs": [
+      "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v4\\renders\\S07_S07_interior_v01_s7701.mp4"
+    ],
+    "errors": [],
+    "prompt": "integrated_multimodal_description: [Shot 1] One continuous photorealistic architectural shot from the supplied clean first frame. Inside the lobby, the camera makes a very short slow truck to the right, then eases toward a calm hold. The nearby white column drifts slightly left while the distant glass office fronts shift less. The room, framing, floor joints and lighting remain unchanged. Level view and fixed lens; no forward fly-through. Preserve the supplied geometry, materials and composition except for the specified real camera/door movement. No scene change, digital image zoom, freeze frame or additional action.\noverall_soundscape: Quiet natural ambience only. No speech.\nnon_diegetic_music: None.",
+    "settings": {
+      "resolution": "832x480",
+      "video_length": 124,
+      "num_inference_steps": 20,
+      "guidance_scale": 1.0,
+      "sample_solver": "euler",
+      "flow_shift": 12.0
+    },
+    "at": "2026-11-02T13:31:42"
+  },
+  {
+    "shot": "S08",
+    "keyframe": "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v3\\01_keyframes\\S08_exterior_v01.png",
+    "end_frame": null,
+    "seed": 7801,
+    "frames": 124,
+    "elapsed_s": 564.3,
+    "outputs": [
+      "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v4\\renders\\S08_S08_exterior_v01_s7801.mp4"
+    ],
+    "errors": [],
+    "prompt": "integrated_multimodal_description: [Shot 1] One continuous photorealistic architectural shot from the supplied clean first frame. At blue hour, the camera makes a short slow pullback from the existing glass entrance and eases into a stable final view. The entrance becomes slightly smaller with natural depth parallax. The white facade, graphite frames, doors, planting and warm interior lights remain fixed and unchanged. No orbit or time-lapse. Preserve the supplied geometry, materials and composition except for the specified real camera/door movement. No scene change, digital image zoom, freeze frame or additional action.\noverall_soundscape: Quiet natural ambience only. No speech.\nnon_diegetic_music: None.",
+    "settings": {
+      "resolution": "832x480",
+      "video_length": 124,
+      "num_inference_steps": 20,
+      "guidance_scale": 1.0,
+      "sample_solver": "euler",
+      "flow_shift": 12.0
+    },
+    "at": "2026-11-02T13:41:06"
+  },
+  {
+    "shot": "S08",
+    "keyframe": "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v3\\01_keyframes\\S08_exterior_v01.png",
+    "end_frame": null,
+    "seed": 7802,
+    "frames": 124,
+    "elapsed_s": 348.0,
+    "outputs": [
+      "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v4\\renders\\S08_S08_exterior_v01_s7802.mp4"
+    ],
+    "errors": [],
+    "prompt": "integrated_multimodal_description: [Shot 1] One continuous photorealistic architectural shot from the supplied clean first frame. At blue hour, the camera dollies slowly and steadily straight backward away from the glass entrance for the whole shot, at constant height, so the entrance, columns and open door become gradually smaller and more of the terrazzo floor enters the bottom of the frame, with natural depth parallax. The warm interior lights stay exactly as bright as at the start; the blue sky and exposure stay constant. The doors do not move. No orbit, no time-lapse, no zoom, no freeze frame, no scene change, no additional action.\noverall_soundscape: Quiet natural ambience only. No speech.\nnon_diegetic_music: None.\n",
+    "settings": {
+      "resolution": "832x480",
+      "video_length": 124,
+      "num_inference_steps": 20,
+      "guidance_scale": 1.0,
+      "sample_solver": "euler",
+      "flow_shift": 12.0
+    },
+    "at": "2026-11-02T13:48:07"
+  },
+  {
+    "shot": "S08",
+    "keyframe": "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v3\\01_keyframes\\S08_exterior_v01.png",
+    "end_frame": null,
+    "seed": 7803,
+    "frames": 124,
+    "elapsed_s": 324.8,
+    "outputs": [
+      "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v4\\renders\\S08_S08_exterior_v01_s7803.mp4"
+    ],
+    "errors": [],
+    "prompt": "integrated_multimodal_description: [Shot 1] One continuous photorealistic architectural shot from the supplied clean first frame. At blue hour, the camera dollies slowly and steadily straight backward away from the glass entrance for the whole shot, at constant height, so the entrance, columns and open door become gradually smaller and more of the terrazzo floor enters the bottom of the frame, with natural depth parallax. The warm interior lights stay exactly as bright as at the start; the blue sky and exposure stay constant. The doors do not move. No orbit, no time-lapse, no zoom, no freeze frame, no scene change, no additional action.\noverall_soundscape: Quiet natural ambience only. No speech.\nnon_diegetic_music: None.\n",
+    "settings": {
+      "resolution": "832x480",
+      "video_length": 124,
+      "num_inference_steps": 20,
+      "guidance_scale": 1.0,
+      "sample_solver": "euler",
+      "flow_shift": 12.0
+    },
+    "at": "2026-11-02T13:53:32"
   }
 ]

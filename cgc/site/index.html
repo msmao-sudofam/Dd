@@ -27,8 +27,8 @@ footer{padding:56px 0 80px;background:var(--fg);color:white}.footer-title{font-s
     </div>
   </div>
   <div class="film-stage">
-    <picture class="cinema-poster"><source media="(max-width:760px)" type="image/avif" srcset="assets/film/threshold-v3/desktop-poster-sm.avif"><source media="(max-width:760px)" type="image/webp" srcset="assets/film/threshold-v3/desktop-poster-sm.webp"><source type="image/avif" srcset="assets/film/threshold-v3/desktop-poster.avif"><img src="assets/film/threshold-v3/desktop-poster.webp" alt="Illustrative concept: the polished edge and graphite frame of a glass entrance door" width="1600" height="900" fetchpriority="high"></picture>
-    <video id="intro-film" class="cinema-video" muted loop playsinline preload="none" aria-label="Sixteen-second silent generated concept film: a glass edge, a reflected facade, a framing joint, the threshold, the open doors, the passage inside, the lobby and a blue-hour exterior. Illustrative visualization, not a completed CGC project."><track kind="captions" src="assets/film/threshold-v3/captions.vtt" srclang="en" label="English"></video>
+    <picture class="cinema-poster"><source media="(max-width:760px)" type="image/avif" srcset="assets/film/threshold-v4/desktop-poster-sm.avif"><source media="(max-width:760px)" type="image/webp" srcset="assets/film/threshold-v4/desktop-poster-sm.webp"><source type="image/avif" srcset="assets/film/threshold-v4/desktop-poster.avif"><img src="assets/film/threshold-v4/desktop-poster.webp" alt="Illustrative concept: the polished edge and graphite frame of a glass entrance door" width="1600" height="900" fetchpriority="high"></picture>
+    <video id="intro-film" class="cinema-video" muted loop playsinline preload="none" aria-label="Sixteen-second silent generated concept film: a glass edge, a reflected facade, a framing joint, the threshold, a door opening, the passage inside, the lobby and a blue-hour exterior. Illustrative visualization, not a completed CGC project."><track kind="captions" src="assets/film/threshold-v4/captions.vtt" srclang="en" label="English"></video>
     <span class="hero-image-label" id="hero-image-label">Concept film / generated visualization</span>
     <a class="hero-explore" href="#work">See the actual work <span aria-hidden="true">↓</span></a>
   </div>
@@ -154,9 +154,9 @@ if(conceptTabs.length){$('.concept-tabs').hidden=false;conceptTabs.forEach((tab,
 // The generated concept film plays muted on load. The poster remains the fallback for reduced motion and failed playback.
 const filmVideo=$('#intro-film'),filmToggle=$('#film-toggle');let filmLoaded=false;
 // The poster <img> stays the only poster download and the LCP candidate. The video is revealed once it has a frame, so it never paints over the poster and never fetches a second poster copy.
-const filmChapters=['The line becomes glass','Follow the reflection','Precision at the joint','Light at the threshold','The doors stand open','Cross the clear opening','The space beyond','The entrance, resolved'];
+const filmChapters=['The line becomes glass','Follow the reflection','Precision at the joint','Light at the threshold','A door opens','Cross the clear opening','The space beyond','The entrance, resolved'];
 function filmButton(){filmToggle.textContent=filmVideo.paused?'Play concept film':'Pause film';filmToggle.setAttribute('aria-pressed',String(!filmVideo.paused))}
-function loadFilm(){if(filmLoaded)return;filmLoaded=true;filmVideo.src=matchMedia('(max-width:760px)').matches?'assets/film/threshold-v3/mobile.mp4':'assets/film/threshold-v3/desktop.mp4';filmVideo.load()}
+function loadFilm(){if(filmLoaded)return;filmLoaded=true;filmVideo.src=matchMedia('(max-width:760px)').matches?'assets/film/threshold-v4/mobile.mp4':'assets/film/threshold-v4/desktop.mp4';filmVideo.load()}
 function startFilm(){if(reduced.matches||document.hidden)return;loadFilm();filmVideo.play().catch(()=>{})}
 filmToggle.onclick=()=>{if(filmVideo.paused){loadFilm();filmVideo.play().then(filmButton).catch(filmButton)}else{filmVideo.pause();filmButton()}};
 filmVideo.addEventListener('loadeddata',()=>{filmVideo.classList.add('ready','poster-ready');$('#hero-image-label').textContent='Concept film / generated visualization';filmButton()});filmVideo.addEventListener('play',filmButton);filmVideo.addEventListener('pause',filmButton);

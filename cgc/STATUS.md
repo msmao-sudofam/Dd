@@ -1,3 +1,11 @@
+# CGC status — November 2, 2026
+
+**Hero film: THE THRESHOLD v4 is installed locally** (`site/assets/film/threshold-v4/`), replacing the rejected v3.
+All eight shots were regenerated with MiniMax H3 and individually checked against the strict v4 shot cards; S05 starts
+with the door closed (owner-approved). Details, deviations and evidence: `creative/threshold-v4/DELIVERY.md` and
+`_work/threshold-v4/REVIEW-LOG.md`. Not pushed, not deployed, not promoted; DNS and Deployment Protection untouched.
+The preview URLs below still serve older films.
+
 # CGC status — October 31, 2026
 
 Current generated-film preview: **https://cgc-glazing-wtwmodxmt-sdvsfbs.vercel.app/** (target `preview`, Ready). The compressed film autoplays, captions and the concept label were verified live in an authenticated browser session. Deployment Protection remains enabled, so unauthenticated visitors still receive a 302 to Vercel SSO. The earlier previews **https://cgc-glazing-omyr91l7e-sdvsfbs.vercel.app/** and **https://cgc-glazing-bcvesobuw-sdvsfbs.vercel.app/** predate the compressed film.

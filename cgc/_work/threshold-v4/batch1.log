@@ -1,0 +1,18 @@
+[GGUF][llama.cpp CUDA] kernels available.
+[INT8] Backend: Comfy Kitchen CUDA (setting: auto).
+=== S05_S05CLOSED_v4_s9222_s7511
+    219s -> ['C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v4\\renders\\S05_S05CLOSED_v4_s9222_s7511.mp4'] []
+=== S05_S05CLOSED_v4_s9222_s7512
+    173s -> ['C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v4\\renders\\S05_S05CLOSED_v4_s9222_s7512.mp4'] []
+=== S01_S01_v4_s9102_s7101
+    304s -> ['C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v4\\renders\\S01_S01_v4_s9102_s7101.mp4'] []
+=== S02_S02_reflection_v01_s7201
+    318s -> ['C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v4\\renders\\S02_S02_reflection_v01_s7201.mp4'] []
+=== S04_S04_threshold_v01_s7401
+    312s -> ['C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v4\\renders\\S04_S04_threshold_v01_s7401.mp4'] []
+=== S06_S06_passage_v01_s7601
+    317s -> ['C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v4\\renders\\S06_S06_passage_v01_s7601.mp4'] []
+=== S07_S07_interior_v01_s7701
+    554s -> ['C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v4\\renders\\S07_S07_interior_v01_s7701.mp4'] []
+=== S08_S08_exterior_v01_s7801
+    564s -> ['C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v4\\renders\\S08_S08_exterior_v01_s7801.mp4'] []
