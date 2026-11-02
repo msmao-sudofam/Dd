@@ -1,0 +1,3 @@
+integrated_multimodal_description: [Shot 1] One continuous photorealistic architectural shot from the supplied clean first frame. Locked camera on a tripod. The closed right-hand glass door leaf, hinged at the right jamb, slowly swings open toward the camera, rotating about its fixed hinges by roughly twenty-five degrees, then settles open. Its free edge with the long stainless pull moves forward and a widening gap opens beside the closed left leaf. The leaf stays rigid; its pull stays attached and traces a short arc with it. The left leaf, frames, columns, floor, sunlight and camera remain completely still. No scene change, digital image zoom, freeze frame or additional action.
+overall_soundscape: Quiet natural ambience only. No speech.
+non_diegetic_music: None.

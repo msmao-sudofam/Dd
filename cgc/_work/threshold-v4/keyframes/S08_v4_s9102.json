@@ -1,0 +1,14 @@
+{
+  "shot": "S08",
+  "seed": 9102,
+  "steps": 28,
+  "size": [
+    1536,
+    864
+  ],
+  "model": "qwen_image_edit_2511_fp8mixed",
+  "prompt": "The same photograph from the same camera position with the same framing, lens and composition. Change only the time of day to blue hour: a deep, even steel-blue evening sky, cooler exterior light, warm interior ceiling lights glowing through the glass and reflecting softly on the terrazzo. Keep both door leaves exactly where they are, the same stainless pulls, white columns, graphite frames, trees and floor. No sun, no sunbeams, no people, no new objects.",
+  "negative": "text, letters, watermark, logo, border, frame, signature, people, hands, cars, signage, warped architecture, bent mullions, duplicated handles, liquid glass, floating hardware, oversaturated, CGI look, fisheye",
+  "reference": "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v3\\00_env\\entrance-reference.png",
+  "seconds": 110.2
+}

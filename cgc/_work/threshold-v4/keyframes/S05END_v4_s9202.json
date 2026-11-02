@@ -1,0 +1,14 @@
+{
+  "shot": "S05END",
+  "seed": 9202,
+  "steps": 28,
+  "size": [
+    1536,
+    864
+  ],
+  "model": "qwen_image_edit_2511_fp8mixed",
+  "prompt": "The same photograph, identical in every detail and camera position, except that the right-hand door leaf has rotated about its right-edge hinges to open roughly fifteen degrees farther toward the camera. The leaf stays rigid; its pull handle stays at the same place on the leaf. The left leaf, frames, columns, floor, lobby and light do not change.",
+  "negative": "text, letters, watermark, logo, border, frame, signature, people, hands, cars, signage, warped architecture, bent mullions, duplicated handles, liquid glass, floating hardware, oversaturated, CGI look, fisheye",
+  "reference": "keyframes\\S05_v4_s9102.png",
+  "seconds": 175.4
+}

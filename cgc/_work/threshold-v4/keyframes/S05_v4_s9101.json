@@ -1,0 +1,14 @@
+{
+  "shot": "S05",
+  "seed": 9101,
+  "steps": 28,
+  "size": [
+    1536,
+    864
+  ],
+  "model": "qwen_image_edit_2511_fp8mixed",
+  "prompt": "The same photograph from the same eye-level camera position. The right-hand door leaf is nearly closed, open only about fifteen degrees toward the camera. It is hinged on its RIGHT edge at the jamb, where the hinges are visible; its long vertical stainless pull is mounted near its LEFT free edge, beside the closed left leaf. One pull per leaf. Same columns, frames, glass, lobby and terrazzo. No people.",
+  "negative": "text, letters, watermark, logo, border, frame, signature, people, hands, cars, signage, warped architecture, bent mullions, duplicated handles, liquid glass, floating hardware, oversaturated, CGI look, fisheye",
+  "reference": "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v3\\00_env\\entrance-reference.png",
+  "seconds": 120.2
+}

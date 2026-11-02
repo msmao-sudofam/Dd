@@ -1,0 +1,14 @@
+{
+  "shot": "S01",
+  "seed": 9102,
+  "steps": 28,
+  "size": [
+    1536,
+    864
+  ],
+  "model": "qwen_image_edit_2511_fp8mixed",
+  "prompt": "Extreme macro photograph of the polished vertical edge of one thick clear architectural glass pane. The glass edge is a straight, almost vertical line placed at about 58 percent of the image width, running from about 15 percent to 88 percent of the image height. A narrow cool-white highlight runs along the real edge; the slight green tint of the glass thickness is visible. A dark graphite aluminum mullion and soft dark background fill the rest of the frame. Shallow depth of field, fine real texture. No door handle, no pull, no hardware, no lobby view, no neon line.",
+  "negative": "text, letters, watermark, logo, border, frame, signature, people, hands, cars, signage, warped architecture, bent mullions, duplicated handles, liquid glass, floating hardware, oversaturated, CGI look, fisheye",
+  "reference": "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v3\\00_env\\entrance-reference.png",
+  "seconds": 125.1
+}

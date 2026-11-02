@@ -1,0 +1,6 @@
+[GGUF][llama.cpp CUDA] kernels available.
+[INT8] Backend: Comfy Kitchen CUDA (setting: auto).
+=== S03_S03_joint_final_s7301
+    225s -> ['C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v4\\renders\\S03_S03_joint_final_s7301.mp4'] []
+=== S05_S05b_door_ajar_v01_s7501
+    339s -> ['C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v4\\renders\\S05_S05b_door_ajar_v01_s7501.mp4'] []

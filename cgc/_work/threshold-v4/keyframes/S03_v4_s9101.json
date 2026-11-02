@@ -1,0 +1,14 @@
+{
+  "shot": "S03",
+  "seed": 9101,
+  "steps": 28,
+  "size": [
+    1536,
+    864
+  ],
+  "model": "qwen_image_edit_2511_fp8mixed",
+  "prompt": "Close photograph of one graphite aluminum storefront framing joint at chest height, away from any door. A slim vertical mullion stands at about 55 percent of the image width and meets a horizontal transom of the same width crossing at about 60 percent of the image height, square and flush. Black gaskets are seated against clear glass panes in all four quadrants; soft sky and the bright lobby are visible through the glass. Brushed metal, straight rigid members, natural daylight. No floor, no door, no handle, no hinge.",
+  "negative": "text, letters, watermark, logo, border, frame, signature, people, hands, cars, signage, warped architecture, bent mullions, duplicated handles, liquid glass, floating hardware, oversaturated, CGI look, fisheye",
+  "reference": "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v3\\00_env\\entrance-reference.png",
+  "seconds": 125.3
+}

@@ -1,0 +1,14 @@
+{
+  "shot": "S05CLOSED",
+  "seed": 9222,
+  "steps": 28,
+  "size": [
+    1536,
+    864
+  ],
+  "model": "qwen_image_edit_2511_fp8mixed",
+  "prompt": "The same photograph, identical camera position, lens, framing and light. Only the right-hand door leaf has moved: it is now fully closed, flush in the same plane as the left leaf and the frame, with its long vertical stainless pull still near its left free edge beside the left leaf and its hinges at the right jamb. Everything else is unchanged.",
+  "negative": "text, letters, watermark, logo, border, frame, signature, people, hands, cars, signage, warped architecture, bent mullions, duplicated handles, liquid glass, floating hardware, oversaturated, CGI look, fisheye",
+  "reference": "keyframes\\S05_v4_s9102.png",
+  "seconds": 105.1
+}

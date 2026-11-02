@@ -34,3 +34,8 @@ Generated with Qwen-Image-Edit-2511 from the entrance reference (`keyframes_v4.p
 With the card's ajar start, H3 closes the leaf in all four v4 renders (two keyframes, two prompt wordings). The only
 H3 clip that shows a correct rigid opening is Freebuff's `S05_h3_r2`, which starts with the leaf closed. Not
 substituted; waiting for the owner's decision on the start position.
+
+**Owner decision (2026-11-02):** S05 may start with the leaf closed; the action stays "one hinged leaf opens through a
+small rigid arc, camera locked". New start `keyframes/S05CLOSED_v4_s9222.png` (both leaves closed, right leaf hinged at
+the right jamb, pull at its free edge), prompt `prompt_S05_closed.txt`. Production batch 1 queued with it:
+S05 x2 seeds, S01, S02, S04, S06, S07, S08 (card prompts verbatim, log `batch1.log`).

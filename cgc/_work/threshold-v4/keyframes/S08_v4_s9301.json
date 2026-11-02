@@ -1,0 +1,14 @@
+{
+  "shot": "S08",
+  "seed": 9301,
+  "steps": 28,
+  "size": [
+    1536,
+    864
+  ],
+  "model": "qwen_image_edit_2511_fp8mixed",
+  "prompt": "The same photograph from the same camera position and framing, rephotographed at blue hour about twenty minutes after sunset. The sun is gone: no sunlight, no sun flare, no shadows from the sun. The sky is an even deep steel blue; trees and columns outside are dim and cool blue. The lobby ceiling lights are on and glow warm amber through the glass, casting warm reflections on the terrazzo. Keep every door, pull, column and frame exactly where it is. No people.",
+  "negative": "text, letters, watermark, logo, border, frame, signature, people, hands, cars, signage, warped architecture, bent mullions, duplicated handles, liquid glass, floating hardware, oversaturated, CGI look, fisheye",
+  "reference": "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v3\\00_env\\entrance-reference.png",
+  "seconds": 105.3
+}

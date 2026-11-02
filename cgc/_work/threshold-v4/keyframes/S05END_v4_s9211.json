@@ -1,0 +1,14 @@
+{
+  "shot": "S05END",
+  "seed": 9211,
+  "steps": 28,
+  "size": [
+    1536,
+    864
+  ],
+  "model": "qwen_image_edit_2511_fp8mixed",
+  "prompt": "The same photograph with the same camera position, lens and framing. Only the right-hand door leaf has moved: it has swung open toward the camera to about forty degrees, rotating on its hinges at the right jamb, so its free edge with the pull now stands clearly forward of the facade and the gap beside the left leaf is much wider. The leaf is rigid and keeps its single pull. The left leaf, frames, columns, floor, sunlight, lobby and sky are unchanged.",
+  "negative": "text, letters, watermark, logo, border, frame, signature, people, hands, cars, signage, warped architecture, bent mullions, duplicated handles, liquid glass, floating hardware, oversaturated, CGI look, fisheye",
+  "reference": "keyframes\\S05_v4_s9102.png",
+  "seconds": 401.3
+}

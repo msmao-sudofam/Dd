@@ -39,6 +39,10 @@ PROMPTS = {
                "at the right jamb, so its free edge with the pull now stands clearly forward of the facade and the "
                "gap beside the left leaf is much wider. The leaf is rigid and keeps its single pull. The left leaf, "
                "frames, columns, floor, sunlight, lobby and sky are unchanged."),
+    "S05CLOSED": ("The same photograph, identical camera position, lens, framing and light. Only the right-hand door "
+                  "leaf has moved: it is now fully closed, flush in the same plane as the left leaf and the frame, "
+                  "with its long vertical stainless pull still near its left free edge beside the left leaf and its "
+                  "hinges at the right jamb. Everything else is unchanged."),
     "S08": ("The same photograph from the same camera position and framing, rephotographed at blue hour about "
             "twenty minutes after sunset. The sun is gone: no sunlight, no sun flare, no shadows from the sun. The "
             "sky is an even deep steel blue; trees and columns outside are dim and cool blue. The lobby ceiling "

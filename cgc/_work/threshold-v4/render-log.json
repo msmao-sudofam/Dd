@@ -1,0 +1,132 @@
+[
+  {
+    "shot": "S03",
+    "keyframe": "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v3\\01_keyframes\\S03_joint_final.png",
+    "seed": 7301,
+    "frames": 124,
+    "elapsed_s": 225.0,
+    "outputs": [
+      "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v4\\renders\\S03_S03_joint_final_s7301.mp4"
+    ],
+    "errors": [],
+    "prompt": "integrated_multimodal_description: [Shot 1] One continuous photorealistic architectural shot from the supplied clean first frame. The camera slides slowly downward along the fixed vertical aluminum member. The horizontal framing joint rises slightly in the image as the camera descends. The frame width, gasket and glass remain unchanged and rigid. Fixed focus and constant daylight. One short, smooth vertical camera move. Preserve the supplied geometry, materials and composition except for the specified real camera/door movement. No scene change, digital image zoom, freeze frame or additional action.\noverall_soundscape: Quiet natural ambience only. No speech.\nnon_diegetic_music: None.",
+    "settings": {
+      "resolution": "832x480",
+      "video_length": 124,
+      "num_inference_steps": 20,
+      "guidance_scale": 1.0,
+      "sample_solver": "euler",
+      "flow_shift": 12.0
+    },
+    "at": "2026-11-02T11:48:55"
+  },
+  {
+    "shot": "S05",
+    "keyframe": "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v3\\01_keyframes\\S05b_door_ajar_v01.png",
+    "seed": 7501,
+    "frames": 124,
+    "elapsed_s": 339.5,
+    "outputs": [
+      "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v4\\renders\\S05_S05b_door_ajar_v01_s7501.mp4"
+    ],
+    "errors": [],
+    "prompt": "integrated_multimodal_description: [Shot 1] One continuous photorealistic architectural shot from the supplied clean first frame. Locked camera. The slightly ajar glass entrance door slowly opens outward a little farther on its existing fixed hinges, then settles. Only that rigid door leaf rotates; its pull handle stays attached. The surrounding frame, other door, floor, camera and lighting remain completely still. Preserve the supplied geometry, materials and composition except for the specified real camera/door movement. No scene change, digital image zoom, freeze frame or additional action.\noverall_soundscape: Quiet natural ambience only. No speech.\nnon_diegetic_music: None.",
+    "settings": {
+      "resolution": "832x480",
+      "video_length": 124,
+      "num_inference_steps": 20,
+      "guidance_scale": 1.0,
+      "sample_solver": "euler",
+      "flow_shift": 12.0
+    },
+    "at": "2026-11-02T11:54:34"
+  },
+  {
+    "shot": "S03",
+    "keyframe": "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v4\\keyframes\\S03_v4_joint_crop.png",
+    "end_frame": null,
+    "seed": 7302,
+    "frames": 124,
+    "elapsed_s": 237.1,
+    "outputs": [
+      "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v4\\renders\\S03_S03_v4_joint_crop_s7302.mp4"
+    ],
+    "errors": [],
+    "prompt": "integrated_multimodal_description: [Shot 1] One continuous photorealistic architectural shot from the supplied clean first frame. The camera slides slowly downward along the fixed vertical aluminum member. The horizontal framing joint rises slightly in the image as the camera descends. The frame width, gasket and glass remain unchanged and rigid. Fixed focus and constant daylight. One short, smooth vertical camera move. Preserve the supplied geometry, materials and composition except for the specified real camera/door movement. No scene change, digital image zoom, freeze frame or additional action.\noverall_soundscape: Quiet natural ambience only. No speech.\nnon_diegetic_music: None.",
+    "settings": {
+      "resolution": "832x480",
+      "video_length": 124,
+      "num_inference_steps": 20,
+      "guidance_scale": 1.0,
+      "sample_solver": "euler",
+      "flow_shift": 12.0
+    },
+    "at": "2026-11-02T12:25:28"
+  },
+  {
+    "shot": "S05",
+    "keyframe": "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v4\\keyframes\\S05_v4_s9102.png",
+    "end_frame": null,
+    "seed": 7502,
+    "frames": 124,
+    "elapsed_s": 319.7,
+    "outputs": [
+      "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v4\\renders\\S05_S05_v4_s9102_s7502.mp4"
+    ],
+    "errors": [],
+    "prompt": "integrated_multimodal_description: [Shot 1] One continuous photorealistic architectural shot from the supplied clean first frame. Locked camera. The slightly ajar glass entrance door slowly opens outward a little farther on its existing fixed hinges, then settles. Only that rigid door leaf rotates; its pull handle stays attached. The surrounding frame, other door, floor, camera and lighting remain completely still. Preserve the supplied geometry, materials and composition except for the specified real camera/door movement. No scene change, digital image zoom, freeze frame or additional action.\noverall_soundscape: Quiet natural ambience only. No speech.\nnon_diegetic_music: None.",
+    "settings": {
+      "resolution": "832x480",
+      "video_length": 124,
+      "num_inference_steps": 20,
+      "guidance_scale": 1.0,
+      "sample_solver": "euler",
+      "flow_shift": 12.0
+    },
+    "at": "2026-11-02T12:30:48"
+  },
+  {
+    "shot": "S05",
+    "keyframe": "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v4\\keyframes\\S05_v4_s9102.png",
+    "end_frame": null,
+    "seed": 7503,
+    "frames": 124,
+    "elapsed_s": 238.4,
+    "outputs": [
+      "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v4\\renders\\S05_S05_v4_s9102_s7503.mp4"
+    ],
+    "errors": [],
+    "prompt": "integrated_multimodal_description: [Shot 1] One continuous photorealistic architectural shot from the supplied clean first frame. Locked camera on a tripod. The right-hand glass door leaf, already ajar and hinged at the right jamb, keeps swinging OPEN toward the camera: its free edge with the long stainless pull moves forward and to the left, and the gap between that leaf and the closed left leaf grows wider. It opens about fifteen degrees more, slowly, then settles open. It never closes. Only that rigid leaf rotates; its pull stays attached. The left leaf, frames, columns, floor, sunlight and camera remain completely still. No scene change, digital image zoom, freeze frame or additional action.\noverall_soundscape: Quiet natural ambience only. No speech.\nnon_diegetic_music: None.",
+    "settings": {
+      "resolution": "832x480",
+      "video_length": 124,
+      "num_inference_steps": 20,
+      "guidance_scale": 1.0,
+      "sample_solver": "euler",
+      "flow_shift": 12.0
+    },
+    "at": "2026-11-02T12:45:34"
+  },
+  {
+    "shot": "S05",
+    "keyframe": "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v4\\keyframes\\S05_v4_s9102.png",
+    "end_frame": null,
+    "seed": 7504,
+    "frames": 124,
+    "elapsed_s": 171.6,
+    "outputs": [
+      "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\threshold-v4\\renders\\S05_S05_v4_s9102_s7504.mp4"
+    ],
+    "errors": [],
+    "prompt": "integrated_multimodal_description: [Shot 1] One continuous photorealistic architectural shot from the supplied clean first frame. Locked camera on a tripod. The right-hand glass door leaf, already ajar and hinged at the right jamb, keeps swinging OPEN toward the camera: its free edge with the long stainless pull moves forward and to the left, and the gap between that leaf and the closed left leaf grows wider. It opens about fifteen degrees more, slowly, then settles open. It never closes. Only that rigid leaf rotates; its pull stays attached. The left leaf, frames, columns, floor, sunlight and camera remain completely still. No scene change, digital image zoom, freeze frame or additional action.\noverall_soundscape: Quiet natural ambience only. No speech.\nnon_diegetic_music: None.",
+    "settings": {
+      "resolution": "832x480",
+      "video_length": 124,
+      "num_inference_steps": 20,
+      "guidance_scale": 1.0,
+      "sample_solver": "euler",
+      "flow_shift": 12.0
+    },
+    "at": "2026-11-02T12:48:26"
+  }
+]
