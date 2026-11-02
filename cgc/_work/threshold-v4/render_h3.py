@@ -30,7 +30,7 @@ def keyframe(name):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--job", action="append", required=True, help="SHOT:keyframe.png:seed[:prompt-override-file]")
+    ap.add_argument("--job", action="append", required=True, help="SHOT:keyframe.png:seed[:end=last.png][:prompt=file.txt]")
     ap.add_argument("--frames", type=int, default=124)
     a = ap.parse_args()
     OUT.mkdir(parents=True, exist_ok=True)
@@ -39,12 +39,16 @@ def main():
     for job in a.job:
         parts = job.split(":")
         shot, kf, seed = parts[0], keyframe(parts[1]), int(parts[2])
-        prompt = Path(parts[3]).read_text(encoding="utf-8") if len(parts) > 3 else CARDS[shot]["h3_prompt"]
-        tag = f"{shot}_{kf.stem}_s{seed}"
+        opts = dict(x.split("=", 1) for x in parts[3:])
+        prompt = Path(opts["prompt"]).read_text(encoding="utf-8") if "prompt" in opts else CARDS[shot]["h3_prompt"]
+        end = keyframe(opts["end"]) if "end" in opts else None
+        tag = f"{shot}_{kf.stem}_s{seed}" + ("_FL" if end else "")
         s = session.get_default_settings("minimax_h3_fl2va_pruned")
         s.update({"model_type": "minimax_h3_fl2va_pruned", "prompt": prompt, "image_prompt_type": "S",
                   "image_start": [str(kf)], "resolution": "832x480", "video_length": a.frames,
                   "num_inference_steps": 20, "seed": seed, "prompt_enhancer": "", "output_filename": tag})
+        if end:
+            s.update({"image_prompt_type": "SE", "image_end": [str(end)]})
         print(f"=== {tag}", flush=True)
         t0 = time.time()
         r = session.run_task(s)
@@ -56,7 +60,7 @@ def main():
                 dst = OUT / f"{tag}.mp4"
                 shutil.copyfile(p, dst)
                 kept.append(str(dst))
-        rec = dict(shot=shot, keyframe=str(kf), seed=seed, frames=a.frames, elapsed_s=round(el, 1), outputs=kept,
+        rec = dict(shot=shot, keyframe=str(kf), end_frame=str(end) if end else None, seed=seed, frames=a.frames, elapsed_s=round(el, 1), outputs=kept,
                    errors=[str(e) for e in (r.errors or [])], prompt=prompt,
                    settings={k: s.get(k) for k in ("resolution", "video_length", "num_inference_steps", "guidance_scale", "sample_solver", "flow_shift")},
                    at=time.strftime("%Y-%m-%dT%H:%M:%S"))

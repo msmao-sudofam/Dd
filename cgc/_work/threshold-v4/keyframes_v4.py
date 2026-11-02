@@ -29,17 +29,26 @@ PROMPTS = {
             "gaskets are seated against clear glass panes in all four quadrants; soft sky and the bright lobby "
             "are visible through the glass. Brushed metal, straight rigid members, natural daylight. No floor, "
             "no door, no handle, no hinge."),
-    "S08": ("The same photograph from the same camera position with the same framing, lens and composition. "
-            "Change only the time of day to blue hour: a deep, even steel-blue evening sky, cooler exterior "
-            "light, warm interior ceiling lights glowing through the glass and reflecting softly on the "
-            "terrazzo. Keep both door leaves exactly where they are, the same stainless pulls, white columns, "
-            "graphite frames, trees and floor. No sun, no sunbeams, no people, no new objects."),
+    "S05": ("The same photograph from the same eye-level camera position. The right-hand door leaf is nearly "
+            "closed, open only about fifteen degrees toward the camera. It is hinged on its RIGHT edge at the jamb, "
+            "where the hinges are visible; its long vertical stainless pull is mounted near its LEFT free edge, "
+            "beside the closed left leaf. One pull per leaf. Same columns, frames, glass, lobby and terrazzo. "
+            "No people."),
+    "S05END": ("The same photograph, identical in every detail and camera position, except that the right-hand "
+               "door leaf has rotated about its right-edge hinges to open roughly fifteen degrees farther toward "
+               "the camera. The leaf stays rigid; its pull handle stays at the same place on the leaf. The left "
+               "leaf, frames, columns, floor, lobby and light do not change."),
+    "S08": ("The same photograph from the same camera position and framing, rephotographed at blue hour about "
+            "twenty minutes after sunset. The sun is gone: no sunlight, no sun flare, no shadows from the sun. The "
+            "sky is an even deep steel blue; trees and columns outside are dim and cool blue. The lobby ceiling "
+            "lights are on and glow warm amber through the glass, casting warm reflections on the terrazzo. "
+            "Keep every door, pull, column and frame exactly where it is. No people."),
 }
 
 
-def render(shot, seed, steps=28, w=1536, h=864):
-    name = "cgc-threshold-ref.png"
-    shutil.copyfile(k3.REF, k3.COMFY / "input" / name)
+def render(shot, seed, steps=28, w=1536, h=864, src=None):
+    name = f"cgc-threshold-v4-src-{shot}.png" if src else "cgc-threshold-ref.png"
+    shutil.copyfile(src or k3.REF, k3.COMFY / "input" / name)
     prefix = f"cgc-threshold-v4/{shot}_seed{seed}"
     t0 = time.time()
     pid = k3.post("/prompt", {"prompt": k3.graph(name, PROMPTS[shot], prefix, seed, w, h, steps),
@@ -59,7 +68,7 @@ def render(shot, seed, steps=28, w=1536, h=864):
         dst.write_bytes(r.read())
     dst.with_suffix(".json").write_text(json.dumps(dict(shot=shot, seed=seed, steps=steps, size=[w, h],
         model="qwen_image_edit_2511_fp8mixed", prompt=PROMPTS[shot], negative=k3.NEG,
-        reference=str(k3.REF), seconds=round(time.time() - t0, 1)), indent=2), encoding="utf-8")
+        reference=str(src or k3.REF), seconds=round(time.time() - t0, 1)), indent=2), encoding="utf-8")
     print(f"{dst.name} {time.time()-t0:.0f}s", flush=True)
 
 
@@ -67,7 +76,8 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--shot", required=True, choices=sorted(PROMPTS))
     ap.add_argument("--seeds", type=int, nargs="+", required=True)
+    ap.add_argument("--src", type=Path, help="edit this image instead of the entrance reference (S05END)")
     a = ap.parse_args()
     OUT.mkdir(exist_ok=True)
     for s in a.seeds:
-        render(a.shot, s)
+        render(a.shot, s, src=a.src)
