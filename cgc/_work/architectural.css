@@ -24,8 +24,8 @@ footer{padding:56px 0 80px;background:var(--fg);color:white}.footer-title{font-s
 @keyframes fade{from{opacity:0}}
 @media(prefers-reduced-motion:no-preference){
 .hero-kicker{animation:fade .9s var(--ease) both}
-.hero-title-row h1{animation:rise 1s var(--ease) both}
-.hero-intro{animation:rise 1s .12s var(--ease) both,fade 1s .12s var(--ease) both}
+#film h1{animation:rise 1s var(--ease) both}
+.hero-row{animation:rise 1s .12s var(--ease) both,fade 1s .12s var(--ease) both}
 .motion .rv{opacity:0;transform:translateY(22px);transition:opacity .8s var(--ease),transform .8s var(--ease);transition-delay:var(--d,0s)}
 .motion .rv.in{opacity:1;transform:none}
 .btn span[aria-hidden],.hero-explore span,.footer-title span{display:inline-block;transition:transform .35s var(--ease)}
@@ -39,3 +39,48 @@ footer{padding:56px 0 80px;background:var(--fg);color:white}.footer-title{font-s
 .film-progress span{transition:width .25s linear}
 }
 @media print{.motion .rv{opacity:1;transform:none}}
+
+/* v5: full-bleed reel hero with monumental type over tinted footage (Exo Ape primary, Andercore tint), dark/white bands and display-scale headings (CLOU). */
+#film{background:var(--fg);color:#fff;padding-bottom:28px}
+#film .film-stage{aspect-ratio:auto;width:100%;max-width:none;height:min(calc(100svh - 60px),56.25vw);min-height:540px;max-height:none;margin:0;background:#0e1519}
+.hero-shade{position:absolute;inset:0;pointer-events:none;background:linear-gradient(to top,rgba(11,16,19,.9) 0%,rgba(11,16,19,.62) 34%,rgba(11,16,19,.28) 58%,rgba(11,16,19,0) 82%),linear-gradient(to bottom,rgba(11,16,19,.3),rgba(11,16,19,0) 20%)}
+.hero-copy{position:absolute;left:0;right:0;bottom:0;padding:0 40px 36px;color:#fff}
+.hero-kicker{display:flex;flex-wrap:wrap;justify-content:flex-start;gap:8px 32px;margin:0 0 20px;text-shadow:0 1px 12px rgba(0,0,0,.45);font:10px/1.5 var(--f-mono);text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.8)}
+#film h1{margin:0 0 28px;color:#fff;font-size:clamp(72px,11.4vw,200px);line-height:.84;letter-spacing:-.06em}
+.hero-row{display:flex;justify-content:space-between;align-items:end;gap:40px;padding-top:22px;border-top:1px solid rgba(255,255,255,.3)}
+.hero-lede{max-width:430px;font-size:17px;line-height:1.45;color:rgba(255,255,255,.9);text-wrap:pretty}
+.hero-actions{display:flex;flex-wrap:wrap;gap:12px}
+.btn.ghost{color:#fff;border-color:rgba(255,255,255,.42);background:rgba(255,255,255,.06)}
+.btn.ghost:hover{border-color:#fff;background:rgba(255,255,255,.14)}
+.hero-image-label{top:20px;right:40px;bottom:auto;left:auto;max-width:none;min-height:0;padding:8px 12px;background:rgba(255,255,255,.92)}
+.film-bottom{color:#fff;padding-top:14px}
+.film-bottom>p,#film-time{color:#a9b8c0}
+.film-progress{background:rgba(255,255,255,.2)}.film-progress span{background:#fff}
+#film-toggle,#film-captions{color:#fff;border-color:rgba(255,255,255,.35)}
+#film-toggle:hover,#film-captions:hover{border-color:#fff}
+.hero-explore{position:static;min-height:44px;padding:10px 6px;background:none;color:#fff;font-size:13px}
+.film-disclosure{color:#a9b8c0}.film-disclosure a{color:#fff}
+.proof{border-top:0}
+h2{font-size:clamp(46px,6.2vw,100px);line-height:.92;letter-spacing:-.055em;font-weight:680}
+@media(max-width:1100px){.hero-row{flex-direction:column;align-items:flex-start;gap:20px}}
+@media(max-width:760px){
+#film{padding-bottom:20px}
+#film .film-stage{height:auto;min-height:0;padding-top:56.25%}
+.cinema-poster,.cinema-video{bottom:auto;height:56.25vw}
+.hero-shade{display:none}
+.hero-copy{position:static;padding:26px 20px 4px}
+.hero-kicker{gap:6px 16px;margin-bottom:16px;font-size:9px}
+.hero-kicker span:first-child{display:none}
+#film h1{margin-bottom:22px;font-size:clamp(58px,16.4vw,96px)}
+.hero-row{align-items:stretch;gap:18px;padding-top:18px}
+.hero-lede{font-size:15px}
+.hero-actions .btn{flex:1 1 auto;justify-content:space-between}
+.hero-image-label{top:10px;right:10px;padding:5px 8px;font-size:8px}
+.hero-explore{display:none}
+}
+.footer-title a{font-size:inherit;margin:0;min-height:0}
+footer .footer-logo{width:300px;max-width:100%;height:auto;background:none;padding:0}
+/* Process steps: oversized numerals as the graphic (CLOU display scale). */
+.process div:before{font:680 clamp(56px,6vw,96px)/.85 var(--f-display);letter-spacing:-.06em;color:var(--fg);margin-bottom:26px}
+.process h3{font-size:clamp(21px,1.8vw,26px)}
+@media(max-width:760px){.process div:before{font-size:52px;margin-bottom:16px}footer .footer-logo{width:240px}}
