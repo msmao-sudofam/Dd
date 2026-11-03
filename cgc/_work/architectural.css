@@ -84,3 +84,7 @@ footer .footer-logo{width:300px;max-width:100%;height:auto;background:none;paddi
 .process div:before{font:680 clamp(56px,6vw,96px)/.85 var(--f-display);letter-spacing:-.06em;color:var(--fg);margin-bottom:26px}
 .process h3{font-size:clamp(21px,1.8vw,26px)}
 @media(max-width:760px){.process div:before{font-size:52px;margin-bottom:16px}footer .footer-logo{width:240px}}
+/* Very wide, short windows: show the whole frame on the dark band instead of cropping it (owner rejected the zoomed crop). */
+@media(min-aspect-ratio:17/9) and (min-width:761px){.cinema-video,.cinema-poster img{object-fit:contain}
+.film-stage{--fw:calc((100svh - 60px) * 16 / 9)}
+.hero-shade{background:linear-gradient(to right,#0e1519 calc(50% - var(--fw) / 2),rgba(14,21,25,0) calc(50% - var(--fw) / 2 + 160px),rgba(14,21,25,0) calc(50% + var(--fw) / 2 - 160px),#0e1519 calc(50% + var(--fw) / 2)),linear-gradient(to top,rgba(11,16,19,.9) 0%,rgba(11,16,19,.62) 34%,rgba(11,16,19,.28) 58%,rgba(11,16,19,0) 82%)}}
