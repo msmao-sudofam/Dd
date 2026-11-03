@@ -17,6 +17,9 @@ text=re.sub(r'<script>.*?</script>',lambda _:'<script>'+script+'</script>',text,
 text=text.replace('<img src="assets/logo.svg" alt="Commercial Glazing Contractors Inc." width="210" height="89">','<img class="footer-logo" src="assets/logo-v3-dark.svg" alt="Commercial Glazing Contractors Inc." width="300" height="40" loading="lazy">')
 text=text.replace('<footer><div class="wrap">','<footer><div class="wrap"><div class="footer-title"><a href="#bid">Send the set.<span aria-hidden="true">↗</span></a></div>')
 text=text.replace('See what glass changes.','The difference<br>is clear.').replace('Matched concept studies. Move the divider to see the change. Original CGC jobsite comparisons are below.','Explore three illustrated glazing concepts. Move the divider to compare. Actual CGC jobsite photographs are available below.').replace('One trade.<br>Every phase.','One trade.<br>All phases.').replace('The work speaks.','From the field.').replace('A clear scope.<br>A clear way forward.','Plans to punch.').replace('Scope. Schedule. Straight answers.','Before you<br>send the plans.')
+# Concept films S1 (scroll scrub before the process) and S2 (walk-in loop above the bid form).
+text=text.replace('<section class="section" id="process">',(root/'_work/build-film.html').read_text(encoding='utf-8')+'<section class="section" id="process">',1)
+text=text.replace('<div class="bid-grid">',(root/'_work/walk-film.html').read_text(encoding='utf-8').strip()+'<div class="bid-grid">',1)
 # Phones (≈370 CSS px at 2-3x) need ~900 px: add a middle size so they stop pulling the 1200+ px original.
 from PIL import Image
 def mid(m):

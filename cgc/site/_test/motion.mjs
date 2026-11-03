@@ -13,9 +13,12 @@ for (const [name, opts] of [['desktop', {viewport: {width: 1440, height: 900}}],
   for (let y = 0; y < await page.evaluate(() => document.body.scrollHeight); y += 400) { await page.mouse.wheel(0, 400); await page.waitForTimeout(60); }
   await page.waitForTimeout(1200);
   const hidden = await page.evaluate(() => [...document.querySelectorAll('.rv:not(.in)')].filter(e => !e.closest('[hidden],details:not([open])') &&getComputedStyle(e).opacity < 0.99).map(e => e.className + ' ' + (e.textContent || '').trim().slice(0, 30)));
-  const ok = hidden.length === 0 && errors.length === 0 && (name !== 'reduced' || total === 0);
+  // Concept films: the S1 scrub ran to the end and S2 loaded, or, with reduced motion, both stay stills.
+  const films = await page.evaluate(() => ({scrub: document.querySelector('#build').classList.contains('scrub'), bar: parseFloat(document.querySelector('.build-bar span').style.width) || 0, walk: !!document.querySelector('.walk-film video').getAttribute('src')}));
+  const filmsOk = name === 'reduced' ? !films.scrub && !films.walk : films.scrub && films.bar > 0 && films.walk;
+  const ok = hidden.length === 0 && errors.length === 0 && filmsOk && (name !== 'reduced' || total === 0);
   failed ||= !ok;
-  console.log(name, ok ? 'PASS' : 'FAIL', {reveal: total, stillHidden: hidden.slice(0, 5), errors: errors.slice(0, 5)});
+  console.log(name, ok ? 'PASS' : 'FAIL', {films, reveal: total, stillHidden: hidden.slice(0, 5), errors: errors.slice(0, 5)});
   await page.close();
 }
 await browser.close();

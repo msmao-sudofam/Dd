@@ -14,7 +14,8 @@ LABELS = {"A": ("Lifted into place", "A crane lifts a curtain-wall unit into an 
           "B": ("Plywood to storefront", "A boarded-up opening becomes a lit glass storefront"),
           "C": ("Lit floor by floor", "Floors light up behind a finished curtain wall"),
           "D": ("The seal", "A pane is set on blocks and sealed into its frame"),
-          "E": ("One clean skin", "A mirror-glass building reflects the moving sky")}
+          "E": ("One clean skin", "A mirror-glass building reflects the moving sky"),
+          "G": ("The entrance", "Glass doors open onto a lit lobby under a glass canopy")}
 
 
 def ff(*a):

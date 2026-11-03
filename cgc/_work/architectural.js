@@ -6,7 +6,7 @@ if(conceptTabs.length){$('.concept-tabs').hidden=false;conceptTabs.forEach((tab,
 // The generated concept film plays muted on load. The poster remains the fallback for reduced motion and failed playback.
 const filmVideo=$('#intro-film'),filmToggle=$('#film-toggle');let filmLoaded=false;
 // The poster <img> stays the only poster download and the LCP candidate. The video is revealed once it has a frame, so it never paints over the poster and never fetches a second poster copy.
-const filmChapters=[[0,'Plywood to storefront'],[4.77,'Lifted into place'],[9.53,'The seal'],[12.63,'Lit floor by floor'],[17.4,'One clean skin']];
+const filmChapters=[[0,'Plywood to storefront'],[4.77,'Lifted into place'],[9.53,'The seal'],[12.63,'Lit floor by floor'],[17.4,'One clean skin'],[22.17,'The entrance']];
 function filmButton(){filmToggle.textContent=filmVideo.paused?'Play concept film':'Pause film';filmToggle.setAttribute('aria-pressed',String(!filmVideo.paused))}
 function loadFilm(){if(filmLoaded)return;filmLoaded=true;filmVideo.src=matchMedia('(max-width:760px)').matches?'assets/film/reel/mobile.mp4':'assets/film/reel/desktop.mp4';filmVideo.load()}
 function startFilm(){if(reduced.matches||document.hidden)return;loadFilm();filmVideo.play().catch(()=>{})}
@@ -26,3 +26,21 @@ if(!reduced.matches&&'IntersectionObserver' in window){
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{rootMargin:'0px 0px -8% 0px'});
 $$('.section-head,.section>.wrap>.eyebrow,.section>.wrap>h2,.section>.wrap>p.muted,.concept-tabs,#concept-panels,.documented-pairs .pairs-grid>*,.service,.gallery-item,.process>div,.tool-grid>*,.bid-grid>*,.faq details,.footer-title').forEach(el=>{el.classList.add('rv');el.style.setProperty('--d',([...el.parentNode.children].indexOf(el)%4)*.07+'s');io.observe(el)});
 document.documentElement.classList.add('motion')}
+
+// S1 scroll film: frames load only once the section is near, and scroll position picks the frame.
+const build=$('#build');
+if(build&&!reduced.matches){
+const canvas=build.querySelector('canvas'),ctx=canvas.getContext('2d'),N=81,small=matchMedia('(max-width:760px)').matches,frames=[],steps=$$('.build-steps li'),bar=build.querySelector('.build-bar span');let shown=-1,loaded=false;
+if(small){canvas.width=960;canvas.height=540}
+const src=i=>'assets/film/build/'+(small?'m':'d')+String(i+1).padStart(3,'0')+'.webp';
+const draw=i=>{for(let j=i;j>=0;j--)if(frames[j]?.complete&&frames[j].naturalWidth){if(j!==shown){ctx.drawImage(frames[j],0,0,canvas.width,canvas.height);shown=j}return}};
+const progress=()=>{const r=build.getBoundingClientRect(),run=r.height-innerHeight;return Math.min(1,Math.max(0,-r.top/(run||1)))};
+const tick=()=>{const p=progress(),i=Math.round(p*(N-1));draw(i);bar.style.width=p*100+'%';steps.forEach((s,k)=>s.classList.toggle('on',p>=k/steps.length-.001))};
+const load=()=>{if(loaded)return;loaded=true;for(let i=0;i<N;i++){const im=new Image();im.decoding='async';im.onload=()=>{if(i===0||Math.abs(i-Math.round(progress()*(N-1)))<3)tick()};im.src=src(i);frames[i]=im}};
+build.classList.add('scrub');
+new IntersectionObserver(es=>{if(es[0].isIntersecting)load()},{rootMargin:'150% 0px'}).observe(build);
+let raf=0;addEventListener('scroll',()=>{if(!raf)raf=requestAnimationFrame(()=>{raf=0;if(loaded)tick()})},{passive:true});addEventListener('resize',tick)}
+
+// S2 walk-in loop: loads and plays only while on screen, never with reduced motion.
+const walk=$('.walk-film video');
+if(walk&&!reduced.matches)new IntersectionObserver(es=>{if(es[0].isIntersecting){if(!walk.src){walk.src=matchMedia('(max-width:760px)').matches?'assets/film/walk/mobile.mp4':'assets/film/walk/desktop.mp4'}walk.play().catch(()=>{})}else walk.pause()},{threshold:.25}).observe(walk);

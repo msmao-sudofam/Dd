@@ -12,7 +12,7 @@ for(const width of [360,390,430,1440]){
   await page.goto(baseURL);await page.evaluate(()=>document.fonts.ready);
   await page.screenshot({path:`_test/results/v4-hero-${width}.png`});
   await page.waitForFunction(()=>{const v=document.querySelector('#intro-film');return !v.paused&&v.readyState>=2&&!!v.currentSrc},null,{timeout:15000});
-  const autoSource=await page.locator('#intro-film').evaluate(v=>v.currentSrc);assert(autoSource.includes(width<761?'portrait.mp4':'wide.mp4'),'Autoplay uses the responsive film source');
+  const autoSource=await page.locator('#intro-film').evaluate(v=>v.currentSrc);assert(autoSource.includes(width<761?'reel/mobile.mp4':'reel/desktop.mp4'),'Autoplay uses the responsive film source');
   assert.match(await page.locator('#hero-image-label').textContent(),/generated visualization/);
   await page.waitForFunction(()=>document.querySelector('#film-toggle').getAttribute('aria-pressed')==='true');
   const tabs=page.getByRole('tab');await tabs.nth(0).focus();await page.keyboard.press('End');
@@ -26,7 +26,7 @@ for(const width of [360,390,430,1440]){
   await page.locator('.film-stage').scrollIntoViewIfNeeded();
   if(await page.locator('#intro-film').evaluate(v=>v.paused))await page.locator('#film-toggle').click();
   await page.waitForFunction(()=>{const v=document.querySelector('#intro-film');return !v.paused&&v.readyState>=2},null,{timeout:15000});
-  const source=await page.locator('#intro-film').evaluate(v=>v.currentSrc);assert(source.includes(width<761?'portrait.mp4':'wide.mp4'),'Resumed film keeps the responsive source');
+  const source=await page.locator('#intro-film').evaluate(v=>v.currentSrc);assert(source.includes(width<761?'reel/mobile.mp4':'reel/desktop.mp4'),'Resumed film keeps the responsive source');
   await page.locator('#film-toggle').click();await page.waitForFunction(()=>document.querySelector('#film-toggle').getAttribute('aria-pressed')==='false');assert(await page.locator('#intro-film').evaluate(v=>v.paused),'Pause control stops the film');
   await page.locator('#film-toggle').click();await page.waitForFunction(()=>{const v=document.querySelector('#intro-film');return !v.paused&&v.readyState>=2&&document.querySelector('#film-toggle').getAttribute('aria-pressed')==='true'});
   await page.locator('#film-captions').click();assert.equal(await page.locator('#film-captions').getAttribute('aria-pressed'),'true');
