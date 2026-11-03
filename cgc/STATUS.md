@@ -3,8 +3,12 @@
 **Hero film: THE THRESHOLD v4 is installed locally** (`site/assets/film/threshold-v4/`), replacing the rejected v3.
 All eight shots were regenerated with MiniMax H3 and individually checked against the strict v4 shot cards; S05 starts
 with the door closed (owner-approved). Details, deviations and evidence: `creative/threshold-v4/DELIVERY.md` and
-`_work/threshold-v4/REVIEW-LOG.md`. Not pushed, not deployed, not promoted; DNS and Deployment Protection untouched.
-The preview URLs below still serve older films.
+`_work/threshold-v4/REVIEW-LOG.md`. Not pushed or promoted; DNS and Deployment Protection untouched.
+
+v4 preview: **https://cgc-glazing-4fkj76htc-sdvsfbs.vercel.app/** (project `cgc-glazing`, target `preview`, Ready,
+deployed with `--project cgc-glazing --target preview`). In an authenticated Chrome session `threshold-v4/desktop.mp4`
+(2,950,946 bytes) returned 200, autoplayed on load and advanced 3.0 s in 3 s; captions file has 8 cues; no v3 references
+remain in the page. Unauthenticated requests still get a 302 to Vercel SSO. The older preview URLs below serve older films.
 
 # CGC status — October 31, 2026
 
