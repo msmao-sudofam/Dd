@@ -4,7 +4,13 @@
 0.4 s fades: B Storefront (20-step) → A The Lift (8-step) → D The Seal (20-step, seed 202, glove shot cut for printed
 glove text) → C Light Up (8-step) → E Reflection (20-step, seed 202, no people on the roof edge). Chapters and captions
 per concept; desktop.mp4 6.6 MB, mobile.mp4 2.5 MB. `film-hero.mjs` passed locally on desktop, phone and reduced motion.
-`lift-a/` kept for rollback. Not deployed; MiniMax commercial license still open.
+`lift-a/` kept for rollback. MiniMax commercial license still open.
+
+Preview: **https://cgc-glazing-d0i9rerpe-sdvsfbs.vercel.app/** (`cgc-glazing`, preview). In authenticated Chrome the reel
+(`reel/desktop.mp4`, 1344x768, 22.58 s) played and advanced 2.0 s in 2.0 s, chapter "01 / Plywood to storefront",
+logo v3 in the header. Not promoted; DNS and Deployment Protection untouched; not pushed.
+Mistake to clean up: a first deploy without `--project` went to the older Vercel project `site` as preview
+https://site-8wvwe5vh7-sdvsfbs.vercel.app (protected, returns 302). Always deploy with `--project cgc-glazing`.
 
 # CGC status — November 2, 2026 (evening)
 
