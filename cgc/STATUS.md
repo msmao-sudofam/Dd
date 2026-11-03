@@ -1,3 +1,14 @@
+# CGC status — November 2, 2026 (evening)
+
+**Hero film now: H3 concept A, "The Lift"** (`site/assets/film/lift-a/`): an 8-step MiniMax H3 draft at native
+1344x768, 5 s, three cuts (crane lift, glaziers guide the unit, sealed facade). Generated concept, labeled as such.
+Concepts and workflow: `creative/hero-concepts-h3/CONCEPTS.md`. Threshold v4 kept in `site/assets/film/threshold-v4/` for rollback.
+
+Preview: **https://cgc-glazing-3phjcr1cz-sdvsfbs.vercel.app/** (project `cgc-glazing`, target `preview`, Ready). In an
+authenticated Chrome session `lift-a/desktop.mp4` (1344x768, 5.17 s) played and advanced 1.5 s in 1.5 s, chapter and
+timer followed the clip, no v4 references remain. Not promoted; DNS and Deployment Protection untouched; not pushed.
+Open item: local H3 output needs a MiniMax commercial license (sold via Comfy) before it goes live.
+
 # CGC status — November 2, 2026
 
 **Hero film: THE THRESHOLD v4 is installed locally** (`site/assets/film/threshold-v4/`), replacing the rejected v3.
