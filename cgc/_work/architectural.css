@@ -42,7 +42,7 @@ footer{padding:56px 0 80px;background:var(--fg);color:white}.footer-title{font-s
 
 /* v5: full-bleed reel hero with monumental type over tinted footage (Exo Ape primary, Andercore tint), dark/white bands and display-scale headings (CLOU). */
 #film{background:var(--fg);color:#fff;padding-bottom:28px}
-#film .film-stage{aspect-ratio:auto;width:100%;max-width:none;height:min(calc(100svh - 60px),56.25vw);min-height:540px;max-height:none;margin:0;background:#0e1519}
+#film .film-stage{aspect-ratio:auto;width:100%;max-width:none;height:min(calc(100svh - 130px),56.25vw);min-height:540px;max-height:none;margin:0;background:#0e1519}
 .hero-shade{position:absolute;inset:0;pointer-events:none;background:linear-gradient(to top,rgba(11,16,19,.9) 0%,rgba(11,16,19,.62) 34%,rgba(11,16,19,.28) 58%,rgba(11,16,19,0) 82%),linear-gradient(to bottom,rgba(11,16,19,.3),rgba(11,16,19,0) 20%)}
 .hero-copy{position:absolute;left:0;right:0;bottom:0;padding:0 40px 36px;color:#fff}
 .hero-kicker{display:flex;flex-wrap:wrap;justify-content:flex-start;gap:8px 32px;margin:0 0 20px;text-shadow:0 1px 12px rgba(0,0,0,.45);font:10px/1.5 var(--f-mono);text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.8)}
@@ -86,7 +86,7 @@ footer .footer-logo{width:300px;max-width:100%;height:auto;background:none;paddi
 @media(max-width:760px){.process div:before{font-size:52px;margin-bottom:16px}footer .footer-logo{width:240px}}
 /* Very wide, short windows: show the whole frame on the dark band instead of cropping it (owner rejected the zoomed crop). */
 @media(min-aspect-ratio:17/9) and (min-width:761px){.cinema-video,.cinema-poster img{object-fit:contain}
-.film-stage{--fw:calc((100svh - 60px) * 16 / 9)}
+.film-stage{--fw:calc((100svh - 130px) * 16 / 9)}
 .hero-shade{background:linear-gradient(to right,#0e1519 calc(50% - var(--fw) / 2),rgba(14,21,25,0) calc(50% - var(--fw) / 2 + 160px),rgba(14,21,25,0) calc(50% + var(--fw) / 2 - 160px),#0e1519 calc(50% + var(--fw) / 2)),linear-gradient(to top,rgba(11,16,19,.9) 0%,rgba(11,16,19,.62) 34%,rgba(11,16,19,.28) 58%,rgba(11,16,19,0) 82%)}}
 /* S1 scroll film: a sticky stage scrubbed by scroll. Without JS or with reduced motion it is one still frame. */
 .build-film{background:var(--fg);color:#fff}
@@ -103,7 +103,7 @@ footer .footer-logo{width:300px;max-width:100%;height:auto;background:none;paddi
 .build-bar{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(255,255,255,.14)}.build-bar span{display:block;height:100%;width:0;background:#fff}
 .build-film.scrub{height:320svh}.build-film.scrub .build-stage{position:sticky;top:60px;height:calc(100svh - 60px)}
 .build-film.scrub .build-canvas{display:block}.build-film.scrub .build-still{visibility:hidden}
-.walk-film{margin:40px 0 0;position:relative}.walk-film img,.walk-film video{display:block;width:100%;height:auto;aspect-ratio:21/9;object-fit:cover}.walk-film video{position:absolute;top:0;left:0}
+.walk-film{grid-column:1;align-self:start;margin:28px 0 0;position:relative}.walk-film img,.walk-film video{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover}.walk-film video{position:absolute;top:0;left:0}
 .walk-film figcaption{margin-top:12px;font:11px/1.6 var(--f-mono);text-transform:uppercase;letter-spacing:.04em;color:var(--mute)}
-@media(max-width:760px){.build-stage{min-height:0;height:auto;aspect-ratio:auto}.build-film:not(.scrub) .build-stage{height:120vw}.build-copy{bottom:84px}.build-steps{gap:14px;font-size:10px;flex-wrap:wrap}.build-shade{background:linear-gradient(to top,rgba(14,21,25,.88),rgba(14,21,25,.2) 60%,rgba(14,21,25,0))}.walk-film img,.walk-film video{aspect-ratio:16/9}}
+@media(max-width:760px){.build-stage,.build-film:not(.scrub) .build-stage{height:auto;min-height:0;display:flex;flex-direction:column;justify-content:center}.build-film.scrub .build-stage{height:calc(100svh - 60px)}.build-still,.build-canvas{position:relative;inset:auto;height:auto;aspect-ratio:16/9}.build-film.scrub .build-still{display:none}.build-shade{display:none}.build-bar{position:relative;order:1}.build-copy{position:static;order:2;margin:0 auto;padding:32px 0 0}.build-film.scrub .build-stage{padding-bottom:56px}.build-steps{gap:14px;font-size:10px;flex-wrap:wrap}}
 .brand{display:flex;align-items:center;min-height:44px}
