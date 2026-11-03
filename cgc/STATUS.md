@@ -42,6 +42,13 @@ Current generated-film preview: **https://cgc-glazing-wtwmodxmt-sdvsfbs.vercel.a
 
 Vercel project `cgc-glazing`, scope `sdvsfbs`, authenticated CLI account `moquinmoreno-1021`. This is a preview; no client domain/DNS or production promotion is included. Deployment Protection remains enabled. The read-only project environment listing found no configured environment variables.
 
+## 2026-11-03 (later): Refero v5 redesign preview
+
+- Preview: https://cgc-glazing-613ceia0z-sdvsfbs.vercel.app/ (preview only; protected; not promoted). Commits 54141b0 and d6d4a84; not pushed.
+- Changes: full-bleed reel hero with the white monumental headline; dark/white section bands; display-scale headings; process numerals; footer fixes. Design lock: `_work/ARCHITECTURAL-LOCK.md` (v5).
+- Verified in Chrome at 2047x983: the whole frame shows (object-fit contain on very wide windows), and the reel advanced 2.0 s in 2 s.
+- Open: `/_vercel/insights/script.js` returns 404. Web Analytics isn't enabled on cgc-glazing; enabling it is the owner's call.
+
 ## 2026-11-03: SEO audit, speed and motion pass
 
 - Preview: https://cgc-glazing-4sm244s4i-sdvsfbs.vercel.app/ (Preview only, protected; not promoted).
