@@ -1,14 +1,14 @@
 Realistic live-action architectural film: practical photography and drone, high dynamic range, light film grain, cool steel-blue and graphite grade with soft white clouds, premium and spacious.
 
-Scene overview: a sunny late morning in Southern California. A finished mirror-glass curtain-wall building reflects a moving sky full of white clouds. A glazier in a white hard hat stands on a rooftop edge beside the facade, checking the last installed panel.
+Scene overview: a sunny late morning in Southern California. A finished mirror-glass curtain-wall building reflects a moving sky full of white clouds.
 
 Storyboard:
-[0s-1.6s] Shot 1: tight shot on one large glass panel filling the frame; white clouds drift across its perfect mirror reflection; a gloved hand runs slowly along the edge of the frame, checking the seal.
-[1.6s-3.4s] Shot 2: the camera pulls straight back away from the glass; the single panel becomes a grid of identical panels, all reflecting the same continuous sky, the glazier small at the top edge.
+[0s-1.6s] Shot 1: tight shot on one large glass panel filling the frame; white clouds drift across its perfect mirror reflection, the reflection perfectly flat and undistorted.
+[1.6s-3.4s] Shot 2: the camera pulls straight back away from the glass; the single panel becomes a grid of identical panels, all reflecting the same continuous sky.
 [3.4s-5s] Shot 3: the pull-back keeps going and rises into a wide aerial shot: the entire glass building stands as one clean mirror of the sky among palm trees and streets, clouds sliding across its faces.
 
 Camera: one continuous, accelerating pull-back and rise after Shot 1; perfectly straight facade lines; no warping.
 
-Audio: high wind, a soft glove brush on aluminum, distant city traffic, and a spacious ambient score that rises and opens up on the wide shot.
+Audio: high wind, distant city traffic, and a spacious ambient score that rises and opens up on the wide shot.
 
-No text, subtitles, logos, brand names or watermarks of any kind; no cartoon or CG look; the reflection stays consistent with the sky.
+No text, subtitles, logos, brand names or watermarks of any kind; no cartoon or CG look; the reflection stays consistent with the sky; no people anywhere on the building or roof edge; every panel stays perfectly flat.

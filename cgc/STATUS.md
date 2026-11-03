@@ -1,3 +1,11 @@
+# CGC status — November 2, 2026 (late)
+
+**Hero film now: five-concept H3 reel** (`site/assets/film/reel/`, built by `_work/hero-h3/build_reel.py`), 22.6 s,
+0.4 s fades: B Storefront (20-step) → A The Lift (8-step) → D The Seal (20-step, seed 202, glove shot cut for printed
+glove text) → C Light Up (8-step) → E Reflection (20-step, seed 202, no people on the roof edge). Chapters and captions
+per concept; desktop.mp4 6.6 MB, mobile.mp4 2.5 MB. `film-hero.mjs` passed locally on desktop, phone and reduced motion.
+`lift-a/` kept for rollback. Not deployed; MiniMax commercial license still open.
+
 # CGC status — November 2, 2026 (evening)
 
 **Hero film now: H3 concept A, "The Lift"** (`site/assets/film/lift-a/`): an 8-step MiniMax H3 draft at native
