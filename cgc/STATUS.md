@@ -2,7 +2,7 @@
 
 ## Concept films preview (2026-11-03)
 
-Preview: https://cgc-glazing-z2ash2bmq-sdvsfbs.vercel.app/ (protected, not promoted).
+Preview: https://cgc-glazing-z2ash2bmq-sdvsfbs.vercel.app/ — promoted to production 2026-11-03 on the owner's go (production deployment cgc-glazing-75uj0c33n, serving cgc-glazing.vercel.app).
 - Hero reel: G (The entrance) added as chapter 6; 27.3 s. Built by `_work/hero-h3/build_reel.py B_… A_… D_…noglove C_… E_…s202_full G_entrance_s101_1344x768_full`.
 - S1 "Floor by floor." scroll section (`#build`, before Process): 81 WebP frames per size in `site/assets/film/build/` (d = 1920x1080 lanczos upscale, ~7.5 MB; m = 960x540, ~4.3 MB), loaded only when near. Reduced motion / no JS: one still frame.
 - S2 walk-in loop in the FAQ's left column (`site/assets/film/walk/`), loads and plays only on screen.
