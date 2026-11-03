@@ -2,6 +2,7 @@ import http from 'node:http';
 import {readFile,stat} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
 import path from 'node:path';
+import {gzipSync} from 'node:zlib';
 import lead from '../api/lead.js';
 import leads from '../api/leads.js';
 import {setStore,memoryStore} from '../api/_lib/store.js';
@@ -23,7 +24,10 @@ const server=http.createServer(async(req,res)=>{
  if(!file.startsWith(root)){res.writeHead(403);return res.end();}
  let info=await stat(file).catch(()=>null);
  if(info?.isDirectory())file=path.join(file,'index.html');
- const body=await readFile(file);res.writeHead(200,{'Content-Type':types[path.extname(file)]||'application/octet-stream'});res.end(body);
+ let body=await readFile(file);const type=types[path.extname(file)]||'application/octet-stream',head={'Content-Type':type};
+ // Compress text like Vercel does, so local Lighthouse numbers match what visitors get.
+ if(/text|json|xml|svg|javascript/.test(type)&&/gzip/.test(req.headers['accept-encoding']||'')){body=gzipSync(body);head['Content-Encoding']='gzip'}
+ res.writeHead(200,head);res.end(body);
  }catch{res.writeHead(404);res.end('Not found');}
 });
 const port=Number(process.env.PORT||4173);
