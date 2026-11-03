@@ -42,6 +42,13 @@ Current generated-film preview: **https://cgc-glazing-wtwmodxmt-sdvsfbs.vercel.a
 
 Vercel project `cgc-glazing`, scope `sdvsfbs`, authenticated CLI account `moquinmoreno-1021`. This is a preview; no client domain/DNS or production promotion is included. Deployment Protection remains enabled. The read-only project environment listing found no configured environment variables.
 
+## 2026-11-03: SEO audit, speed and motion pass
+
+- Preview: https://cgc-glazing-4sm244s4i-sdvsfbs.vercel.app/ (Preview only, protected; not promoted).
+- Lighthouse, local with gzip: every page scores 100 for SEO, accessibility and best practices; desktop performance is 100; home mobile performance is 87-96 (measured while a GPU render was running).
+- Details: `seo-audit/FULL-AUDIT-REPORT.md`. Commits: ce06e83, 507a3f2, ff4a471. Not pushed.
+- Verified on the preview in Chrome: new title, schema (WebSite + GeneralContractor), 116 scroll reveals, 48 middle-size gallery images, /favicon.ico returns 200, 79 KB font, reel plays (advanced 2.0 s in 2 s).
+
 ## Current site
 
 The user's selected white, graphite and steel-blue palette supersedes the original dark/amber interface. The current architectural revision uses bold Archivo display type, a white masthead, a high-quality generated entrance concept, a 60px header, dark ruled scope rows, an asymmetric real-project gallery and a direct bid form. No shadows, rounded cards, 3D scene or scroll trap.
