@@ -6,7 +6,8 @@ glove text) → C Light Up (8-step) → E Reflection (20-step, seed 202, no peop
 per concept; desktop.mp4 6.6 MB, mobile.mp4 2.5 MB. `film-hero.mjs` passed locally on desktop, phone and reduced motion.
 `lift-a/` kept for rollback. MiniMax commercial license still open.
 
-Preview: **https://cgc-glazing-d0i9rerpe-sdvsfbs.vercel.app/** (`cgc-glazing`, preview). In authenticated Chrome the reel
+Preview: **https://cgc-glazing-cin1qdy54-sdvsfbs.vercel.app/** (stage now matches the video shape, no zoomed crop; on a
+2048x983 Chrome window the stage was 1600x806 and the reel advanced 2.0 s in 2.0 s). Earlier: d0i9rerpe (`cgc-glazing`, preview). In authenticated Chrome the reel
 (`reel/desktop.mp4`, 1344x768, 22.58 s) played and advanced 2.0 s in 2.0 s, chapter "01 / Plywood to storefront",
 logo v3 in the header. Not promoted; DNS and Deployment Protection untouched; not pushed.
 Mistake to clean up: a first deploy without `--project` went to the older Vercel project `site` as preview
