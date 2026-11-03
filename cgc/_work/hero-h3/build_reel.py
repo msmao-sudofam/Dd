@@ -1,4 +1,4 @@
-"""Join H3 concept clips into the silent hero reel: site/assets/film/reel/ (mp4 + webm, desktop + phone crop,
+"""Join H3 concept clips into the silent hero reel: site/assets/film/reel/ (mp4 + webm, desktop + smaller phone copy,
 posters, captions) and print the chapter list for architectural.js.
 
   python build_reel.py B_storefront_before_after_s101_1344x768_full A_the_lift_s101_1344x768_pdd8 ...
@@ -43,11 +43,11 @@ def main(names):
     graph = ";".join(chain) + f";[{prev}]format=yuv420p[v]" if chain else "[0:v]format=yuv420p[v]"
     master = OUT / "_master.mp4"
     ff(*sum((["-i", str(c)] for c in clips), []), "-filter_complex", graph, "-map", "[v]", "-an", "-c:v", "libx264", "-crf", "14", "-preset", "slow", str(master))
-    crop = "crop=432:768:456:0"
+    phone = "scale=768:-2"  # phone gets the full frame, smaller; the stage matches the 16:9 shape
     ff("-i", str(master), "-an", "-c:v", "libx264", "-crf", "24", "-preset", "slow", "-movflags", "+faststart", str(OUT / "desktop.mp4"))
     ff("-i", str(master), "-an", "-c:v", "libvpx-vp9", "-crf", "36", "-b:v", "0", "-row-mt", "1", str(OUT / "desktop.webm"))
-    ff("-i", str(master), "-an", "-vf", crop, "-c:v", "libx264", "-crf", "24", "-preset", "slow", "-movflags", "+faststart", str(OUT / "mobile.mp4"))
-    ff("-i", str(master), "-an", "-vf", crop, "-c:v", "libvpx-vp9", "-crf", "36", "-b:v", "0", "-row-mt", "1", str(OUT / "mobile.webm"))
+    ff("-i", str(master), "-an", "-vf", phone, "-c:v", "libx264", "-crf", "24", "-preset", "slow", "-movflags", "+faststart", str(OUT / "mobile.mp4"))
+    ff("-i", str(master), "-an", "-vf", phone, "-c:v", "libvpx-vp9", "-crf", "36", "-b:v", "0", "-row-mt", "1", str(OUT / "mobile.webm"))
     # Poster: the finished state of the first clip, just before the fade.
     pt = f"{durs[0] - FADE - 0.2:.2f}"
     ff("-ss", pt, "-i", str(master), "-frames:v", "1", "-vf", "scale=1600:-2", str(OUT / "_poster.png"))
