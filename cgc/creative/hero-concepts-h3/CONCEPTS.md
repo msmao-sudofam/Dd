@@ -14,6 +14,18 @@ All are **generated concept films, not CGC projects**, and must keep that label 
 | D | The Seal | Macro craft: suction lifter, pane set on blocks, gasket rolled in, rack focus to the street | Loose glass -> sealed, clear view |
 | E | Reflection | One mirror panel pulls back into a whole building reflecting the sky | One panel -> whole skin |
 
+| F | Interior glass | Empty office floor -> a panel set in its channel -> dolly along finished frameless glass office fronts | Chalk lines -> glass offices |
+| G | Entrance | Blue-hour all-glass entrance; doors slide open on the warm lobby; pull back to the facade | Closed -> open, lit |
+
+**Scroll-film candidates** (one continuous take, no cuts, 10 s / 243 frames, so scrolling can scrub them; for an
+`animated-website`-style scroll hero):
+
+| ID | Name | One take |
+| --- | --- | --- |
+| S1 | The Build | Bare concrete frame; glass fills in floor by floor as the drone pushes in; ends a golden glass skin |
+| S2 | Walk In | Sidewalk -> through sliding glass doors -> glass lobby -> tilt up to a skylight |
+| S3 | Rise | Crane-up the curtain wall from the storefront at the base to a golden-hour reveal over the roof |
+
 Prompts: `prompts/*.txt` (official H3 structure: look, scene overview, timed storyboard, camera, audio, negatives).
 
 ## Workflow (ComfyUI native, best practice found 2026-11-02)
