@@ -6,13 +6,13 @@ if(conceptTabs.length){$('.concept-tabs').hidden=false;conceptTabs.forEach((tab,
 // The generated concept film plays muted on load. The poster remains the fallback for reduced motion and failed playback.
 const filmVideo=$('#intro-film'),filmToggle=$('#film-toggle');let filmLoaded=false;
 // The poster <img> stays the only poster download and the LCP candidate. The video is revealed once it has a frame, so it never paints over the poster and never fetches a second poster copy.
-const filmChapters=['The line becomes glass','Follow the reflection','Precision at the joint','Light at the threshold','A door opens','Cross the clear opening','The space beyond','The entrance, resolved'];
+const filmChapters=[[0,'Lifted into place'],[2.25,'Guided into the bay'],[3.92,'The facade, sealed']];
 function filmButton(){filmToggle.textContent=filmVideo.paused?'Play concept film':'Pause film';filmToggle.setAttribute('aria-pressed',String(!filmVideo.paused))}
-function loadFilm(){if(filmLoaded)return;filmLoaded=true;filmVideo.src=matchMedia('(max-width:760px)').matches?'assets/film/threshold-v4/mobile.mp4':'assets/film/threshold-v4/desktop.mp4';filmVideo.load()}
+function loadFilm(){if(filmLoaded)return;filmLoaded=true;filmVideo.src=matchMedia('(max-width:760px)').matches?'assets/film/lift-a/mobile.mp4':'assets/film/lift-a/desktop.mp4';filmVideo.load()}
 function startFilm(){if(reduced.matches||document.hidden)return;loadFilm();filmVideo.play().catch(()=>{})}
 filmToggle.onclick=()=>{if(filmVideo.paused){loadFilm();filmVideo.play().then(filmButton).catch(filmButton)}else{filmVideo.pause();filmButton()}};
 filmVideo.addEventListener('loadeddata',()=>{filmVideo.classList.add('ready','poster-ready');$('#hero-image-label').textContent='Concept film / generated visualization';filmButton()});filmVideo.addEventListener('play',filmButton);filmVideo.addEventListener('pause',filmButton);
-filmVideo.addEventListener('timeupdate',()=>{const t=filmVideo.currentTime,chapter=Math.min(7,Math.floor(t/2));$('#film-chapter').textContent='0'+(chapter+1)+' / '+filmChapters[chapter];$('#film-progress').style.width=(t/16*100)+'%';$('#film-time').textContent='00:'+String(Math.floor(t)).padStart(2,'0')+' / 00:16'});
+filmVideo.addEventListener('timeupdate',()=>{const t=filmVideo.currentTime,d=filmVideo.duration||1,chapter=filmChapters.filter(c=>t>=c[0]).length-1;$('#film-chapter').textContent='0'+(chapter+1)+' / '+filmChapters[chapter][1];$('#film-progress').style.width=(t/d*100)+'%';$('#film-time').textContent='00:'+String(Math.floor(t)).padStart(2,'0')+' / 00:'+String(Math.round(d)).padStart(2,'0')});
 filmVideo.addEventListener('error',()=>{filmVideo.classList.remove('ready','poster-ready');$('#hero-image-label').textContent='Concept film / generated visualization';filmToggle.textContent='Retry concept film'});
 new IntersectionObserver(entries=>{if(!entries[0].isIntersecting){filmVideo.pause();filmButton()}},{threshold:.1}).observe($('.film-stage'));
 document.addEventListener('visibilitychange',()=>{if(document.hidden){filmVideo.pause();filmButton()}});reduced.addEventListener('change',()=>{if(reduced.matches){filmVideo.pause();filmButton()}});

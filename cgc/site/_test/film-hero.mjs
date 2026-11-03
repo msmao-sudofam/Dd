@@ -1,4 +1,4 @@
-// Threshold v4 hero playback smoke test (desktop + phone + reduced motion). Needs `npm run dev:crm` on :4173.
+// Hero film playback smoke test (desktop + phone + reduced motion). Needs `npm run dev:crm` on :4173.
 import {chromium} from 'playwright';
 const URL = 'http://127.0.0.1:4173/';
 const browser = await chromium.launch({channel: 'chrome', headless: true});
@@ -13,7 +13,7 @@ for (const [name, opts] of [['desktop', {viewport: {width: 1440, height: 900}}],
   const s1 = await v.evaluate(e => ({src: e.currentSrc.split('/assets/film/')[1] || '', t: e.currentTime, paused: e.paused, w: e.videoWidth, h: e.videoHeight}));
   await page.waitForTimeout(3000);
   const t2 = await v.evaluate(e => e.currentTime);
-  await page.screenshot({path: `_test/results/film-v4-${name}.png`});
+  await page.screenshot({path: `_test/results/film-hero-${name}.png`});
   const r = {start: s1, advanced: +(t2 - s1.t).toFixed(2), chapter: await page.locator('#film-chapter').textContent(), errors, media: [...new Set(media)]};
   if (name !== 'reduced') {
     await page.locator('#film-toggle').click(); await page.waitForTimeout(500);
