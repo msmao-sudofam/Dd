@@ -17,4 +17,12 @@ filmVideo.addEventListener('error',()=>{filmVideo.classList.remove('ready','post
 new IntersectionObserver(entries=>{if(!entries[0].isIntersecting){filmVideo.pause();filmButton()}},{threshold:.1}).observe($('.film-stage'));
 document.addEventListener('visibilitychange',()=>{if(document.hidden){filmVideo.pause();filmButton()}});reduced.addEventListener('change',()=>{if(reduced.matches){filmVideo.pause();filmButton()}});
 $('#film-captions').onclick=()=>{const t=filmVideo.textTracks[0];if(!t)return;const on=t.mode!=='showing';t.mode=on?'showing':'hidden';$('#film-captions').setAttribute('aria-pressed',String(on));$('#film-captions').setAttribute('aria-label',on?'CC / Hide film captions':'CC / Show film captions')};
-startFilm();
+// Start after load so the 2 MB reel never competes with the poster (the LCP) and first paint.
+const queueFilm=()=>setTimeout(startFilm,600);
+if(document.readyState==='complete')queueFilm();else addEventListener('load',queueFilm,{once:true});
+
+// Scroll reveal. Progressive: elements are only hidden after this runs, and never with reduced motion.
+if(!reduced.matches&&'IntersectionObserver' in window){
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{rootMargin:'0px 0px -8% 0px'});
+$$('.section-head,.section>.wrap>.eyebrow,.section>.wrap>h2,.section>.wrap>p.muted,.concept-tabs,#concept-panels,.documented-pairs .pairs-grid>*,.service,.gallery-item,.process>div,.tool-grid>*,.bid-grid>*,.faq details,.footer-title').forEach(el=>{el.classList.add('rv');el.style.setProperty('--d',([...el.parentNode.children].indexOf(el)%4)*.07+'s');io.observe(el)});
+document.documentElement.classList.add('motion')}

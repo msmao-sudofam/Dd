@@ -18,3 +18,24 @@ footer{padding:56px 0 80px;background:var(--fg);color:white}.footer-title{font-s
 @media(max-width:760px){.hero-intro{display:block}.hero-intro>p:first-child{font-size:18px;line-height:1.25}.hero-intro .muted{font-size:12px;margin:12px 0 16px;max-width:320px}.service ul{display:flex;flex-wrap:wrap;list-style:none;padding:0;gap:4px 14px;font-size:8px;line-height:1.6}.service li+li:before{content:"/ ";color:#bcc9d0}}
 .film-disclosure{padding:10px 0 0;font:10px/1.6 var(--f-mono);text-transform:uppercase;letter-spacing:.03em;color:var(--mute)}.film-disclosure a{color:var(--fg);text-decoration-thickness:1px;text-underline-offset:3px}
 @media(max-width:760px){.film-disclosure{font-size:9px;padding-top:8px;line-height:1.7}}
+/* Motion: one easing, short and calm. Scroll reveals hide nothing unless JS has marked the page (.motion) and motion is allowed. */
+:root{--ease:cubic-bezier(.2,.7,.2,1)}
+@keyframes rise{from{transform:translateY(16px)}}
+@keyframes fade{from{opacity:0}}
+@media(prefers-reduced-motion:no-preference){
+.hero-kicker{animation:fade .9s var(--ease) both}
+.hero-title-row h1{animation:rise 1s var(--ease) both}
+.hero-intro{animation:rise 1s .12s var(--ease) both,fade 1s .12s var(--ease) both}
+.motion .rv{opacity:0;transform:translateY(22px);transition:opacity .8s var(--ease),transform .8s var(--ease);transition-delay:var(--d,0s)}
+.motion .rv.in{opacity:1;transform:none}
+.btn span[aria-hidden],.hero-explore span,.footer-title span{display:inline-block;transition:transform .35s var(--ease)}
+.btn:hover span[aria-hidden],.footer-title a:hover span{transform:translate(3px,-3px)}
+.hero-explore:hover span{transform:translateY(3px)}
+.gallery-item button{overflow:hidden}
+.gallery-item img{transition:transform .8s var(--ease)}
+.gallery-item button:hover img{transform:scale(1.04)}
+.service img{transition:transform .8s var(--ease)}
+.service:hover img{transform:scale(1.04)}
+.film-progress span{transition:width .25s linear}
+}
+@media print{.motion .rv{opacity:1;transform:none}}
