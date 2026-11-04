@@ -1,0 +1,6 @@
+{"name":"CGC Incorporated","colors":{"bg":"#0b0b0c","fg":"#ffffff","accent":null,"muted":"rgba(255,255,255,.55)"},
+ "fonts":{"display":"Geist 600, tracking -0.06em","mono":"Geist Mono (labels, uppercase, +0.04em)"},
+ "font_files":["fonts/geist.woff2","fonts/geist-mono.woff2"],
+ "pace":"one headline per beat, holds 0.4s+, film carries the motion","captions":"none (no VO); on-screen headline only",
+ "logo":"img/mark.svg (rings draw) + img/word.svg","end_card":"rings + wordmark, 'Send plans for a bid.', (714) 650-4185",
+ "music":"none in master; add platform audio on post","sfx":"none","honesty":"every concept clip carries 'Concept film / generated visualization' on screen"}
