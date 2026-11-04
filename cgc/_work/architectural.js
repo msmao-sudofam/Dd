@@ -92,8 +92,10 @@ if(loader&&document.documentElement.classList.contains('loading')){const root=do
  let ready=false,shown=0;Promise.all([document.fonts.ready,new Promise(r=>{const im=$('.cinema-poster img');im.complete?r():(im.addEventListener('load',r,{once:true}),im.addEventListener('error',r,{once:true}))})]).then(()=>ready=true);
  const step=()=>{const el=performance.now()-t0,cap=ready&&el>1300||el>2600?100:Math.min(92,el/1300*92);shown+=(cap-shown)*.12;if(cap===100&&shown>99.4)shown=100;
   count.textContent=String(Math.round(shown)).padStart(3,'0');bar.style.setProperty('--p',shown+'%');
-  if(shown<100)return requestAnimationFrame(step);
-  loader.classList.add('done');root.classList.remove('loading');root.style.overflow='';setTimeout(()=>loader.remove(),1100)};requestAnimationFrame(step)}
+  if(shown<100)return requestAnimationFrame(step);finish()};
+ // Animation frames pause in background tabs; a timer still fires, so the page always unlocks by 3.2 s (matches the CSS fail-safe).
+ let finished=false;const finish=()=>{if(finished)return;finished=true;count.textContent='100';bar.style.setProperty('--p','100%');loader.classList.add('done');root.classList.remove('loading');root.style.overflow='';setTimeout(()=>loader.remove(),1100)};
+ setTimeout(finish,3200);requestAnimationFrame(step)}
 else if(loader)loader.remove();
 
 // Buttons: label roll (duplicated label), dark/light sweep colour, magnetic pull on fine pointers.

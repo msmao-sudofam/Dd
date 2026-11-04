@@ -31,5 +31,11 @@ for (const [name, opts] of [['desktop', {viewport: {width: 1440, height: 900}}],
   console.log(name, ok ? 'PASS' : 'FAIL', {slider, films, reveal: total, stillHidden: hidden.slice(0, 5), errors: errors.slice(0, 5)});
   await page.close();
 }
+// Background tab (no animation frames): the loader must still unlock the page by its 3.2 s fail-safe.
+{ const page = await browser.newPage({viewport: {width: 1440, height: 900}});
+  await page.addInitScript(() => { window.requestAnimationFrame = () => 0; });
+  await page.goto(URL); await page.waitForTimeout(3700);
+  const s = await page.evaluate(() => ({loading: document.documentElement.classList.contains('loading'), overflow: document.documentElement.style.overflow}));
+  const ok = !s.loading && !s.overflow; failed ||= !ok; console.log('background-tab loader', ok ? 'PASS' : 'FAIL', s); await page.close(); }
 await browser.close();
 process.exit(failed ? 1 : 0);
