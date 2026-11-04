@@ -64,5 +64,15 @@ def mid(m):
         im=Image.open(root/f'site/media/{stem}.webp');im.thumbnail((900,10000));im.save(md,'WEBP',quality=78,method=6)
     return f'media/{stem}-thumb.webp 480w, media/{stem}-md.webp 900w, media/{stem}.webp 1200w'
 text=re.sub(r'media/([\w-]+?)-thumb\.webp 480w, media/\1\.webp 1200w',mid,text)
+# Hero strip: licence moves into the film bar (hero html), so the separate proof strip goes; recent jobs move to the field section.
+text,n=re.subn(r'<section class="proof">.*?</section>','',text,count=1,flags=re.S);assert n==1
+old='The photographs and field clips in this gallery are CGC’s actual work.</p>';assert old in text
+text=text.replace(old,'The photographs and field clips in this gallery are CGC’s actual work. Recent: Ono Hawaiian BBQ in Temecula, Haven House shelter, a Meritage Homes office TI with Pacific Tusk Builders, and Esplanade Builders.</p>',1)
+assert 'Put us on the bid list.' in text;text=text.replace('Put us on the bid list.','Get the glass priced.',1)
+# Service rows: photo plus a motion graphic that plays on hover (or when the row is on screen on touch).
+import runpy;FX=runpy.run_path(str(root/'_work/svc_fx.py'))['FX']
+for name,svg in FX.items():
+    m=re.search(r'(<h3>'+re.escape(name)+r'</h3>.*?)(<img src="media/[^"]+-thumb[^>]*>)',text,re.S);assert m,name
+    text=text[:m.start(2)]+'<div class="svc-media">'+m.group(2)+'<svg class="svc-fx" viewBox="0 0 280 170" aria-hidden="true" focusable="false">'+svg+'</svg></div>'+text[m.end(2):]
 path.write_text(text,encoding='utf-8')
 print('Built current architectural revision.')

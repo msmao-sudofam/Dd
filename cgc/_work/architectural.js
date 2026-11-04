@@ -11,9 +11,9 @@ function filmButton(){filmToggle.textContent=filmVideo.paused?'Play concept film
 function loadFilm(){if(filmLoaded)return;filmLoaded=true;filmVideo.src=matchMedia('(max-width:760px)').matches?'assets/film/reel/mobile.mp4':'assets/film/reel/desktop.mp4';filmVideo.load()}
 function startFilm(){if(reduced.matches||document.hidden)return;loadFilm();filmVideo.play().catch(()=>{})}
 filmToggle.onclick=()=>{if(filmVideo.paused){loadFilm();filmVideo.play().then(filmButton).catch(filmButton)}else{filmVideo.pause();filmButton()}};
-filmVideo.addEventListener('loadeddata',()=>{filmVideo.classList.add('ready','poster-ready');$('#hero-image-label').textContent='Concept film / generated visualization';filmButton()});filmVideo.addEventListener('play',filmButton);filmVideo.addEventListener('pause',filmButton);
+filmVideo.addEventListener('loadeddata',()=>{filmVideo.classList.add('ready','poster-ready');filmButton()});filmVideo.addEventListener('play',filmButton);filmVideo.addEventListener('pause',filmButton);
 filmVideo.addEventListener('timeupdate',()=>{const t=filmVideo.currentTime,d=filmVideo.duration||1,chapter=filmChapters.filter(c=>t>=c[0]).length-1;$('#film-chapter').textContent='0'+(chapter+1)+' / '+filmChapters[chapter][1];$('#film-progress').style.width=(t/d*100)+'%';$('#film-time').textContent='00:'+String(Math.floor(t)).padStart(2,'0')+' / 00:'+String(Math.round(d)).padStart(2,'0')});
-filmVideo.addEventListener('error',()=>{filmVideo.classList.remove('ready','poster-ready');$('#hero-image-label').textContent='Concept film / generated visualization';filmToggle.textContent='Retry concept film'});
+filmVideo.addEventListener('error',()=>{filmVideo.classList.remove('ready','poster-ready');filmToggle.textContent='Retry concept film'});
 new IntersectionObserver(entries=>{if(!entries[0].isIntersecting){filmVideo.pause();filmButton()}},{threshold:.1}).observe($('.film-stage'));
 document.addEventListener('visibilitychange',()=>{if(document.hidden){filmVideo.pause();filmButton()}});reduced.addEventListener('change',()=>{if(reduced.matches){filmVideo.pause();filmButton()}});
 $('#film-captions').onclick=()=>{const t=filmVideo.textTracks[0];if(!t)return;const on=t.mode!=='showing';t.mode=on?'showing':'hidden';$('#film-captions').setAttribute('aria-pressed',String(on));$('#film-captions').setAttribute('aria-label',on?'CC / Hide film captions':'CC / Show film captions')};
@@ -122,3 +122,10 @@ if(fine){const c=document.createElement('div');c.id='cursor';c.setAttribute('ari
  document.addEventListener('pointerleave',()=>c.classList.remove('on'));
  (function loop(){cx+=(x-cx)*.2;cy+=(y-cy)*.2;c.style.transform=`translate(${cx}px,${cy}px)`;requestAnimationFrame(loop)})();
  if(window.Lenis){const lenis=new Lenis({autoRaf:true,lerp:.1,anchors:{offset:-92}});window.lenis=lenis}}
+
+// Service motion graphics: hover plays them on mouse devices; on touch they play while the row is on screen.
+{const rows=$$('.service');if(matchMedia('(hover:hover)').matches)rows.forEach(r=>{r.addEventListener('mouseenter',()=>r.classList.add('live'));r.addEventListener('mouseleave',()=>r.classList.remove('live'))});
+else{const o=new IntersectionObserver(es=>es.forEach(e=>e.target.classList.toggle('live',e.isIntersecting)),{threshold:.6});rows.forEach(r=>o.observe(r))}}
+// Process steps scrub with scroll.
+{const steps=$$('.process>div');const f=()=>{const vh=innerHeight;steps.forEach(s=>s.style.setProperty('--p',Math.min(1,Math.max(0,(vh*.95-s.getBoundingClientRect().top)/(vh*.45))).toFixed(3)))};
+if(document.documentElement.classList.contains('motion')&&steps.length){addEventListener('scroll',f,{passive:true});addEventListener('resize',f);f()}}
