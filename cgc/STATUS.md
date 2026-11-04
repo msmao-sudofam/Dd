@@ -1,5 +1,10 @@
 # CGC status — November 2, 2026 (late)
 
+## Wide-window hero: full screen (2026-11-04)
+- Owner saw four mockups (blur, full screen, split, framed: `_work/sheets/hero-wide-options.jpg`) and picked full screen. The blurred film fill (canvas, CSS mask, JS painter) is removed; wide windows now use the default `object-fit:cover`.
+- Checked: all film scenes cropped to 21:9 keep their subject; 1920x1080, 2560x1080 and 390x844 have no errors and no horizontal scroll; 31 API tests and motion checks pass.
+- Production: cgc-glazing-o3nllcqbl on cgcontractorsinc.com. This replaces the "Wide-window hero fill" entry below.
+
 ## CRM, Analytics and logo v3 live (2026-11-04)
 - Production: cgc-glazing-a2d4ty8w7 (`vercel deploy --prod`), on cgcontractorsinc.com.
 - Private Blob store `cgc-leads` connected (prod + preview). `CRM_KEY` set by the owner for production (12+ chars; the first 7-char try was rejected by the length check and replaced).
