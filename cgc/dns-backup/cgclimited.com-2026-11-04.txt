@@ -1,0 +1,12 @@
+cgclimited.com — GoDaddy DNS zone before the Vercel switch (read 2026-11-04, delegate access "Kelly Hernandez")
+Nameservers: ns01/ns02.domaincontrol.com (unchanged). No MX/TXT: this domain carries no email.
+
+A      @               WebsiteBuilder Site (GoDaddy builder: 76.223.105.230, 13.248.243.5)   1 h   <- CHANGED to 216.150.1.1
+NS     @               ns01.domaincontrol.com.                                                1 h
+NS     @               ns02.domaincontrol.com.                                                1 h
+CNAME  www             cgclimited.com.                                                        1 h   <- CHANGED to 6c156ab990ff6db5.vercel-dns-016.com.
+CNAME  _domainconnect  _domainconnect.gd.domaincontrol.com.                                   1 h
+SOA    @               Primary nameserver: ns01.domaincontrol.com.                            1 h
+
+Rollback: set A @ back to "WebsiteBuilder Site" (pick it in GoDaddy's value list) and CNAME www back to cgclimited.com.
+The GoDaddy Website Builder site itself is untouched; only DNS stops pointing at it.

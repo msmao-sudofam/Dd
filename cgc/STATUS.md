@@ -1,5 +1,14 @@
 # CGC status — November 2, 2026 (late)
 
+## Domains live (2026-11-04)
+On the owner's go, GoDaddy DNS (delegate access) now points all three domains at Vercel project `cgc-glazing`.
+Backups with rollback steps: `dns-backup/`.
+- cgcontractorsinc.com (primary): A @ 216.150.1.1 + 216.150.16.1, www CNAME 6c156ab990ff6db5.vercel-dns-016.com. Microsoft 365/Proofpoint MX, TXT, autodiscover untouched (MX re-checked).
+- commercialglazingcontractorsinc.com: A @ 216.150.1.1, www CNAME to the Vercel target.
+- cgclimited.com: A @ 216.150.1.1 (was the GoDaddy Website Builder page; the builder site itself is untouched); www CNAME left as cgclimited.com, which follows the apex.
+- HTTPS certificates issued for all six hostnames. Uncached paths on www and both alternates 308 to https://cgcontractorsinc.com/<path>.
+- Open: pages already in Vercel's CDN cache (/, /license/) still answer 200 on the alternate hosts until the cache is purged or the next deploy. Some GoDaddy nameservers still served the old cgclimited.com apex during the check (propagation).
+
 ## High-end layer, in production (2026-11-03)
 Production: cgc-glazing.vercel.app (deployment cgc-glazing-gw33fl5jo), promoted on the owner's go.
 First-visit loader (unlocks by 3.2 s even in background tabs), animated buttons, footer logo draw, Lenis smooth scroll

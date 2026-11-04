@@ -1,0 +1,33 @@
+cgcontractorsinc.com — GoDaddy DNS zone before the Vercel switch (read 2026-11-03, via delegate access "Kelly Hernandez", Domains Only)
+Nameservers: ns65.domaincontrol.com, ns66.domaincontrol.com (unchanged)
+26 records:
+
+A      @                        173.201.186.36                                   10800 s   <- CHANGED to 216.150.1.1 (+ new A @ 216.150.16.1)
+A      admin                    173.201.186.36                                   10800 s
+A      mail                     173.201.186.36                                   10800 s
+NS     @                        ns65.domaincontrol.com.                          1 h
+NS     @                        ns66.domaincontrol.com.                          1 h
+CNAME  autodiscover             autodiscover.outlook.com.                        1 h
+CNAME  cpanel                   cgcontractorsinc.com.                            10800 s
+CNAME  email                    email.secureserver.net.                          1 h
+CNAME  lyncdiscover             webdir.online.lync.com.                          1 h
+CNAME  msoid                    clientconfig.microsoftonline-p.net.              1 h
+CNAME  pay                      paylinks.commerce.godaddy.com.                   1 h
+CNAME  sip                      sipdir.online.lync.com.                          1 h
+CNAME  webdisk                  cgcontractorsinc.com.                            10800 s
+CNAME  webdisk.admin            cgcontractorsinc.com.                            10800 s
+CNAME  whm                      cgcontractorsinc.com.                            10800 s
+CNAME  www                      cgcontractorsinc.com.                            10800 s   <- CHANGED to 6c156ab990ff6db5.vercel-dns-016.com.
+CNAME  www.admin                cgcontractorsinc.com.                            10800 s
+CNAME  _domainconnect           _domainconnect.gd.domaincontrol.com.             1 h
+SOA    @                        Primary nameserver: ns65.domaincontrol.com.      1 h
+MX     @                        mx1-usg1.ppe-hosted.com. (priority 0)            1 h
+MX     @                        mx2-usg1.ppe-hosted.com. (priority 0)            1 h
+MX     @                        mx3-usg1.ppe-hosted.com. (priority 0)            1 h
+TXT    @                        NETORGFT13506118.onmicrosoft.com                 1 h
+TXT    @                        v=spf1 include:_spf-usg1.ppe-hosted.com include:secureserver.net ~all   1 h
+SRV    _sip._tls.@              100 1 443 sipdir.online.lync.com.                1 h
+SRV    _sipfederationtls._tcp.@ 100 1 5061 sipfed.online.lync.com.               1 h
+
+Rollback: set A @ back to 173.201.186.36 (delete the 216.150.16.1 A) and CNAME www back to cgcontractorsinc.com.
+Email records (MX, TXT, autodiscover, msoid, lync, sip, SRV) are not touched.

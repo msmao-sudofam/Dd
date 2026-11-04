@@ -1,0 +1,11 @@
+commercialglazingcontractorsinc.com — GoDaddy DNS zone before the Vercel switch (read 2026-11-03, delegate access "Kelly Hernandez")
+Nameservers: ns65/ns66.domaincontrol.com (unchanged). No MX/TXT: this domain carries no email.
+
+A      @               Parked (GoDaddy parking: 3.33.130.190, 15.197.148.33)   600 s   <- CHANGED to 216.150.1.1 + 216.150.16.1
+NS     @               ns65.domaincontrol.com.                                  1 h
+NS     @               ns66.domaincontrol.com.                                  1 h
+CNAME  www             commercialglazingcontractorsinc.com.                     1 h     <- CHANGED to 6c156ab990ff6db5.vercel-dns-016.com.
+CNAME  _domainconnect  _domainconnect.gd.domaincontrol.com.                     1 h
+SOA    @               Primary nameserver: ns65.domaincontrol.com.              1 h
+
+Rollback: set A @ back to "Parked" and CNAME www back to commercialglazingcontractorsinc.com.
