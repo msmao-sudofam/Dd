@@ -6,8 +6,9 @@ Backups with rollback steps: `dns-backup/`.
 - cgcontractorsinc.com (primary): A @ 216.150.1.1 + 216.150.16.1, www CNAME 6c156ab990ff6db5.vercel-dns-016.com. Microsoft 365/Proofpoint MX, TXT, autodiscover untouched (MX re-checked).
 - commercialglazingcontractorsinc.com: A @ 216.150.1.1, www CNAME to the Vercel target.
 - cgclimited.com: A @ 216.150.1.1 (was the GoDaddy Website Builder page; the builder site itself is untouched); www CNAME left as cgclimited.com, which follows the apex.
-- HTTPS certificates issued for all six hostnames. Uncached paths on www and both alternates 308 to https://cgcontractorsinc.com/<path>.
-- Open: pages already in Vercel's CDN cache (/, /license/) still answer 200 on the alternate hosts until the cache is purged or the next deploy. Some GoDaddy nameservers still served the old cgclimited.com apex during the check (propagation).
+- HTTPS certificates issued for all six hostnames.
+- Redirects: the vercel.json host rules lost to static files (/ and /license/ answered 200 even after a CDN purge), so the five non-primary hostnames now carry a project-domain redirect (Vercel domain settings, 308 to cgcontractorsinc.com). Checked: /, /license/?ref=dns-check keep path and query on all five; apex answers 200.
+- Some GoDaddy nameservers still served the old cgclimited.com apex during the check (propagation).
 
 ## High-end layer, in production (2026-11-03)
 Production: cgc-glazing.vercel.app (deployment cgc-glazing-gw33fl5jo), promoted on the owner's go.
