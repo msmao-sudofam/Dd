@@ -1,5 +1,13 @@
 # CGC status — November 2, 2026 (late)
 
+## Gallery mono + motion, in production (2026-11-03)
+Production: cgc-glazing.vercel.app (deployment cgc-glazing-mwlyi9gpe), promoted on the owner's go.
+- Gallery mono (Geist/Geist Mono, black-white-graphite), calmer hero, clear header over the film, punchier type.
+- Rebuilt before/after sliders (hover-follow, swipe-only on touch, first-view glide), logo draw-in, live glass pane,
+  process timeline + icons, scope hover loops (real field clips only).
+- Reels: _work/motion (motion-studio), finals in _work/motion/out (not committed).
+
+
 ## Concept films preview (2026-11-03)
 
 Preview: https://cgc-glazing-z2ash2bmq-sdvsfbs.vercel.app/ — promoted to production 2026-11-03 on the owner's go (production deployment cgc-glazing-75uj0c33n, serving cgc-glazing.vercel.app).
