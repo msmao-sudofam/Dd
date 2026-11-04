@@ -5,4 +5,5 @@ _build_legal.py
 node_modules/
 media/*
 !media/cgc_*
+!media/svc-*
 !media/manifest.json

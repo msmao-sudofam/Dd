@@ -1,5 +1,12 @@
 # CGC status — November 2, 2026 (late)
 
+## Trade stills + build film moved, in production (2026-11-04)
+- Production: cgc-glazing-3sztv8q7x on cgcontractorsinc.com. Owner said to publish without a review step for this change.
+- Service rows use generated stills (Krea 2 Turbo on local ComfyUI, `_work/svc-thumbs/render.py`, prompts in `raw/prompts.json`, picks in `sheet.jpg`). Alt text starts "Illustration:", and a note under the list says they are generated and points to From the field.
+- `.vercelignore` now lets `media/svc-*` through (first prod deploy 404'd the stills because only `media/cgc_*` was allowed).
+- "Floor by floor" build film now sits above the From the field gallery (order: install, build, work, process).
+- Checked: 31 API tests, architectural-qa, desktop/phone screenshots; live stills 200, /api/leads 401.
+
 ## Owner feedback pass, in production (2026-11-04)
 - Production: cgc-glazing-osh7zcdj6 on cgcontractorsinc.com (commit ae35694).
 - Hero: concept chip removed. Film bar is one row: licence left, "Concept film" + short not-a-CGC-project note + Pause/CC right, gold progress hairline. Proof strip removed; recent jobs moved into the From the field intro.
