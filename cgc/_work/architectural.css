@@ -86,8 +86,8 @@ footer .footer-logo{width:300px;max-width:100%;height:auto;background:none;paddi
 @media(max-width:760px){.process div:before{font-size:52px;margin-bottom:16px}footer .footer-logo{width:240px}}
 /* Very wide, short windows: show the whole frame on the dark band instead of cropping it (owner rejected the zoomed crop). */
 @media(min-aspect-ratio:17/9) and (min-width:761px){.cinema-video,.cinema-poster img{object-fit:contain}
-.film-stage{--fw:calc((100svh - 130px) * 16 / 9)}
-.hero-shade{background:linear-gradient(to right,#121315 calc(50% - var(--fw) / 2),rgba(18,19,21,0) calc(50% - var(--fw) / 2 + 160px),rgba(18,19,21,0) calc(50% + var(--fw) / 2 - 160px),#121315 calc(50% + var(--fw) / 2)),linear-gradient(to top,rgba(11,16,19,.9) 0%,rgba(11,16,19,.62) 34%,rgba(11,16,19,.28) 58%,rgba(11,16,19,0) 82%)}}
+.film-stage{--fw:calc((100svh - 100px) * 16 / 9)}
+.cinema-video,.cinema-poster img{-webkit-mask-image:linear-gradient(to right,transparent calc(50% - var(--fw) / 2),#000 calc(50% - var(--fw) / 2 + 140px),#000 calc(50% + var(--fw) / 2 - 140px),transparent calc(50% + var(--fw) / 2));mask-image:linear-gradient(to right,transparent calc(50% - var(--fw) / 2),#000 calc(50% - var(--fw) / 2 + 140px),#000 calc(50% + var(--fw) / 2 - 140px),transparent calc(50% + var(--fw) / 2))}}
 /* S1 scroll film: a sticky stage scrubbed by scroll. Without JS or with reduced motion it is one still frame. */
 .build-film{background:var(--fg);color:#fff}
 .build-stage{position:relative;height:min(100svh,56.25vw + 200px);min-height:560px;overflow:hidden}
@@ -270,3 +270,7 @@ footer .footer-logo img.ft-word{background:none;padding:0;width:auto;height:40px
 .motion .ft-mark path[pathLength]{transition:none}
 .motion footer.drawn .ft-mark path[pathLength]{animation:draw 1.2s cubic-bezier(.65,0,.35,1) both}
 .motion footer.drawn .ft-mark g path:nth-child(2){animation-delay:.18s}.motion footer.drawn .ft-mark g path:nth-child(3){animation-delay:.36s}
+
+/* Wide windows: the sides show a blurred, low-res copy of the playing film instead of a flat band. */
+.film-fill{display:none;position:absolute;inset:0;width:100%;height:100%;filter:blur(40px) brightness(.6) saturate(1.1);transform:scale(1.15);pointer-events:none}
+@media(min-aspect-ratio:17/9) and (min-width:761px){.film-fill{display:block}}
