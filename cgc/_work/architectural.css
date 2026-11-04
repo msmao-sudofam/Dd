@@ -119,3 +119,10 @@ footer .footer-logo{width:300px;max-width:100%;height:auto;background:none;paddi
 .service .num,.footer-title span{color:var(--brass)}
 #film .btn.primary,.build-film .btn.primary{background:var(--brass);border-color:var(--brass);color:#1b2329}
 #film .btn.primary:hover{background:#dcb15a;border-color:#dcb15a}
+
+/* v6 header: charcoal, continuous with the dark hero; light logo, brass action. */
+header{background:rgba(27,35,41,.94);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.08);color:#fff}
+header nav a:not(.btn){color:rgba(255,255,255,.78);text-decoration:none}header nav a:not(.btn):hover{color:#fff}
+header .btn.primary{background:var(--brass);border-color:var(--brass);color:#1b2329}header .btn.primary:hover{background:#dcb15a;border-color:#dcb15a}
+header :focus-visible{outline-color:var(--brass)}
+#film .hero-image-label{background:rgba(27,35,41,.62);color:rgba(255,255,255,.86);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
