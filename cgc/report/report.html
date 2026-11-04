@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>CGC Project Record</title>
+<style>
+@font-face{font-family:Geist;src:url(../site/assets/fonts/geist.woff2) format('woff2');font-weight:100 900}
+@font-face{font-family:'Geist Mono';src:url(../site/assets/fonts/geist-mono.woff2) format('woff2');font-weight:100 900}
+@page{size:Letter;margin:0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font:400 10.5pt/1.5 Geist,sans-serif;color:#0b0b0c;background:#fff}
+.page{width:8.5in;min-height:11in;padding:.65in .7in .6in;page-break-after:always;position:relative}
+.page:last-child{page-break-after:auto}
+.dark{background:#0b0b0c;color:#fff}
+.mono{font:500 7.5pt/1.4 'Geist Mono',monospace;text-transform:uppercase;letter-spacing:.06em;color:#666668}
+.dark .mono{color:#9a9a9c}
+h1{font:600 64pt/.9 Geist;letter-spacing:-.06em}
+h2{font:600 30pt/.95 Geist;letter-spacing:-.05em;margin:6px 0 16px}
+h3{font:600 12.5pt/1.2 Geist;letter-spacing:-.02em;margin:16px 0 4px}
+p{margin:0 0 8px;max-width:6.4in}
+ul{margin:4px 0 10px 16px}li{margin:2px 0}
+img{display:block;max-width:100%}
+.shot{border:1px solid #e2e2e2;margin:8px 0 4px}
+.cap{font:400 8pt/1.4 Geist;color:#666668;margin-bottom:10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid #333;margin-top:28px}
+.stats div{padding:14px 12px 14px 0;border-bottom:1px solid #333}
+.stats b{display:block;font:600 26pt/1 Geist;letter-spacing:-.05em}
+.stats span{font:400 8.5pt/1.3 Geist;color:#bdbdbf}
+table{width:100%;border-collapse:collapse;margin:8px 0 12px;font-size:9pt}
+th,td{text-align:left;padding:6px 8px 6px 0;border-bottom:1px solid #e2e2e2;vertical-align:top}
+th{font:500 7.5pt 'Geist Mono',monospace;text-transform:uppercase;letter-spacing:.06em;color:#666668}
+.ok{color:#127a3a;font-weight:600}.todo{color:#9a5b00;font-weight:600}
+.foot{position:absolute;left:.7in;right:.7in;bottom:.35in;display:flex;justify-content:space-between}
+code{font:400 8.5pt 'Geist Mono',monospace;background:#f4f4f4;padding:1px 4px}
+.cover{display:flex;flex-direction:column;justify-content:space-between;min-height:11in}
+.rule{height:1px;background:#e2e2e2;margin:14px 0}
+</style></head><body>
+
+<!-- 1 cover -->
+<section class="page dark cover">
+  <div><img src="../site/assets/logo-v3-dark.svg" style="height:46px" alt="CGC"></div>
+  <div>
+    <p class="mono">Project record · October 30 – November 4, 2026</p>
+    <h1 style="margin:18px 0 22px">We put<br>the glass in.</h1>
+    <p style="font-size:13pt;max-width:5.6in;color:#d6d6d8">The new website, concept films, reels and domain launch for Commercial Glazing Contractors Inc. What we built, how it was checked, and what is still waiting on the owner.</p>
+    <div class="stats">
+      <div><b>Live</b><span>cgcontractorsinc.com, on Vercel</span></div>
+      <div><b>98</b><span>Lighthouse mobile performance (100 accessibility, best practices, SEO)</span></div>
+      <div><b>6</b><span>concept films generated locally</span></div>
+      <div><b>5</b><span>finished 9:16 reels</span></div>
+      <div><b>76</b><span>real CGC job photos in the gallery</span></div>
+      <div><b>3</b><span>domains, 6 hostnames, HTTPS on all</span></div>
+      <div><b>31/31</b><span>API tests passing</span></div>
+      <div><b>87</b><span>small commits, each one reversible</span></div>
+    </div>
+  </div>
+  <p class="mono">Prepared for CGC · Commercial Glazing Contractors Inc. · CSLB C-17 #1109661</p>
+</section>
+
+<!-- 2 summary -->
+<section class="page">
+  <p class="mono">01 / Summary</p>
+  <h2>Where it stands</h2>
+  <p>The site is live at <b>cgcontractorsinc.com</b>. The two older domains, commercialglazingcontractorsinc.com and cgclimited.com, and every www address now forward to it, keeping the page and query. Company email (Microsoft 365 behind Proofpoint) was not touched and still accepts mail.</p>
+  <p>The design is black, white and graphite, set in Geist. A concept film opens the page, real job photos carry the gallery, and the bid form sits one click from anywhere. Every generated image or film is labeled as a concept, never passed off as a finished CGC job.</p>
+  <h3>Done</h3>
+  <ul>
+    <li>Website designed, built, tested and promoted to production four times, each on the owner's go.</li>
+    <li>Six concept films made on the local GPU and cut into a 27-second hero reel, a scroll-built "floor by floor" section and a walk-in loop.</li>
+    <li>Logo v3: interlocking rings and a light wordmark, drawn in on load and in the footer.</li>
+    <li>Motion layer: first-visit loader, animated buttons, smooth scroll, word-by-word headlines, photo reveals, before/after sliders, live glass-weight pane, process timeline.</li>
+    <li>Five reels for Instagram and TikTok: three film reels, a logo sting and a louder 15-second showreel.</li>
+    <li>SEO and speed pass: regional title, structured data, social cards, Lighthouse 98 / 100 / 100 / 100 on mobile.</li>
+    <li>DNS moved from GoDaddy to Vercel for all three domains, with full backups of the old records.</li>
+  </ul>
+  <h3>Waiting on the owner</h3>
+  <ul>
+    <li><b>CRM and bid form storage.</b> Both are built and tested, but they need a Vercel Blob store and a <code>CRM_KEY</code> passphrase before they can save leads. Until then the form shows the phone and email instead.</li>
+    <li><b>MiniMax commercial license</b> for the films made with the H3 model, which are now public.</li>
+    <li><b>Git push</b> of the local history, <b>Web Analytics</b> on or off, and cleanup of a stray Vercel project named <code>site</code>.</li>
+  </ul>
+  <div class="foot"><span class="mono">CGC project record</span><span class="mono">2</span></div>
+</section>
+
+<!-- 3 timeline -->
+<section class="page">
+  <p class="mono">02 / Timeline</p>
+  <h2>Six days, start to launch</h2>
+  <table>
+    <tr><th style="width:1in">Day</th><th>Work</th></tr>
+    <tr><td>Oct 30</td><td>Kept the supplied API, legal pages and brief. Sorted 90 photos and exported project media and field clips. Built the phone-first CRM desk, the first storefront site and the media injector. Hit the mobile speed and accessibility targets. Tested forms, layouts and fallbacks.</td></tr>
+    <tr><td>Oct 31</td><td>Moved SMS consent next to the contact fields. Added generated before/after concept comparisons. Replaced the 3D hero with a cinematic film and the bright architectural design. Hardened the API's JSON and size checks. Rendered the first concept film ("The Reflection Run"), compressed it and kept the poster as the fastest-loading image.</td></tr>
+    <tr><td>Nov 1</td><td>Re-audited the AVIF hero on phones. Wrote the "In Plain Sight" interior-glass concept and a ground-up storefront storyboard.</td></tr>
+    <tr><td>Nov 2</td><td>Rendered "The Threshold" v4 shot by shot against strict shot cards. Tried "The Lift" as a single-concept hero. Explored four logo directions and settled on logo v3. Cut five concepts into one hero reel.</td></tr>
+    <tr><td>Nov 3</td><td>Showed the whole film frame instead of a zoomed crop. SEO audit, lighter fonts, schema and social tags. Full-bleed hero, then the Gallery mono redesign the owner picked. Added films S1, S2 and G, the rebuilt sliders and the motion layer. Rendered the first four reels. Added the loader, animated buttons, smooth scroll and cursor ring. Promoted to production three times.</td></tr>
+    <tr><td>Nov 4</td><td>Pointed all three domains at Vercel, issued HTTPS certificates and set the 308 redirects. Confirmed email still flows. Replaced the grey hero side bands with a blurred film fill and promoted it. Rendered the v2 showreel. Wrote this record.</td></tr>
+  </table>
+  <div class="foot"><span class="mono">CGC project record</span><span class="mono">3</span></div>
+</section>
+
+<!-- 4 site: hero -->
+<section class="page">
+  <p class="mono">03 / The website</p>
+  <h2>Design direction: Gallery mono</h2>
+  <p>Three directions were mocked up; the owner chose <b>Gallery</b>. That means black, white and graphite only, Geist for type, Geist Mono for small labels, and white-on-dark and black-on-light buttons. Brass from the logo was tried and dropped, because the site doesn't need to match the logo's colors. The header is clear over the film and turns into a dark frosted bar once you scroll past it.</p>
+  <img class="shot" src="shots/d-hero.jpg" style="width:88%"><p class="cap">Desktop hero, 1440×900. The film plays muted, with chapters, captions and a pause control. The headline is "We put the glass in."</p>
+  <img class="shot" src="shots/d-wide.jpg" style="width:88%"><p class="cap">Wide windows (2000×870). The film stays whole and sharp, and the sides fill with a blurred copy of it instead of grey bars. Shipped Nov 4.</p>
+  <div class="foot"><span class="mono">CGC project record</span><span class="mono">4</span></div>
+</section>
+
+<!-- 5 site sections -->
+<section class="page">
+  <p class="mono">03 / The website</p>
+  <h2>Page by page</h2>
+  <div class="grid2">
+    <div><img class="shot" src="shots/d-work.jpg"><p class="cap"><b>From the field.</b> 76 real job photos with filters for storefront, interior glass, doors, service and field. Six show first, with "Show more" for the rest.</p></div>
+    <div><img class="shot" src="shots/d-compare.jpg"><p class="cap"><b>The difference is clear.</b> Three illustrated before/after concepts. The divider follows the mouse on desktop and swipes on phones; tapping doesn't make it jump.</p></div>
+    <div><img class="shot" src="shots/d-build.jpg"><p class="cap"><b>Floor by floor.</b> The S1 film plays as you scroll, 81 frames from bare frame to finished glass skin.</p></div>
+    <div><img class="shot" src="shots/d-process.jpg"><p class="cap"><b>Plans to punch.</b> Six steps from plans to turnover. Each line icon draws in as its step comes into view.</p></div>
+    <div><img class="shot" src="shots/d-weight.jpg"><p class="cap"><b>What does the glass weigh?</b> A calculator with a live pane that resizes and shows the glass build-up.</p></div>
+    <div><img class="shot" src="shots/d-bid.jpg"><p class="cap"><b>Put us on the bid list.</b> The bid form fills in a live "bid ticket" as you type. SMS consent is optional and unchecked.</p></div>
+  </div>
+  <div class="foot"><span class="mono">CGC project record</span><span class="mono">5</span></div>
+</section>
+
+<!-- 6 site sections 2 + mobile -->
+<section class="page">
+  <p class="mono">03 / The website</p>
+  <h2>FAQ, footer and phones</h2>
+  <div class="grid2">
+    <div><img class="shot" src="shots/d-faq.jpg"><p class="cap"><b>Before you send the plans.</b> The FAQ, with the S2 walk-in film looping beside it while it's on screen.</p></div>
+    <div><img class="shot" src="shots/d-footer.jpg"><p class="cap"><b>Send the set.</b> The footer: the logo rings draw in, plus contact details, legal pages and the team login.</p></div>
+  </div>
+  <div class="grid3" style="margin-top:6px">
+    <div><img class="shot" src="shots/m-hero.jpg"></div><div><img class="shot" src="shots/m-work.jpg"></div><div><img class="shot" src="shots/m-bid.jpg"></div>
+  </div>
+  <p class="cap">On a phone (390 px wide): the hero, the gallery and the bid form. No sideways scrolling, every tap target is at least 44 px, and form fields are at least 16 px so iPhones don't zoom in.</p>
+  <div class="foot"><span class="mono">CGC project record</span><span class="mono">6</span></div>
+</section>
+
+<!-- 7 motion -->
+<section class="page">
+  <p class="mono">04 / Motion and interaction</p>
+  <h2>The high-end layer</h2>
+  <table>
+    <tr><th style="width:1.8in">Feature</th><th>What it does</th></tr>
+    <tr><td>First-visit loader</td><td>The logo rings draw in with a counter on the first visit only. It always lets go of the page by 3.2 seconds, even in a background tab.</td></tr>
+    <tr><td>Animated buttons</td><td>The label rolls, a sweep passes and the arrow flies out on hover. Buttons lean slightly toward the cursor on desktop.</td></tr>
+    <tr><td>Logo draw-in</td><td>The rings draw stroke by stroke and the wordmark wipes in, in the header, the loader and the footer.</td></tr>
+    <tr><td>Smooth scroll</td><td>Lenis smooth scrolling on desktop only. Phones keep normal scrolling.</td></tr>
+    <tr><td>Headlines</td><td>Section titles rise in word by word behind a mask.</td></tr>
+    <tr><td>Photo reveals</td><td>Gallery photos open with a clip reveal as they scroll in.</td></tr>
+    <tr><td>Progress line and cursor ring</td><td>A thin line at the top shows how far down the page you are. A ring follows the cursor on desktop.</td></tr>
+    <tr><td>Scopes marquee</td><td>Storefront / Curtain wall / Interior glass / Office fronts / Entrances / Doors / Service and repair, scrolling past.</td></tr>
+    <tr><td>Scope hover loops</td><td>Hovering a scope row plays a real field clip, never a generated one.</td></tr>
+    <tr><td>Before/after sliders</td><td>Rebuilt: they follow the mouse on hover, swipe on touch and glide once the first time they're seen.</td></tr>
+    <tr><td>Live glass pane</td><td>The calculator's pane resizes to scale and shows the glass layers.</td></tr>
+    <tr><td>Wide-window film fill</td><td>On very wide screens a 48×27 copy of the film, blurred, fills the sides. The sharp frame's edges are faded into it.</td></tr>
+  </table>
+  <p>Visitors who ask for reduced motion get still images and no loader, smooth scroll or film. Without JavaScript the page still works, with the poster image in place of the film.</p>
+  <div class="foot"><span class="mono">CGC project record</span><span class="mono">7</span></div>
+</section>
+
+<!-- 8 films -->
+<section class="page">
+  <p class="mono">05 / Concept films</p>
+  <h2>Six films, made on the local GPU</h2>
+  <p>Every film was generated on MOMOBEAST (WanGP with Wan 2.2, then MiniMax H3), checked shot by shot and labeled "Concept film / generated visualization" on the page. Real CGC work stays in the photo gallery.</p>
+  <img class="shot" src="img/hero-reel.jpg"><p class="cap">The hero reel, 27.3 s with 0.4 s fades between six chapters: Plywood to storefront · Lifted into place · The seal · Lit floor by floor · One clean skin · The entrance. Desktop and phone versions, both MP4 and WebM, with captions.</p>
+  <img class="shot" src="img/s1.jpg"><p class="cap">S1, "Floor by floor": a one-take film of a bare frame becoming a glass building, played by scrolling. It uses 81 WebP frames per size and loads only when you get near it.</p>
+  <h3>Along the way</h3>
+  <ul>
+    <li><b>The Reflection Run</b> and <b>The Threshold</b> v3 and v4 were earlier hero films. They're kept for rollback.</li>
+    <li><b>The Lift</b> was tried as a single-concept hero, then folded into the reel.</li>
+    <li>Shots were cut for showing printed glove text, for having people on a roof edge, and for door leaves that wouldn't stay still.</li>
+  </ul>
+  <div class="foot"><span class="mono">CGC project record</span><span class="mono">8</span></div>
+</section>
+
+<!-- 9 reels -->
+<section class="page">
+  <p class="mono">06 / Reels</p>
+  <h2>Five reels, 9:16</h2>
+  <p>Built as code with the motion-studio pipeline: every frame is calculated from the time, then rendered at 1080×1920, 30 fps. There's no voiceover or music in the masters; add platform audio when posting. Every film shot carries the concept-film label.</p>
+  <img class="shot" src="img/reels-v1.jpg" style="max-height:2.55in;width:auto"><p class="cap">v1 reels: S1 "Floor by floor." (12.4 s), S2 "Walk right in. / Storefront to lobby." (12.4 s), G "Make an entrance." (7.5 s) and the logo sting "We put the glass in." (4.2 s). Each ends on the logo, "Send plans for a bid." and the phone number with CSLB #.</p>
+  <img class="shot" src="../_work/motion/out/final-showreel.jpg" style="max-height:2.5in;width:auto"><p class="cap">v2 showreel, 15 s, the louder cut. The steps: "GLASS." slams in → a white flash → S1 full-bleed with the scopes flipping past → three films stacked as sliding strips → a flash → G opens through an expanding circle → S2 whips in with a fast push → the end card.</p>
+  <table>
+    <tr><th>File</th><th>Length</th><th>Size</th></tr>
+    <tr><td>CGC-s1-v1-9x16.mp4</td><td>12.4 s</td><td>18 MB</td></tr>
+    <tr><td>CGC-s2-v1-9x16.mp4</td><td>12.4 s</td><td>18 MB</td></tr>
+    <tr><td>CGC-g-v1-9x16.mp4</td><td>7.5 s</td><td>8 MB</td></tr>
+    <tr><td>CGC-sting-v1-9x16.mp4</td><td>4.2 s</td><td>2 MB</td></tr>
+    <tr><td>CGC-showreel-v2-9x16.mp4</td><td>15.0 s</td><td>37 MB</td></tr>
+  </table>
+  <div class="foot"><span class="mono">CGC project record</span><span class="mono">9</span></div>
+</section>
+
+<!-- 10 logo + seo -->
+<section class="page">
+  <p class="mono">07 / Brand, search and speed</p>
+  <h2>Logo v3</h2>
+  <img class="shot" src="img/logo-v3.jpg"><p class="cap">Logo v3: three interlocking rings forming CGC, with "Commercial Glazing / Contractors Inc." set light and spaced. It comes in light and dark versions, as the mark alone or as the wordmark alone. It was chosen over v2 (woven rings) and four other directions.</p>
+  <h3>Search and speed</h3>
+  <table>
+    <tr><th>Check</th><th>Result</th></tr>
+    <tr><td>Lighthouse, mobile</td><td>98 performance · 100 accessibility · 100 best practices · 100 SEO</td></tr>
+    <tr><td>Lighthouse, desktop</td><td>99 · 100 · 100 · 100</td></tr>
+    <tr><td>Accessibility (axe) at 360, 390, 430 and 1440 px</td><td>0 violations, 0 overflow, 0 console errors</td></tr>
+    <tr><td>Structured data</td><td>WebSite and GeneralContractor, with a regional title and description</td></tr>
+    <tr><td>Social cards</td><td>Open Graph and Twitter tags on every page, including the legal pages</td></tr>
+    <tr><td>Weight</td><td>Self-hosted fonts (79 KB), AVIF posters, a 900 px gallery size for phones, gzip</td></tr>
+  </table>
+  <div class="foot"><span class="mono">CGC project record</span><span class="mono">10</span></div>
+</section>
+
+<!-- 11 domains -->
+<section class="page">
+  <p class="mono">08 / Domains and email</p>
+  <h2>Launch on cgcontractorsinc.com</h2>
+  <p>DNS stays at GoDaddy, in CGC's account, reached through delegate access. Only the website records changed; the mail records were left alone. Every original record was saved before the change, with steps to roll it back (<code>dns-backup/</code>).</p>
+  <table>
+    <tr><th>Hostname</th><th>Points to</th><th>HTTPS</th><th>Behavior</th></tr>
+    <tr><td>cgcontractorsinc.com</td><td>216.150.1.1, 216.150.16.1</td><td class="ok">Yes</td><td>Serves the site</td></tr>
+    <tr><td>www.cgcontractorsinc.com</td><td>Vercel CNAME</td><td class="ok">Yes</td><td>308 → cgcontractorsinc.com</td></tr>
+    <tr><td>commercialglazingcontractorsinc.com</td><td>216.150.1.1 (was parked)</td><td class="ok">Yes</td><td>308 → cgcontractorsinc.com</td></tr>
+    <tr><td>www.commercialglazingcontractorsinc.com</td><td>Vercel CNAME</td><td class="ok">Yes</td><td>308 → cgcontractorsinc.com</td></tr>
+    <tr><td>cgclimited.com</td><td>216.150.1.1 (was a GoDaddy builder page)</td><td class="ok">Yes</td><td>308 → cgcontractorsinc.com</td></tr>
+    <tr><td>www.cgclimited.com</td><td>follows cgclimited.com</td><td class="ok">Yes</td><td>308 → cgcontractorsinc.com</td></tr>
+  </table>
+  <p>Redirects keep the path and query: <code>cgclimited.com/license/?ref=x</code> lands on <code>cgcontractorsinc.com/license/?ref=x</code>. They're set on each domain in Vercel, because rules in the site's own config lost out to cached pages.</p>
+  <h3>Email</h3>
+  <p>Microsoft 365 behind Proofpoint is unchanged. That covers the three MX records, the SPF and Microsoft TXT records, and autodiscover, Lync and SIP. Both Proofpoint servers accepted mail for <code>postmaster@cgcontractorsinc.com</code> after the switch. The check was a handshake only; no message was sent.</p>
+  <p>cgcincorporated.com belongs to a different company (Commercial Glazing Concepts, Bay Area) and was left alone.</p>
+  <div class="foot"><span class="mono">CGC project record</span><span class="mono">11</span></div>
+</section>
+
+<!-- 12 crm + open -->
+<section class="page">
+  <p class="mono">09 / CRM and open items</p>
+  <h2>What the owner still decides</h2>
+  <h3>CRM and the bid form</h3>
+  <p>The CRM is at <b>cgcontractorsinc.com/crm</b>. It's built for phones and covers leads and jobs, stages, notes, CSV import and archiving, with 31 API tests passing. It needs two things before it opens:</p>
+  <ul>
+    <li>A <b>private Vercel Blob store</b> connected to the <code>cgc-glazing</code> project, where leads are saved.</li>
+    <li>A <b><code>CRM_KEY</code></b> environment variable, at least 12 characters. That's the passphrase typed at /crm.</li>
+  </ul>
+  <p>Then redeploy, send a test lead marked as a test, and check it shows up in /crm. Email alerts are optional and need <code>RESEND_API_KEY</code>, <code>LEAD_NOTIFY_TO</code> and <code>REPORT_FROM</code>. Until the store exists, the bid form tells visitors to call or email, and gives a prefilled email link.</p>
+  <h3>Open items</h3>
+  <table>
+    <tr><th>Item</th><th>Status</th></tr>
+    <tr><td>Blob store and CRM_KEY</td><td class="todo">Owner creates them (they're credentials)</td></tr>
+    <tr><td>MiniMax commercial license for the H3 films now public</td><td class="todo">Owner to buy (sold through Comfy)</td></tr>
+    <tr><td>Push the local git history (about 87 commits)</td><td class="todo">Waiting on the owner's go</td></tr>
+    <tr><td>Vercel Web Analytics</td><td class="todo">Off. Owner decides.</td></tr>
+    <tr><td>Stray Vercel project <code>site</code> from an early deploy</td><td class="todo">Owner approves deleting it</td></tr>
+    <tr><td>Old protection-bypass token from an early <code>vercel curl</code></td><td class="todo">Owner reviews and revokes it</td></tr>
+    <tr><td>Logo v3 on the favicon and in the CRM</td><td>Next small task</td></tr>
+    <tr><td>Legal checklist (<code>site/LEGAL-NOTES.md</code>), Google Business Profile, review QR</td><td>Owner's details needed</td></tr>
+  </table>
+  <div class="foot"><span class="mono">CGC project record</span><span class="mono">12</span></div>
+</section>
+
+<!-- 13 files -->
+<section class="page">
+  <p class="mono">10 / Files and rebuilds</p>
+  <h2>Where everything lives</h2>
+  <table>
+    <tr><th style="width:2.6in">Path (under <code>Projects/Dd/cgc</code>)</th><th>What</th></tr>
+    <tr><td><code>site/</code></td><td>The deployed site: index, legal pages, CRM, API, assets</td></tr>
+    <tr><td><code>_work/architectural.py</code></td><td>Rebuilds <code>site/index.html</code> from the parts below. Run <code>python cgc/_work/architectural.py</code>.</td></tr>
+    <tr><td><code>_work/architectural.css / .js / -hero.html</code></td><td>Design, motion and hero markup</td></tr>
+    <tr><td><code>_work/hero-h3/build_reel.py</code></td><td>Cuts concept clips into the hero reel</td></tr>
+    <tr><td><code>_work/motion/</code></td><td>Reel scenes (s1, s2, g, sting, showreel), the renderer, and finals in <code>out/</code></td></tr>
+    <tr><td><code>dns-backup/</code></td><td>Original GoDaddy records and rollback steps</td></tr>
+    <tr><td><code>STATUS.md</code></td><td>Running log of every release</td></tr>
+    <tr><td><code>seo-audit/</code></td><td>Full SEO audit report and Lighthouse runs</td></tr>
+    <tr><td><code>site/_test/</code></td><td><code>npm test</code> (API), plus motion, QA, film-hero and functional browser tests</td></tr>
+  </table>
+  <h3>Shipping a change</h3>
+  <ul>
+    <li>Edit the files in <code>_work/</code>, rebuild with <code>architectural.py</code>, then run <code>npm test</code> and <code>node motion.mjs</code> in <code>site/_test</code>.</li>
+    <li>From <code>cgc/site</code>, run <code>vercel deploy --project cgc-glazing --target preview</code>. Always name the project.</li>
+    <li>Check the preview, then <code>vercel promote &lt;preview-url&gt;</code>. Only on the owner's go.</li>
+  </ul>
+  <div class="rule"></div>
+  <p class="mono">Prepared November 4, 2026. Production deployment cgc-glazing-n3ycqq5n1.</p>
+  <div class="foot"><span class="mono">CGC project record</span><span class="mono">13</span></div>
+</section>
+</body></html>

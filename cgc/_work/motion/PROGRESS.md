@@ -17,6 +17,7 @@ Assumptions (made without a brief round, per M Mo "do all of the motion graphics
 - [x] Script + storyboard v1 (above), preview contact sheets out/CGC-*-v1-9x16.jpg
 - [x] Preview approved by M Mo (2026-11-03, "Render them")
 - [x] Final render + silent AAC track: out/CGC-{s1,s2,g,sting}-v1-9x16.mp4 — 1080x1920@30, 12.4/12.4/7.5/4.2 s, 18/18/8/2 MB; contact sheet out/finals.jpg checked
-- [ ] Spanish versions (re-time, ~20% longer lines)
+- Spanish versions: not wanted (owner, 2026-11-04).
+- [x] Showreel v2 (the louder cut, 15 s): showreel.html → out/CGC-showreel-v2-9x16.mp4, 1080x1920@30, 37 MB; sheet out/final-showreel.jpg checked
 Assets & licenses: concept films generated locally (WanGP); Geist/Geist Mono (SIL OFL); CGC logo (client).
-Next step: Spanish versions if M Mo wants them; add platform audio when posting.
+Next step: add platform audio when posting.
