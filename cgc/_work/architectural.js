@@ -122,11 +122,3 @@ if(fine){const c=document.createElement('div');c.id='cursor';c.setAttribute('ari
  document.addEventListener('pointerleave',()=>c.classList.remove('on'));
  (function loop(){cx+=(x-cx)*.2;cy+=(y-cy)*.2;c.style.transform=`translate(${cx}px,${cy}px)`;requestAnimationFrame(loop)})();
  if(window.Lenis){const lenis=new Lenis({autoRaf:true,lerp:.1,anchors:{offset:-92}});window.lenis=lenis}}
-
-// Wide windows: paint each film frame into a 48x27 canvas; CSS blurs and stretches it across the sides.
-{const fill=$('.film-fill'),fx=fill&&fill.getContext('2d'),wide=matchMedia('(min-aspect-ratio:17/9) and (min-width:761px)'),poster=$('.cinema-poster img');
-const paint=src=>{if(wide.matches)try{fx.drawImage(src,0,0,48,27)}catch(e){}};
-if(fx){poster.complete?paint(poster):poster.addEventListener('load',()=>paint(poster),{once:true});
-if('requestVideoFrameCallback' in HTMLVideoElement.prototype){const f=()=>{paint(filmVideo);filmVideo.requestVideoFrameCallback(f)};filmVideo.requestVideoFrameCallback(f)}
-else filmVideo.addEventListener('timeupdate',()=>paint(filmVideo));
-wide.addEventListener('change',()=>paint(filmVideo.readyState>1?filmVideo:poster))}}
