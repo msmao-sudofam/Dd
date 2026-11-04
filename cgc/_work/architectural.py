@@ -22,6 +22,7 @@ text=text.replace('<section class="section" id="process">',(root/'_work/build-fi
 text=text.replace('<div class="faq">',(root/'_work/walk-film.html').read_text(encoding='utf-8').strip()+'<div class="faq">',1)
 # Charcoal header: light logo and mark, and the browser chrome matches.
 text=text.replace('srcset="assets/logo-v3-mark.svg"><img src="assets/logo-v3.svg"','srcset="assets/logo-v3-mark-dark.svg"><img src="assets/logo-v3-dark.svg"',1).replace('<meta name="theme-color" content="#ffffff">','<meta name="theme-color" content="#1b2329">')
+text=text.replace('href="/assets/fonts/archivo.woff2"','href="/assets/fonts/geist.woff2"')
 # Phones (≈370 CSS px at 2-3x) need ~900 px: add a middle size so they stop pulling the 1200+ px original.
 from PIL import Image
 def mid(m):
