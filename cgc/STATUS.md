@@ -1,5 +1,10 @@
 # CGC status — November 2, 2026 (late)
 
+## Wide-window hero fill, in production (2026-11-04)
+Production: cgcontractorsinc.com (deployment cgc-glazing-n3ycqq5n1, promoted from preview 6b0o96119 on the owner's go).
+On very wide windows the hero sides show a blurred 48x27 canvas copy of the playing film instead of a grey band; the sharp frame's edges are feathered with a mask. 31/31 tests and the motion test pass.
+Email: Proofpoint mx1/mx2 accepted RCPT for postmaster@cgcontractorsinc.com (handshake only, nothing sent).
+
 ## Domains live (2026-11-04)
 On the owner's go, GoDaddy DNS (delegate access) now points all three domains at Vercel project `cgc-glazing`.
 Backups with rollback steps: `dns-backup/`.
