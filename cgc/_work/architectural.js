@@ -44,3 +44,42 @@ let raf=0;addEventListener('scroll',()=>{if(!raf)raf=requestAnimationFrame(()=>{
 // S2 walk-in loop: loads and plays only while on screen, never with reduced motion.
 const walk=$('.walk-film video');
 if(walk&&!reduced.matches)new IntersectionObserver(es=>{if(es[0].isIntersecting){if(!walk.src){walk.src=matchMedia('(max-width:760px)').matches?'assets/film/walk/mobile.mp4':'assets/film/walk/desktop.mp4'}walk.play().catch(()=>{})}else walk.pause()},{threshold:.25}).observe(walk);
+
+// Clear header while the hero film is behind it; frosted once the page scrolls past.
+const header=$('header');new IntersectionObserver(es=>header.classList.toggle('clear',es[0].isIntersecting),{rootMargin:'-60px 0px 0px 0px',threshold:0}).observe($('.film-stage'));
+
+// Before/after sliders: mouse hover follows, touch drags only on a sideways swipe (vertical scrolling passes through),
+// eased toward the target every frame, and one glide on first view so visitors see it moves.
+$$('.pair').forEach(pair=>{const cmp=pair.querySelector('.comparison'),input=pair.querySelector('input');if(!cmp||!input)return;
+const tags=cmp.querySelectorAll('.tag');let pos=+input.value,target=pos,raf=0,touch=null,glided=false,glideT0=0;
+const hint=document.createElement('p');hint.className='compare-hint';hint.setAttribute('aria-hidden','true');hint.textContent=matchMedia('(hover:hover)').matches?'Move across the image to compare':'Swipe across the image to compare';cmp.after(hint);
+const paint=()=>{cmp.style.setProperty('--split',pos+'%');input.value=Math.round(pos);if(tags[0])tags[0].style.opacity=Math.min(1,pos/18);if(tags[1])tags[1].style.opacity=Math.min(1,(100-pos)/18)};
+const loop=()=>{if(glideT0){const k=Math.min(1,(performance.now()-glideT0)/2200);target=50+Math.sin(k*Math.PI*2)*24*(1-k*.3);if(k>=1){glideT0=0;target=50}}
+pos+=(target-pos)*.18;paint();raf=Math.abs(target-pos)>.05||glideT0?requestAnimationFrame(loop):0};
+const go=v=>{target=Math.max(0,Math.min(100,v));if(!raf)raf=requestAnimationFrame(loop)};
+const at=e=>{const r=cmp.getBoundingClientRect();return (e.clientX-r.left)/r.width*100};
+cmp.addEventListener('pointermove',e=>{if(e.pointerType==='mouse'){glideT0=0;go(at(e));return}
+if(!touch)return;const dx=e.clientX-touch.x,dy=e.clientY-touch.y;
+if(!touch.drag){if(Math.abs(dy)>10&&Math.abs(dy)>Math.abs(dx)){touch=null;return}if(Math.abs(dx)>8){touch.drag=true;cmp.setPointerCapture(e.pointerId);cmp.classList.add('dragging')}}
+if(touch&&touch.drag){glideT0=0;go(touch.start+dx/cmp.getBoundingClientRect().width*100)}});
+cmp.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse')touch={x:e.clientX,y:e.clientY,start:pos,drag:false}});
+const end=()=>{touch=null;cmp.classList.remove('dragging')};cmp.addEventListener('pointerup',end);cmp.addEventListener('pointercancel',end);
+input.addEventListener('input',()=>{glideT0=0;target=pos=+input.value;paint()});paint();
+if(!reduced.matches)new IntersectionObserver((es,o)=>{if(es[0].isIntersecting&&!glided&&!pair.hidden){glided=true;glideT0=performance.now();go(50);o.disconnect()}},{threshold:.6}).observe(cmp)});
+
+// Live glass pane: the drawing follows the calculator inputs.
+const pane=$('.pane');if(pane){const dw=$('.dim-w'),dh=$('.dim-h'),layers=$('.layers'),ll=$('.layers-label');
+const fmt=i=>{const f=Math.floor(i/12),r=+(i%12).toFixed(2);return f+'′'+(r?'-'+r+'″':'')};
+const draw=()=>{const w=+$('#wf').value*12+ +$('#wi').value,h=+$('#hf').value*12+ +$('#hi').value;if(!(w>0&&h>0))return;
+const box=pane.parentNode,bw=box.clientWidth-36,bh=box.clientHeight-46,sc=Math.min(bw/w,bh/h);pane.style.setProperty('--pw',Math.max(6,w*sc)+'px');pane.style.setProperty('--ph',Math.max(6,h*sc)+'px');
+dw.textContent=fmt(w);dh.textContent=fmt(h);const m=$('#makeup'),igu=m.selectedIndex===3,t=+m.value;
+layers.innerHTML=igu?'<i style="width:8px"></i><i class="air" style="width:16px"></i><i style="width:8px"></i>':`<i style="width:${8*t}px"></i>`;
+ll.textContent=m.options[m.selectedIndex].text.split(':')[0].replace(' monolithic','')};
+$('#weight-form').addEventListener('input',draw);addEventListener('resize',draw);draw()}
+
+// Scope hover loops: real CGC field clips only, desktop hover, loaded on first hover.
+const LOOPS={'Interior glass & office fronts':'frameless-glass-offices-walkthrough','Entrances & doors':'interior-glass-black-frame-walkthrough','Service & repair':'glass-on-rack-truck'};
+if(matchMedia('(hover:hover)').matches&&!reduced.matches)$$('.service').forEach(s=>{const name=s.querySelector('h3')?.textContent.trim(),clip=LOOPS[name],img=s.querySelector('img');if(!clip||!img)return;let v;
+s.addEventListener('mouseenter',()=>{if(!v){v=document.createElement('video');v.className='loop';v.muted=v.loop=v.playsInline=true;v.setAttribute('aria-hidden','true');v.src='media/'+clip+'.mp4';s.append(v)}
+Object.assign(v.style,{left:img.offsetLeft+'px',top:img.offsetTop+'px',width:img.offsetWidth+'px',height:img.offsetHeight+'px'});v.play().then(()=>s.classList.add('playing')).catch(()=>{})});
+s.addEventListener('mouseleave',()=>{s.classList.remove('playing');v&&v.pause()})});

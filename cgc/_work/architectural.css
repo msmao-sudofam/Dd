@@ -142,3 +142,71 @@ h1,h2,#film h1,.footer-title{font-weight:500;letter-spacing:-.045em}h3{font-weig
 header{background:rgba(11,11,12,.9)}#film .hero-image-label{background:rgba(11,11,12,.55)}
 #film .btn.primary,header .btn.primary,.build-film .btn.primary{background:#fff;border-color:#fff;color:#0b0b0c}#film .btn.primary:hover,header .btn.primary:hover{background:#d9d9d9;border-color:#d9d9d9}
 .service .num,.footer-title span{color:rgba(255,255,255,.55)}
+/* v9 clear header: fixed and transparent while the hero is behind it (JS adds .clear), frosted dark after. Without JS it stays solid. */
+header{position:fixed;left:0;right:0;transition:background-color .35s var(--ease),border-color .35s var(--ease),backdrop-filter .35s}
+header.clear{background:transparent;border-bottom-color:transparent;-webkit-backdrop-filter:none;backdrop-filter:none}
+header.clear .btn.primary{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.5);color:#fff;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+header.clear .btn.primary:hover{background:#fff;color:#0b0b0c}
+main{padding-top:0}#film{padding-top:0}
+#film .film-stage{height:min(calc(100svh - 100px),56.25vw)}
+#film .film-stage:after{content:'';position:absolute;inset:0 0 auto;height:180px;background:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,0));pointer-events:none}
+#film .hero-image-label{top:84px;z-index:2}
+#before-after{padding-top:88px}
+@media(max-width:760px){#film{padding-top:60px}#film .film-stage{height:auto}#film .film-stage:after{display:none}#film .hero-image-label{top:10px}}
+
+/* v9 type: contrast instead of one medium weight. Bold, tight display; light, larger supporting text. */
+h2{font-weight:600;font-size:clamp(48px,6.8vw,116px);line-height:.9;letter-spacing:-.06em}
+#film h1{font-weight:600;font-size:clamp(56px,8.6vw,164px);line-height:.88;letter-spacing:-.065em}
+.footer-title{font-weight:600;letter-spacing:-.065em}
+h3,.service h3,.process h3{font-weight:500;letter-spacing:-.035em}
+.service h3{font-size:clamp(26px,2.6vw,38px)}
+.section-head>p,.section>.wrap>p.muted,.service p,#film .hero-lede{font-weight:300}
+.section-head>p{font-size:18px;line-height:1.45;max-width:380px}
+#film .hero-lede{font-size:20px;line-height:1.4;max-width:460px}
+.process div:before{font-weight:250;font-size:clamp(72px,8vw,132px);letter-spacing:-.07em}
+@media(max-width:760px){h2{font-size:clamp(40px,11vw,60px)}#film h1{font-size:clamp(44px,12.5vw,64px)}.section-head>p{font-size:16px}#film .hero-lede{font-size:17px}}
+#film .hero-actions .btn.ghost{background:transparent}.film-disclosure,#film .film-disclosure{color:rgba(255,255,255,.55)}
+/* v9 sliders: pointer-driven, eased; the range input stays for keyboard and screen readers. */
+.comparison{cursor:ew-resize;user-select:none;-webkit-user-select:none}
+.comparison img{-webkit-user-drag:none;pointer-events:none}
+.comparison:after{width:1px;box-shadow:0 0 0 .5px rgba(255,255,255,.4),0 0 24px rgba(255,255,255,.5)}
+.comparison:before{content:'';width:56px;height:56px;border-radius:50%;border:1px solid rgba(255,255,255,.7);background:rgba(255,255,255,.18) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='1.6'%3E%3Cpath d='M9 6l-6 6 6 6M15 6l6 6-6 6'/%3E%3C/svg%3E") center/22px no-repeat;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:0 8px 30px rgba(0,0,0,.25);transition:transform .25s var(--ease)}
+.comparison.dragging:before{transform:translate(-50%,-50%) scale(.9)}
+.comparison .tag{transition:opacity .2s}
+.pair label{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.pair:has(input:focus-visible) .comparison{outline:3px solid var(--fg);outline-offset:4px}
+.compare-hint{margin-top:12px;font:11px/1.6 var(--f-mono);text-transform:uppercase;letter-spacing:.04em;color:var(--mute)}
+/* Logo draw-in: three rings draw on load, then the wordmark wipes in. Static with reduced motion. */
+.brand{gap:10px}.brand-mark{height:46px;width:auto;display:block;overflow:visible}.brand-word{height:46px;width:auto;display:block}
+@media(prefers-reduced-motion:no-preference){
+.brand-mark path[pathLength]{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.1s cubic-bezier(.65,0,.35,1) forwards}
+.brand-mark path[pathLength]:nth-of-type(2){animation-delay:.18s}.brand-mark g path:nth-child(2){animation-delay:.18s}.brand-mark g path:nth-child(3){animation-delay:.36s}
+.brand-word{clip-path:inset(0 100% 0 0);animation:wipe .9s cubic-bezier(.2,.7,.2,1) .75s forwards}}
+@keyframes draw{to{stroke-dashoffset:0}}@keyframes wipe{to{clip-path:inset(0 0 0 0)}}
+@media(max-width:760px){.brand-mark{height:40px}.brand-word{display:none}}
+/* Live glass pane: resizes to the entered width and height, shows the makeup in section. */
+.pane-viz{display:grid;grid-template-columns:1fr 64px;gap:20px;margin-bottom:28px}
+.pane-box{position:relative;height:200px;display:grid;place-items:center;padding:20px 28px 26px 8px}
+.pane{position:relative;width:var(--pw,60%);height:var(--ph,60%);border:2px solid var(--fg);background:linear-gradient(135deg,rgba(150,175,190,.28),rgba(210,225,232,.12) 55%,rgba(150,175,190,.22));overflow:hidden;transition:width .6s var(--ease),height .6s var(--ease)}
+.pane .sheen{position:absolute;top:-50%;bottom:-50%;width:30%;left:-40%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.7),transparent);transform:skewX(-18deg);animation:sheen 4.5s var(--ease) infinite}
+@keyframes sheen{0%,40%{left:-40%}80%,100%{left:130%}}
+.dim{position:absolute;font:11px var(--f-mono);color:var(--mute);white-space:nowrap}
+.dim-w{bottom:2px;left:50%;transform:translateX(-50%)}.dim-h{right:0;top:50%;transform:translateY(-50%) rotate(90deg);transform-origin:center}
+.pane-section{display:flex;flex-direction:column;align-items:center;gap:10px}
+.layers{flex:1;display:flex;gap:4px;align-items:stretch;min-height:120px}
+.layers i{display:block;background:linear-gradient(180deg,rgba(150,175,190,.6),rgba(150,175,190,.3));border:1px solid var(--fg);transition:width .4s var(--ease)}
+.layers i.air{background:transparent;border-style:dashed;border-color:var(--mute)}
+.layers-label{font-size:10px;text-align:center}
+@media(prefers-reduced-motion:reduce){.pane .sheen{display:none}.pane,.layers i{transition:none}}
+/* Process timeline: rules draw left to right, icons sketch in, staggered by the reveal delay. */
+.process div{position:relative;border-top-color:transparent}
+.process div:after{content:'';position:absolute;left:0;right:0;top:-1px;height:1px;background:var(--fg);transform-origin:left}
+.step-icon{display:block;width:34px;height:34px;margin-bottom:18px;fill:none;stroke:var(--fg);stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round}
+.motion .process div.rv:after{transform:scaleX(0);transition:transform 1.1s cubic-bezier(.65,0,.35,1) var(--d,0s)}
+.motion .process div.rv.in:after{transform:none}
+.motion .process div.rv .step-icon path{stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 1.2s cubic-bezier(.65,0,.35,1) calc(var(--d,0s) + .35s)}
+.motion .process div.rv.in .step-icon path{stroke-dashoffset:0}
+/* Scope hover loops (desktop): a real field clip plays over the thumbnail. */
+.service{position:relative}.service .loop{position:absolute;object-fit:cover;opacity:0;transition:opacity .35s var(--ease);pointer-events:none}
+.service.playing .loop{opacity:1}
+.service.playing img{opacity:0;transition:opacity .35s}
