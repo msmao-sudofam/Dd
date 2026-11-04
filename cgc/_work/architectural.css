@@ -328,3 +328,4 @@ footer .footer-logo img.ft-word{background:none;padding:0;width:auto;height:40px
 .faq summary:after{content:'';flex:none;width:14px;height:14px;background:linear-gradient(currentColor,currentColor) center/14px 1.5px no-repeat,linear-gradient(currentColor,currentColor) center/1.5px 14px no-repeat;transition:transform .35s var(--ease)}
 .faq details[open] summary:after{transform:rotate(45deg)}
 .faq summary:hover{color:var(--mute)}
+.svc-note{margin-top:18px;font-size:10px;letter-spacing:.04em;text-transform:uppercase;color:#8f8b84}

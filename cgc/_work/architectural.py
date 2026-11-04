@@ -21,8 +21,8 @@ text=re.sub(r'<script>.*?</script>',lambda _:'<script>'+script+'</script>',text,
 text=text.replace('<img src="assets/logo.svg" alt="Commercial Glazing Contractors Inc." width="210" height="89">','<img class="footer-logo" src="assets/logo-v3-dark.svg" alt="Commercial Glazing Contractors Inc." width="300" height="40" loading="lazy">')
 text=text.replace('<footer><div class="wrap">','<footer><div class="wrap"><div class="footer-title"><a href="#bid">Send the set.<span aria-hidden="true">↗</span></a></div>')
 text=text.replace('See what glass changes.','The difference<br>is clear.').replace('Matched concept studies. Move the divider to see the change. Original CGC jobsite comparisons are below.','Explore three illustrated glazing concepts. Move the divider to compare. Actual CGC jobsite photographs are available below.').replace('One trade.<br>Every phase.','One trade.<br>All phases.').replace('The work speaks.','From the field.').replace('A clear scope.<br>A clear way forward.','Plans to punch.').replace('Scope. Schedule. Straight answers.','Before you<br>send the plans.')
-# Concept films S1 (scroll scrub before the process) and S2 (walk-in loop in the FAQ's open left column, so the bid form stays near its heading).
-text=text.replace('<section class="section" id="process">',(root/'_work/build-film.html').read_text(encoding='utf-8')+'<section class="section" id="process">',1)
+# Concept films S1 (scroll scrub above the field gallery) and S2 (walk-in loop in the FAQ's open left column, so the bid form stays near its heading).
+text=text.replace('<section class="section" id="work">',(root/'_work/build-film.html').read_text(encoding='utf-8')+'<section class="section" id="work">',1)
 text=text.replace('<div class="faq">',(root/'_work/walk-film.html').read_text(encoding='utf-8').strip()+'<div class="faq">',1)
 # Charcoal header: light logo and mark, and the browser chrome matches.
 text=text.replace('srcset="assets/logo-v3-mark.svg"><img src="assets/logo-v3.svg"','srcset="assets/logo-v3-mark-dark.svg"><img src="assets/logo-v3-dark.svg"',1).replace('<meta name="theme-color" content="#ffffff">','<meta name="theme-color" content="#1b2329">')
@@ -70,9 +70,16 @@ old='The photographs and field clips in this gallery are CGC’s actual work.</p
 text=text.replace(old,'The photographs and field clips in this gallery are CGC’s actual work. Recent: Ono Hawaiian BBQ in Temecula, Haven House shelter, a Meritage Homes office TI with Pacific Tusk Builders, and Esplanade Builders.</p>',1)
 assert 'Put us on the bid list.' in text;text=text.replace('Put us on the bid list.','Get the glass priced.',1)
 # Service rows: photo plus a motion graphic that plays on hover (or when the row is on screen on touch).
+# Row stills are generated illustrations (_work/svc-thumbs/render.py); real photos stay in From the field.
+SVC_IMG={'Storefront':('storefront','glass storefront with black aluminum framing at dusk'),'Curtain wall':('curtain-wall','glass curtain wall on an office building'),
+ 'Interior glass & office fronts':('interior','glass office fronts along an office corridor'),'Entrances & doors':('entrances','pair of glass entrance doors with long pulls'),
+ 'Service & repair':('service','new glass pane set into a storefront frame with a suction lifter')}
 import runpy;FX=runpy.run_path(str(root/'_work/svc_fx.py'))['FX']
 for name,svg in FX.items():
     m=re.search(r'(<h3>'+re.escape(name)+r'</h3>.*?)(<img src="media/[^"]+-thumb[^>]*>)',text,re.S);assert m,name
-    text=text[:m.start(2)]+'<div class="svc-media">'+m.group(2)+'<svg class="svc-fx" viewBox="0 0 280 170" aria-hidden="true" focusable="false">'+svg+'</svg></div>'+text[m.end(2):]
+    f,alt=SVC_IMG[name];img=f'<img src="media/svc-{f}.webp" alt="Illustration: {alt}" width="640" height="394" loading="lazy">'
+    text=text[:m.start(2)]+'<div class="svc-media">'+img+'<svg class="svc-fx" viewBox="0 0 280 170" aria-hidden="true" focusable="false">'+svg+'</svg></div>'+text[m.end(2):]
+old='</article></div></div></section>';assert text.count(old)==1
+text=text.replace(old,'</article></div><p class="svc-note mono">Row images are generated illustrations. CGC jobsite photos are in From the field.</p></div></section>',1)
 path.write_text(text,encoding='utf-8')
 print('Built current architectural revision.')

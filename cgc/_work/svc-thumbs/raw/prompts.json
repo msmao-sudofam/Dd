@@ -1,0 +1,102 @@
+{
+  "storefront_11.png": {
+    "seed": 11,
+    "prompt": "street-level view of a new commercial storefront with floor-to-ceiling glass and black aluminum mullions, a glass entry door, warm lit retail interior visible through the glass, clean concrete sidewalk, professional architectural photography, Southern California, graphite black aluminum framing, clear glass with soft reflections, dusk with warm interior light, cinematic, slightly desaturated, sharp detail, 35mm lens, no people, no text, no logos, no signage",
+    "model": "krea2_turbo_fp8_scaled",
+    "steps": 8,
+    "size": [
+      1664,
+      1024
+    ]
+  },
+  "storefront_22.png": {
+    "seed": 22,
+    "prompt": "street-level view of a new commercial storefront with floor-to-ceiling glass and black aluminum mullions, a glass entry door, warm lit retail interior visible through the glass, clean concrete sidewalk, professional architectural photography, Southern California, graphite black aluminum framing, clear glass with soft reflections, dusk with warm interior light, cinematic, slightly desaturated, sharp detail, 35mm lens, no people, no text, no logos, no signage",
+    "model": "krea2_turbo_fp8_scaled",
+    "steps": 8,
+    "size": [
+      1664,
+      1024
+    ]
+  },
+  "curtain-wall_11.png": {
+    "seed": 11,
+    "prompt": "looking up at a modern mid-rise office building with a unitized glass curtain wall, crisp grid of mullions, the glass reflecting a dusk sky with soft clouds, professional architectural photography, Southern California, graphite black aluminum framing, clear glass with soft reflections, dusk with warm interior light, cinematic, slightly desaturated, sharp detail, 35mm lens, no people, no text, no logos, no signage",
+    "model": "krea2_turbo_fp8_scaled",
+    "steps": 8,
+    "size": [
+      1664,
+      1024
+    ]
+  },
+  "curtain-wall_22.png": {
+    "seed": 22,
+    "prompt": "looking up at a modern mid-rise office building with a unitized glass curtain wall, crisp grid of mullions, the glass reflecting a dusk sky with soft clouds, professional architectural photography, Southern California, graphite black aluminum framing, clear glass with soft reflections, dusk with warm interior light, cinematic, slightly desaturated, sharp detail, 35mm lens, no people, no text, no logos, no signage",
+    "model": "krea2_turbo_fp8_scaled",
+    "steps": 8,
+    "size": [
+      1664,
+      1024
+    ]
+  },
+  "interior_11.png": {
+    "seed": 11,
+    "prompt": "inside a bright modern office suite, frameless glass office fronts and glass partitions with slim black frames along a corridor, polished concrete floor, linear ceiling lights, professional architectural photography, Southern California, graphite black aluminum framing, clear glass with soft reflections, dusk with warm interior light, cinematic, slightly desaturated, sharp detail, 35mm lens, no people, no text, no logos, no signage",
+    "model": "krea2_turbo_fp8_scaled",
+    "steps": 8,
+    "size": [
+      1664,
+      1024
+    ]
+  },
+  "interior_22.png": {
+    "seed": 22,
+    "prompt": "inside a bright modern office suite, frameless glass office fronts and glass partitions with slim black frames along a corridor, polished concrete floor, linear ceiling lights, professional architectural photography, Southern California, graphite black aluminum framing, clear glass with soft reflections, dusk with warm interior light, cinematic, slightly desaturated, sharp detail, 35mm lens, no people, no text, no logos, no signage",
+    "model": "krea2_turbo_fp8_scaled",
+    "steps": 8,
+    "size": [
+      1664,
+      1024
+    ]
+  },
+  "entrances_11.png": {
+    "seed": 11,
+    "prompt": "a pair of tall frameless glass entrance doors with long vertical stainless steel pulls at a modern commercial lobby, warm lobby light glowing through, stone paving outside, professional architectural photography, Southern California, graphite black aluminum framing, clear glass with soft reflections, dusk with warm interior light, cinematic, slightly desaturated, sharp detail, 35mm lens, no people, no text, no logos, no signage",
+    "model": "krea2_turbo_fp8_scaled",
+    "steps": 8,
+    "size": [
+      1664,
+      1024
+    ]
+  },
+  "entrances_22.png": {
+    "seed": 22,
+    "prompt": "a pair of tall frameless glass entrance doors with long vertical stainless steel pulls at a modern commercial lobby, warm lobby light glowing through, stone paving outside, professional architectural photography, Southern California, graphite black aluminum framing, clear glass with soft reflections, dusk with warm interior light, cinematic, slightly desaturated, sharp detail, 35mm lens, no people, no text, no logos, no signage",
+    "model": "krea2_turbo_fp8_scaled",
+    "steps": 8,
+    "size": [
+      1664,
+      1024
+    ]
+  },
+  "service_11.png": {
+    "seed": 11,
+    "prompt": "close view of a single new clear glass pane freshly installed in a black aluminum storefront frame, fresh black gaskets, a suction cup glass lifter resting on the sill, clean work, soft daylight, professional architectural photography, Southern California, graphite black aluminum framing, clear glass with soft reflections, dusk with warm interior light, cinematic, slightly desaturated, sharp detail, 35mm lens, no people, no text, no logos, no signage",
+    "model": "krea2_turbo_fp8_scaled",
+    "steps": 8,
+    "size": [
+      1664,
+      1024
+    ]
+  },
+  "service_22.png": {
+    "seed": 22,
+    "prompt": "close view of a single new clear glass pane freshly installed in a black aluminum storefront frame, fresh black gaskets, a suction cup glass lifter resting on the sill, clean work, soft daylight, professional architectural photography, Southern California, graphite black aluminum framing, clear glass with soft reflections, dusk with warm interior light, cinematic, slightly desaturated, sharp detail, 35mm lens, no people, no text, no logos, no signage",
+    "model": "krea2_turbo_fp8_scaled",
+    "steps": 8,
+    "size": [
+      1664,
+      1024
+    ]
+  }
+}
