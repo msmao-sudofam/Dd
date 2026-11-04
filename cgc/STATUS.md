@@ -1,5 +1,13 @@
 # CGC status — November 2, 2026 (late)
 
+## Owner feedback pass, in production (2026-11-04)
+- Production: cgc-glazing-osh7zcdj6 on cgcontractorsinc.com (commit ae35694).
+- Hero: concept chip removed. Film bar is one row: licence left, "Concept film" + short not-a-CGC-project note + Pause/CC right, gold progress hairline. Proof strip removed; recent jobs moved into the From the field intro.
+- Services: line-drawn motion graphic per trade (`_work/svc_fx.py`), plays on hover; on touch it plays while the row is on screen. Sheet: `_work/sheets/service-hover-motion.png`.
+- Process steps scrub with scroll (rule, number, icon). FAQ: display type, plus/close marker. Bid heading: "Get the glass priced."
+- Split-heading clip fixed (`.split .sw` gets right padding), which was cutting the last letter of big headings.
+- Checked: 31 API tests, architectural-qa (360-1440 px, axe, overflow), motion tests. Live: /api/leads 401, insights 200.
+
 ## Wide-window hero: full screen (2026-11-04)
 - Owner saw four mockups (blur, full screen, split, framed: `_work/sheets/hero-wide-options.jpg`) and picked full screen. The blurred film fill (canvas, CSS mask, JS painter) is removed; wide windows now use the default `object-fit:cover`.
 - Checked: all film scenes cropped to 21:9 keep their subject; 1920x1080, 2560x1080 and 390x844 have no errors and no horizontal scroll; 31 API tests and motion checks pass.
