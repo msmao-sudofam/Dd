@@ -83,3 +83,40 @@ if(matchMedia('(hover:hover)').matches&&!reduced.matches)$$('.service').forEach(
 s.addEventListener('mouseenter',()=>{if(!v){v=document.createElement('video');v.className='loop';v.muted=v.loop=v.playsInline=true;v.setAttribute('aria-hidden','true');v.src='media/'+clip+'.mp4';s.append(v)}
 Object.assign(v.style,{left:img.offsetLeft+'px',top:img.offsetTop+'px',width:img.offsetWidth+'px',height:img.offsetHeight+'px'});v.play().then(()=>s.classList.add('playing')).catch(()=>{})});
 s.addEventListener('mouseleave',()=>{s.classList.remove('playing');v&&v.pause()})});
+
+// ===== v10 high-end layer =====
+const fine=matchMedia('(hover:hover) and (pointer:fine)').matches&&!reduced.matches;
+// Loader: counts to 100 as the hero poster and fonts arrive (1.3s minimum, 2.6s maximum), then lifts like a curtain.
+const loader=$('#loader');
+if(loader&&document.documentElement.classList.contains('loading')){const root=document.documentElement,count=$('.ld-count'),bar=$('.ld-bar'),t0=performance.now();root.style.overflow='hidden';
+ let ready=false,shown=0;Promise.all([document.fonts.ready,new Promise(r=>{const im=$('.cinema-poster img');im.complete?r():(im.addEventListener('load',r,{once:true}),im.addEventListener('error',r,{once:true}))})]).then(()=>ready=true);
+ const step=()=>{const el=performance.now()-t0,cap=ready&&el>1300||el>2600?100:Math.min(92,el/1300*92);shown+=(cap-shown)*.12;if(cap===100&&shown>99.4)shown=100;
+  count.textContent=String(Math.round(shown)).padStart(3,'0');bar.style.setProperty('--p',shown+'%');
+  if(shown<100)return requestAnimationFrame(step);
+  loader.classList.add('done');root.classList.remove('loading');root.style.overflow='';setTimeout(()=>loader.remove(),1100)};requestAnimationFrame(step)}
+else if(loader)loader.remove();
+
+// Buttons: label roll (duplicated label), dark/light sweep colour, magnetic pull on fine pointers.
+$$('.btn').forEach(b=>{if(b.matches('[type=submit]'))return;const tn=[...b.childNodes].find(n=>n.nodeType===3&&n.textContent.trim());
+ if(tn){const s=document.createElement('span'),label=tn.textContent.trim();s.className='bl';s.innerHTML=`<span class="bl-i" data-t="${label.replace(/"/g,'&quot;')}">${label}</span>`;tn.replaceWith(s,' ')}
+ if(b.closest('#film,#install,footer,header,.build-film'))b.classList.add('on-dark');
+ if(fine){b.addEventListener('pointermove',e=>{const r=b.getBoundingClientRect();b.style.transform=`translate(${(e.clientX-r.left-r.width/2)*.22}px,${(e.clientY-r.top-r.height/2)*.35}px)`});b.addEventListener('pointerleave',()=>b.style.transform='')}});
+
+// Footer logo draws when the footer arrives.
+const foot=$('footer');if(foot&&!reduced.matches)new IntersectionObserver((es,o)=>{if(es[0].isIntersecting){foot.classList.add('drawn');o.disconnect()}},{threshold:.25}).observe(foot);
+
+// Section headlines: words rise out of a mask.
+if(!reduced.matches){const sio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('split-in');sio.unobserve(e.target)}}),{threshold:.35});
+ $$('.section h2').forEach(h=>{let i=0;[...h.childNodes].forEach(n=>{if(n.nodeType!==3)return;const f=document.createDocumentFragment();n.textContent.split(/(\s+)/).forEach(w=>{if(!w)return;if(/^\s+$/.test(w)){f.append(w);return}const s=document.createElement('span');s.className='sw';s.innerHTML=`<i style="--i:${i++}">${w.replace(/&/g,'&amp;').replace(/</g,'&lt;')}</i>`;f.append(s)});n.replaceWith(f)});h.classList.add('split');sio.observe(h)})}
+
+// Scroll progress line.
+const bar=document.createElement('div');bar.id='progress';bar.setAttribute('aria-hidden','true');document.body.append(bar);
+const prog=()=>{const h=document.documentElement.scrollHeight-innerHeight;bar.style.transform=`scaleX(${h>0?scrollY/h:0})`};addEventListener('scroll',prog,{passive:true});prog();
+
+// Cursor ring with context labels, and inertial scrolling, on fine pointers only.
+if(fine){const c=document.createElement('div');c.id='cursor';c.setAttribute('aria-hidden','true');document.body.append(c);let x=-100,y=-100,cx=x,cy=y;
+ addEventListener('pointermove',e=>{x=e.clientX;y=e.clientY;c.classList.add('on');const el=e.target.closest?.('.comparison,.gallery-item,a,button,summary,label,input,select,textarea');
+  const lab=el?.matches('.comparison')?'Move':el?.matches('.gallery-item')?'View':'';c.textContent=lab;c.classList.toggle('label',!!lab);c.classList.toggle('link',!lab&&!!el)},{passive:true});
+ document.addEventListener('pointerleave',()=>c.classList.remove('on'));
+ (function loop(){cx+=(x-cx)*.2;cy+=(y-cy)*.2;c.style.transform=`translate(${cx}px,${cy}px)`;requestAnimationFrame(loop)})();
+ if(window.Lenis){const lenis=new Lenis({autoRaf:true,lerp:.1,anchors:{offset:-92}});window.lenis=lenis}}

@@ -44,6 +44,18 @@ for name,ds in ICONS.items():
     svg='<svg class="step-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">'+''.join(f'<path d="{d}" pathLength="1"/>' for d in ds)+'</svg>'
     old=f'<div><h3>{name}</h3></div>';assert old in text,name
     text=text.replace(old,f'<div>{svg}<h3>{name}</h3></div>',1)
+# High-end layer: first-visit loader (decided in <head>, so no flash), footer logo draw, scopes marquee, Lenis.
+markraw=(root/'_work/brand-mark.svg').read_text(encoding='utf-8')
+def mark(prefix,cls):return markraw.replace('hm-',prefix+'-').replace('class="brand-mark"',f'class="{cls}"')
+head='<script>try{if(sessionStorage.cgcSeen||matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.classList.add("no-loader");else{sessionStorage.cgcSeen=1;document.documentElement.classList.add("loading")}}catch(e){document.documentElement.classList.add("no-loader")}</script><noscript><style>#loader{display:none}</style></noscript>'
+text=text.replace('</head>',head+'</head>',1)
+loader='<div id="loader" aria-hidden="true"><div class="ld-logo">'+mark('ld','ld-mark')+'<img class="ld-word" src="assets/logo-v3-word-dark.svg" alt=""></div><span class="ld-count">000</span><i class="ld-bar"><b></b></i></div>'
+text,n=re.subn(r'<body>',lambda _:'<body>'+loader,text,count=1);assert n==1
+old='<img class="footer-logo" src="assets/logo-v3-dark.svg" alt="Commercial Glazing Contractors Inc." width="300" height="40" loading="lazy">'
+assert old in text;text=text.replace(old,'<span class="footer-logo" role="img" aria-label="Commercial Glazing Contractors Inc.">'+mark('ft','ft-mark')+'<img class="ft-word" src="assets/logo-v3-word-dark.svg" alt="" width="234" height="46" loading="lazy"></span>',1)
+scopes=' / '.join(['Storefront','Curtain wall','Interior glass','Office fronts','Entrances','Doors','Service &amp; repair'])+' / '
+text=text.replace('<section class="section" id="before-after">','<div class="marquee" aria-hidden="true"><div class="mq-track"><span>'+scopes*2+'</span><span>'+scopes*2+'</span></div></div><section class="section" id="before-after">',1)
+assert '<script>const $=' in text;text=text.replace('<script>const $=','<script src="assets/js/lenis.min.js"></script><script>const $=',1)
 # Phones (≈370 CSS px at 2-3x) need ~900 px: add a middle size so they stop pulling the 1200+ px original.
 from PIL import Image
 def mid(m):

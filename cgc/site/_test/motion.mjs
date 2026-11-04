@@ -9,6 +9,8 @@ for (const [name, opts] of [['desktop', {viewport: {width: 1440, height: 900}}],
   page.on('console', m => m.type() === 'error' && errors.push(m.text()));
   page.on('pageerror', e => errors.push(e.message));
   await page.goto(URL, {waitUntil: 'load'});
+  // Scrolling is locked while the first-visit loader plays (about 2 s); start once it has gone.
+  await page.waitForFunction(() => !document.querySelector('#loader'), null, {timeout: 6000});
   const total = await page.evaluate(() => document.querySelectorAll('.rv').length);
   for (let y = 0; y < await page.evaluate(() => document.body.scrollHeight); y += 400) { await page.mouse.wheel(0, 400); await page.waitForTimeout(60); }
   await page.waitForTimeout(1200);
