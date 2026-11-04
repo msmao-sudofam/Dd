@@ -238,23 +238,19 @@ code{font:400 8.5pt 'Geist Mono',monospace;background:#f4f4f4;padding:1px 4px}
   <p class="mono">09 / CRM and open items</p>
   <h2>What the owner still decides</h2>
   <h3>CRM and the bid form</h3>
-  <p>The CRM is at <b>cgcontractorsinc.com/crm</b>. It's built for phones and covers leads and jobs, stages, notes, CSV import and archiving, with 31 API tests passing. It needs two things before it opens:</p>
-  <ul>
-    <li>A <b>private Vercel Blob store</b> connected to the <code>cgc-glazing</code> project, where leads are saved.</li>
-    <li>A <b><code>CRM_KEY</code></b> environment variable, at least 12 characters. That's the passphrase typed at /crm.</li>
-  </ul>
-  <p>Then redeploy, send a test lead marked as a test, and check it shows up in /crm. Email alerts are optional and need <code>RESEND_API_KEY</code>, <code>LEAD_NOTIFY_TO</code> and <code>REPORT_FROM</code>. Until the store exists, the bid form tells visitors to call or email, and gives a prefilled email link.</p>
+  <p>The CRM is live at <b>cgcontractorsinc.com/crm</b>. It's built for phones and covers leads and jobs, stages, notes, CSV import and archiving, with 31 API tests passing. Leads are saved in the private Vercel Blob store <code>cgc-leads</code>. The owner's <code>CRM_KEY</code> passphrase (at least 12 characters) opens it. On Nov 4, one lead marked TEST went through the live form and was saved. Email alerts are optional and need <code>RESEND_API_KEY</code>, <code>LEAD_NOTIFY_TO</code> and <code>REPORT_FROM</code>.</p>
   <h3>Open items</h3>
   <table>
     <tr><th>Item</th><th>Status</th></tr>
-    <tr><td>Blob store and CRM_KEY</td><td class="todo">Owner creates them (they're credentials)</td></tr>
+    <tr><td>Blob store and CRM_KEY</td><td>Done Nov 4. Test lead saved.</td></tr>
+    <tr><td>Push the local git history</td><td>Done Nov 4</td></tr>
+    <tr><td>Vercel Web Analytics</td><td>On since Nov 4</td></tr>
+    <tr><td>Stray Vercel project <code>site</code></td><td>Deleted Nov 4</td></tr>
+    <tr><td>Old protection-bypass tokens</td><td>Revoked Nov 4</td></tr>
+    <tr><td>Logo v3 on the favicon and in the CRM</td><td>Live Nov 4</td></tr>
     <tr><td>MiniMax commercial license for the H3 films now public</td><td class="todo">Owner to buy (sold through Comfy)</td></tr>
-    <tr><td>Push the local git history (about 87 commits)</td><td class="todo">Waiting on the owner's go</td></tr>
-    <tr><td>Vercel Web Analytics</td><td class="todo">Off. Owner decides.</td></tr>
-    <tr><td>Stray Vercel project <code>site</code> from an early deploy</td><td class="todo">Owner approves deleting it</td></tr>
-    <tr><td>Old protection-bypass token from an early <code>vercel curl</code></td><td class="todo">Owner reviews and revokes it</td></tr>
-    <tr><td>Logo v3 on the favicon and in the CRM</td><td>Next small task</td></tr>
-    <tr><td>Legal checklist (<code>site/LEGAL-NOTES.md</code>), Google Business Profile, review QR</td><td>Owner's details needed</td></tr>
+    <tr><td>Lead email alerts (Resend)</td><td class="todo">Optional. Owner adds the keys.</td></tr>
+    <tr><td>Legal checklist (<code>site/LEGAL-NOTES.md</code>), Google Business Profile, review QR</td><td class="todo">Owner's details needed</td></tr>
   </table>
   <div class="foot"><span class="mono">CGC project record</span><span class="mono">12</span></div>
 </section>

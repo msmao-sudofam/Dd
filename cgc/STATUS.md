@@ -1,5 +1,13 @@
 # CGC status — November 2, 2026 (late)
 
+## CRM, Analytics and logo v3 live (2026-11-04)
+- Production: cgc-glazing-a2d4ty8w7 (`vercel deploy --prod`), on cgcontractorsinc.com.
+- Private Blob store `cgc-leads` connected (prod + preview). `CRM_KEY` set by the owner for production (12+ chars; the first 7-char try was rejected by the length check and replaced).
+- Checked live: `/api/leads` returns 401 without a key, `/_vercel/insights/script.js` returns 200, `/favicon.ico` is logo v3.
+- Test lead `20261104-011a6e8772f7315d5c0fd609` (name "TEST - Claude deploy check") saved, stored:true, emailed:false (no Resend keys). The owner archives it in /crm.
+- Web Analytics on. Bypass tokens revoked. Stray `site` project deleted. Git pushed.
+- Open: MiniMax license (owner buys), optional Resend alerts, legal/GBP details. Preview has no CRM_KEY (not needed).
+
 ## Wide-window hero fill, in production (2026-11-04)
 Production: cgcontractorsinc.com (deployment cgc-glazing-n3ycqq5n1, promoted from preview 6b0o96119 on the owner's go).
 On very wide windows the hero sides show a blurred 48x27 canvas copy of the playing film instead of a grey band; the sharp frame's edges are feathered with a mask. 31/31 tests and the motion test pass.
