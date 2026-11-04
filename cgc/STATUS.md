@@ -1,5 +1,11 @@
 # CGC status — November 2, 2026 (late)
 
+## High-end layer, in production (2026-11-03)
+Production: cgc-glazing.vercel.app (deployment cgc-glazing-gw33fl5jo), promoted on the owner's go.
+First-visit loader (unlocks by 3.2 s even in background tabs), animated buttons, footer logo draw, Lenis smooth scroll
+(desktop), cursor ring, word-mask headlines, photo reveals, progress line, scopes marquee. Lighthouse mobile 98/100/100/100.
+
+
 ## Gallery mono + motion, in production (2026-11-03)
 Production: cgc-glazing.vercel.app (deployment cgc-glazing-mwlyi9gpe), promoted on the owner's go.
 - Gallery mono (Geist/Geist Mono, black-white-graphite), calmer hero, clear header over the film, punchier type.
