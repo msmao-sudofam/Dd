@@ -4,6 +4,8 @@ import { Caption, E, Reel, prog } from "../lib/fx";
 import { BANGERS, EXAMPLE_BLEND, INGREDIENTS, INTER, MONO, sec } from "../lib/theme";
 
 // Animation Studio /comicart — wrong label vs right label, two inked panels.
+// Watch-style reason: a side-by-side comparison is what comic panels are built for, and the
+// contrast (one hidden number vs nine doses) is the whole message. No people, no dialogue.
 export const COMIC_AD_DUR = sec(8);
 
 const INK = "#141414";
@@ -14,7 +16,7 @@ const RED = "#D7192A";
 const PANEL2_AT = 36;
 const ROW_AT = 52;
 const ROW_STEP = 9;
-const BURST_AT = ROW_AT + INGREDIENTS.length * ROW_STEP + 10;
+const COUNT_AT = ROW_AT + INGREDIENTS.length * ROW_STEP + 10;
 
 /** Ben-Day dot field (offset rows) for flat print shading. */
 const Dots: React.FC<{ color: string; r?: number; opacity?: number }> = ({ color, r = 6, opacity = 0.35 }) => {
@@ -77,28 +79,17 @@ const CaptionBox: React.FC<{ children: React.ReactNode; bg?: string }> = ({ chil
   </div>
 );
 
-const Burst: React.FC<{ k: number }> = ({ k }) => {
-  const pts = Array.from({ length: 24 }, (_, i) => {
-    const r = i % 2 ? 105 : 165;
-    const a = (i / 24) * Math.PI * 2;
-    return `${Math.cos(a) * r},${Math.sin(a) * r * 0.78}`;
-  }).join(" ");
-  return (
-    <div style={{ position: "absolute", left: 830 - 175, top: 925 - 140, width: 350, height: 280, transform: `scale(${0.7 + 0.3 * k}) rotate(-8deg)`, opacity: k > 0 ? 1 : 0 }}>
-      <svg width={350} height={280} viewBox="-175 -140 350 280" style={{ position: "absolute", inset: 0 }}>
-        <polygon points={pts} fill={YEL} stroke={INK} strokeWidth={10} strokeLinejoin="round" />
-      </svg>
-      <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: BANGERS, fontSize: 74, color: RED, WebkitTextStroke: `4px ${INK}` }}>
-        9 DOSES!
-      </div>
-    </div>
-  );
-};
+/** Narration box for the count (a claim goes in a caption box, never a starburst). */
+const CountBox: React.FC<{ k: number }> = ({ k }) => (
+  <div style={{ position: "absolute", right: 64, top: 902, transform: `translateY(${(1 - k) * 30}px) rotate(1deg)`, opacity: k, background: YEL, border: `6px solid ${INK}`, padding: "2px 18px", fontFamily: BANGERS, fontSize: 46, letterSpacing: "0.03em", color: INK }}>
+    9 DOSES. ALL ON THE LABEL.
+  </div>
+);
 
 const Body: React.FC = () => {
   const f = useCurrentFrame();
   const p2 = prog(f, PANEL2_AT, 9, E.settle);
-  const burst = prog(f, BURST_AT, 6, E.settle);
+  const count = prog(f, COUNT_AT, 7, E.settle);
   return (
     <AbsoluteFill style={{ background: PAPER }}>
       <Dots color="#D9C9A8" r={3} opacity={0.6} />
@@ -136,7 +127,7 @@ const Body: React.FC = () => {
         </div>
       </Panel>
 
-      {f >= BURST_AT ? <Burst k={burst} /> : null}
+      {f >= COUNT_AT ? <CountBox k={count} /> : null}
       <Caption text="wrong label vs right label" top={260} />
     </AbsoluteFill>
   );
@@ -145,12 +136,12 @@ const Body: React.FC = () => {
 export const ComicArtAd: React.FC = () => (
   <Reel
     dur={COMIC_AD_DUR}
-    hits={[PANEL2_AT, BURST_AT]}
+    hits={[PANEL2_AT, COUNT_AT]}
     grain={0.06}
     sfx={[
       { at: PANEL2_AT, s: "pop" as const },
       ...INGREDIENTS.map((_, i) => ({ at: ROW_AT + i * ROW_STEP, s: "tick" as const, v: 0.2 })),
-      { at: BURST_AT, s: "impact" as const, v: 0.6 },
+      { at: COUNT_AT, s: "pop" as const, v: 0.5 },
     ]}
   >
     <Body />

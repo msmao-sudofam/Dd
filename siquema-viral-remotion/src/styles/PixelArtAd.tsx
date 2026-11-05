@@ -4,6 +4,8 @@ import { Caption, Reel } from "../lib/fx";
 import { FLAVORS, PIXEL, sec } from "../lib/theme";
 
 // Animation Studio /pixelart — a 16-bit flavor-select screen.
+// Watch-style reason: "pick your flavor" maps exactly onto a game select screen, so the style
+// carries the idea instead of decorating it. Fruit sprites only; the product is never drawn.
 // Everything is drawn on a 180x320 logical grid and scaled x6 with crisp edges.
 export const PIXEL_AD_DUR = sec(8);
 
@@ -42,10 +44,13 @@ const outline = (inside: (x: number, y: number) => boolean, fill: (x: number, y:
 };
 const SPRITES: Record<string, Px[][]> = {
   MANGO: sprite((x, y) => {
-    if ((x === 6 && y <= 2) || (x === 7 && y === 1) || (x === 8 && y === 1)) return "#5DBB46";
+    if ((x === 3 && y <= 1) || (x === 2 && y === 0) || (x === 4 && y === 1)) return "#5DBB46";
+    // tilted teardrop: the mango silhouette, blushing red at the top, gold at the belly
+    const u = (a: number, b: number) => (a - 6) * Math.cos(0.7) + (b - 6.5) * Math.sin(0.7);
+    const v = (a: number, b: number) => -(a - 6) * Math.sin(0.7) + (b - 6.5) * Math.cos(0.7);
     return outline(
-      (a, b) => ((a - 5.6) / 5) ** 2 + ((b - 7) / 4.6) ** 2 <= 1,
-      (a, b) => (a + b < 9 ? "#F6B649" : a + b < 15 ? "#E7950D" : "#C06E1D"),
+      (a, b) => (u(a, b) / 5.6) ** 2 + (v(a, b) / (u(a, b) > 0 ? 3.6 : 4.4)) ** 2 <= 1,
+      (a, b) => (a + b < 8 ? "#E5502F" : a + b < 12 ? "#F6B649" : a + b < 16 ? "#E7950D" : "#C06E1D"),
     )(x, y);
   }),
   WATERMELON: sprite(
@@ -67,6 +72,18 @@ const SPRITES: Record<string, Px[][]> = {
       (a, b) => ((a * 3 + b * 5) % 7 === 0 ? "#F7D33C" : a + b < 9 ? "#FF5C6E" : a + b < 13 ? "#D7192A" : "#A8121F"),
     )(x, y);
   }),
+  KIWI: sprite(
+    outline(
+      (a, b) => (a - 5.5) ** 2 + (b - 6) ** 2 <= 26,
+      (a, b) => {
+        const d = Math.sqrt((a - 5.5) ** 2 + (b - 6) ** 2);
+        if (d > 4.1) return "#7A5230";
+        if (d < 1.2) return "#F3F0C8";
+        if (Math.round(d * 2) === 5 && (a + b) % 2 === 0) return PAL.out;
+        return a + b < 11 ? "#A6D65A" : "#7DB33A";
+      },
+    ),
+  ),
   "CUCUMBER LIME": sprite(
     outline(
       (a, b) => (a - 5.5) ** 2 + (b - 6) ** 2 <= 30,
@@ -155,7 +172,14 @@ const Body: React.FC = () => {
                       <rect x={c.x + CARD_W - 2} y={c.y} width={2} height={CARD_H} fill={selected ? PAL.red : PAL.yel} />
                     </>
                   ) : null}
-                  <Sprite map={SPRITES[fl]} x={c.x + CARD_W / 2 - 12} y={c.y + 8} />
+                  {fl === "KIWI STRAWBERRY" ? (
+                    <>
+                      <Sprite map={SPRITES[fl]} x={c.x + CARD_W / 2 - 25} y={c.y + 8} />
+                      <Sprite map={SPRITES.KIWI} x={c.x + CARD_W / 2 + 1} y={c.y + 8} />
+                    </>
+                  ) : (
+                    <Sprite map={SPRITES[fl]} x={c.x + CARD_W / 2 - 12} y={c.y + 8} />
+                  )}
                   <T x={c.x + CARD_W / 2} y={c.y + 46} size={fl.length > 10 ? 5 : 6} anchor="middle" fill={on ? PAL.ui : PAL.dim}>
                     {fl.split(" ")[0]}
                   </T>
@@ -206,7 +230,7 @@ const Body: React.FC = () => {
           </>
         )}
       </svg>
-      <Caption text="select your flavor" top={260} />
+      <Caption text="which one are you?" top={260} />
     </AbsoluteFill>
   );
 };

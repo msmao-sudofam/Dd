@@ -109,7 +109,8 @@ const SCOOP_BOWL = "M 640 470 C 650 560, 830 560, 840 470 Z";
 const SCOOP_HANDLE = "M 838 478 L 990 430 L 996 448 L 842 500";
 const MOUND = "M 650 470 C 690 430, 790 430, 830 470";
 // loop of chalk around the caffeine dose (row 1)
-const CIRCLE_D = `M 905 ${ROW_TOP - 4} C 1010 ${ROW_TOP - 4}, 1010 ${ROW_TOP + 66}, 905 ${ROW_TOP + 66} C 800 ${ROW_TOP + 66}, 790 ${ROW_TOP - 4}, 900 ${ROW_TOP - 6}`;
+const CIRCLE = { cx: 930, cy: ROW_TOP + 30, rx: 112, ry: 42 };
+const CIRCLE_D = `M ${CIRCLE.cx - CIRCLE.rx} ${CIRCLE.cy} a ${CIRCLE.rx} ${CIRCLE.ry} 0 1 0 ${2 * CIRCLE.rx} 0 a ${CIRCLE.rx} ${CIRCLE.ry} 0 1 0 ${-2 * CIRCLE.rx} 4`;
 const HATCH = Array.from({ length: 7 }, (_, i) => `M ${672 + i * 22} 486 l 18 46`).join(" ");
 
 const Body: React.FC = () => {

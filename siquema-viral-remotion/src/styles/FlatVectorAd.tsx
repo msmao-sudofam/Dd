@@ -94,7 +94,7 @@ const ShakeScene: React.FC<{ f: number }> = ({ f }) => {
         <rect x={470} y={760} width={140} height={52} rx={14} fill={P.ink} />
       </g>
       {/* falling powder stream */}
-      {local < 26 ? <rect x={528} y={600} width={24} height={240 + local * 4} rx={12} fill={P.mango} opacity={1 - local / 30} /> : null}
+      {local < 26 ? <rect x={528} y={680} width={24} height={86} rx={12} fill={P.mango} opacity={1 - local / 30} /> : null}
     </svg>
   );
 };

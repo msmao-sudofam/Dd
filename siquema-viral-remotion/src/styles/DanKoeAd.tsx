@@ -8,13 +8,6 @@ export const DANKOE_AD_DUR = sec(8);
 
 const WHITE = "#F5F5F5";
 const BLEND = { x: 540, y: 620 };
-const HIDDEN = [
-  { x: 380, y: 520 },
-  { x: 700, y: 520 },
-  { x: 330, y: 700 },
-  { x: 750, y: 700 },
-  { x: 540, y: 780 },
-];
 const HUB = { x: 540, y: 950 };
 const NODE_AT = 40;
 const NODE_STEP = 9;
@@ -57,17 +50,11 @@ const Body: React.FC = () => {
   return (
     <AbsoluteFill style={{ background: "#000" }}>
       <svg width={1080} height={1920} style={{ position: "absolute", inset: 0 }}>
-        {/* the blend: one node, five ingredients you can't read (dashed, no numbers) */}
-        {HIDDEN.map((h, i) => (
-          <React.Fragment key={i}>
-            <Line a={BLEND} b={h} at={0} dashed opacity={0.45} />
-            <circle cx={h.x} cy={h.y} r={6} fill="none" stroke={WHITE} strokeWidth={2} opacity={0.5} />
-          </React.Fragment>
-        ))}
+        {/* the blend: one node, one number */}
         <circle cx={BLEND.x} cy={BLEND.y} r={9} fill={WHITE} />
 
         {/* ours: a hub with nine readable doses */}
-        <Line a={BLEND} b={HUB} at={NODE_AT - 18} dur={14} opacity={0.35} />
+        <Line a={{ x: BLEND.x, y: BLEND.y + 70 }} b={HUB} at={NODE_AT - 18} dur={14} opacity={0.35} />
         <circle cx={HUB.x} cy={HUB.y} r={9} fill={WHITE} opacity={prog(f, NODE_AT - 6, 6)} />
         {INGREDIENTS.map((ing, i) => {
           const p = nodePos(i);
@@ -125,7 +112,7 @@ const Body: React.FC = () => {
 
       {/* the tally: the point of the piece */}
       <div style={{ position: "absolute", top: 1385, width: "100%", textAlign: "center", fontFamily: INTER, fontWeight: 500, fontSize: 54, color: WHITE, opacity: tally, letterSpacing: "0.02em" }}>
-        1 number <span style={{ opacity: 0.5 }}>vs</span> <span style={{ color: C.brightRed, fontWeight: 800 }}>9</span>
+        1 number <span style={{ opacity: 0.5 }}>vs</span> <span style={{ fontWeight: 800 }}>9</span>
       </div>
 
       <Caption text="count the numbers" top={260} />

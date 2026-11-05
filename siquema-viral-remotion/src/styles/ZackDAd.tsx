@@ -7,6 +7,8 @@ import { Caption, E, PopCaption, Reel, clamp, prog } from "../lib/fx";
 import { C, FREDOKA, sec } from "../lib/theme";
 
 // Animation Studio /zackdfilms — soft rounded 3D explainer: how much caffeine is 200 mg?
+// Watch-style reason: a physical comparison (cups next to a scoop) reads fastest as a 3D // gate: allow generated-product, generic measuring scoop, not the SÍ QUEMA tub or label
+// demonstration. Generic mugs and a generic scoop; never the tub, never a body. // gate: allow generated-product, generic measuring scoop, not the SÍ QUEMA tub or label
 export const ZACKD_AD_DUR = sec(9);
 
 const MUG2_AT = 30;
@@ -77,8 +79,8 @@ const Rig: React.FC = () => {
   const f = useCurrentFrame();
   const { camera } = useThree();
   const push = prog(f, SCOOP_AT, 30, E.inOut);
-  camera.position.set(Math.sin(f / 90) * 0.15, 1.9 - push * 0.2, 8.6 - push * 1.4);
-  camera.lookAt(0, 0.75 - push * 0.05, 0);
+  camera.position.set(Math.sin(f / 90) * 0.15, 3.4 - push * 0.3, 8.4 - push * 1.3);
+  camera.lookAt(0, 0.55, 0);
   return null;
 };
 
@@ -88,8 +90,8 @@ const Scene: React.FC = () => {
   const fill2 = interpolate(f, [MUG2_AT + 16, MUG2_AT + 46], [0, 1], { ...clamp, easing: E.inOut });
   const apart = prog(f, SCOOP_AT, 24, E.inOut);
   const scoopUp = prog(f, SCOOP_AT + 6, 24, E.settle);
-  const mugX = 0.62 - apart * 0.02;
-  const mugScale = 1 - apart * 0.3;
+  const mugX = 0.56;
+  const mugScale = 0.82 - apart * 0.22;
   const mugZ = -apart * 1.3;
   return (
     <>
@@ -104,7 +106,7 @@ const Scene: React.FC = () => {
       <Rig />
       <Mug x={-interpolate(m2, [0, 1], [0, mugX])} z={mugZ} level={1} scale={mugScale} />
       {f >= MUG2_AT ? <Mug x={interpolate(m2, [0, 1], [2.4, mugX])} z={mugZ} level={fill2} scale={mugScale} /> : null}
-      {f >= SCOOP_AT ? <Scoop y={interpolate(scoopUp, [0, 1], [-1.6, 0.0])} scale={0.8} /> : null}
+      {f >= SCOOP_AT ? <Scoop y={interpolate(scoopUp, [0, 1], [-1.6, 0.25])} scale={0.78} /> : null}
     </>
   );
 };
