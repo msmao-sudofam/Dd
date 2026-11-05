@@ -1,0 +1,240 @@
+[
+  {
+    "concept": "A_the_lift",
+    "engine": "wangp",
+    "model": "minimax_h3_fl2va_pruned_pdd",
+    "seed": 101,
+    "size": "1344x768",
+    "frames": 124,
+    "seconds": 0.0,
+    "out": [],
+    "errors": [
+      "multi_prompts_gen_type='PG' parses this prompt into 6 separate generation requests, but this submission accepts one generation task. Submit separate tasks or use 'FG' if the line breaks belong to one prompt."
+    ],
+    "at": "2026-11-02T16:24:51"
+  },
+  {
+    "concept": "A_the_lift",
+    "engine": "wangp",
+    "model": "minimax_h3_fl2va_pruned_pdd",
+    "seed": 101,
+    "size": "1344x768",
+    "frames": 124,
+    "seconds": 1051.8,
+    "out": [
+      "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\hero-h3\\renders\\A_the_lift_s101_1344x768_pdd8.mp4"
+    ],
+    "errors": [],
+    "at": "2026-11-02T16:42:54"
+  },
+  {
+    "concept": "B_storefront_before_after",
+    "engine": "wangp",
+    "model": "minimax_h3_fl2va_pruned_pdd",
+    "seed": 101,
+    "size": "1344x768",
+    "frames": 124,
+    "seconds": 1017.7,
+    "out": [
+      "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\hero-h3\\renders\\B_storefront_before_after_s101_1344x768_pdd8.mp4"
+    ],
+    "errors": [],
+    "at": "2026-11-02T17:00:28"
+  },
+  {
+    "concept": "C_light_up",
+    "engine": "wangp",
+    "model": "minimax_h3_fl2va_pruned_pdd",
+    "seed": 101,
+    "size": "1344x768",
+    "frames": 124,
+    "seconds": 1086.2,
+    "out": [
+      "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\hero-h3\\renders\\C_light_up_s101_1344x768_pdd8.mp4"
+    ],
+    "errors": [],
+    "at": "2026-11-02T17:18:34"
+  },
+  {
+    "concept": "D_the_seal",
+    "engine": "wangp",
+    "model": "minimax_h3_fl2va_pruned_pdd",
+    "seed": 101,
+    "size": "1344x768",
+    "frames": 124,
+    "seconds": 1107.4,
+    "out": [
+      "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\hero-h3\\renders\\D_the_seal_s101_1344x768_pdd8.mp4"
+    ],
+    "errors": [],
+    "at": "2026-11-02T17:37:01"
+  },
+  {
+    "concept": "E_reflection",
+    "engine": "wangp",
+    "model": "minimax_h3_fl2va_pruned_pdd",
+    "seed": 101,
+    "size": "1344x768",
+    "frames": 124,
+    "seconds": 1123.3,
+    "out": [
+      "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\hero-h3\\renders\\E_reflection_s101_1344x768_pdd8.mp4"
+    ],
+    "errors": [],
+    "at": "2026-11-02T17:55:45"
+  },
+  {
+    "concept": "B_storefront_before_after",
+    "engine": "wangp",
+    "model": "minimax_h3_fl2va_pruned",
+    "seed": 101,
+    "size": "1344x768",
+    "frames": 124,
+    "seconds": 2016.2,
+    "out": [
+      "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\hero-h3\\renders\\B_storefront_before_after_s101_1344x768_full.mp4"
+    ],
+    "errors": [],
+    "at": "2026-11-02T22:06:08"
+  },
+  {
+    "concept": "D_the_seal",
+    "engine": "wangp",
+    "model": "minimax_h3_fl2va_pruned",
+    "seed": 202,
+    "size": "1344x768",
+    "frames": 124,
+    "seconds": 2058.0,
+    "out": [
+      "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\hero-h3\\renders\\D_the_seal_s202_1344x768_full.mp4"
+    ],
+    "errors": [],
+    "at": "2026-11-02T23:16:11"
+  },
+  {
+    "concept": "E_reflection",
+    "engine": "wangp",
+    "model": "minimax_h3_fl2va_pruned",
+    "seed": 202,
+    "size": "1344x768",
+    "frames": 124,
+    "seconds": 2108.6,
+    "out": [
+      "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\hero-h3\\renders\\E_reflection_s202_1344x768_full.mp4"
+    ],
+    "errors": [],
+    "at": "2026-11-02T23:51:20"
+  },
+  {
+    "concept": "F_interior_glass",
+    "engine": "wangp",
+    "model": "minimax_h3_fl2va_pruned_pdd",
+    "seed": 101,
+    "size": "1344x768",
+    "frames": 124,
+    "seconds": 990.1,
+    "out": [
+      "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\hero-h3\\renders\\F_interior_glass_s101_1344x768_pdd8.mp4"
+    ],
+    "errors": [],
+    "at": "2026-11-03T01:12:33"
+  },
+  {
+    "concept": "G_entrance",
+    "engine": "wangp",
+    "model": "minimax_h3_fl2va_pruned_pdd",
+    "seed": 101,
+    "size": "1344x768",
+    "frames": 124,
+    "seconds": 937.2,
+    "out": [
+      "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\hero-h3\\renders\\G_entrance_s101_1344x768_pdd8.mp4"
+    ],
+    "errors": [],
+    "at": "2026-11-03T01:28:10"
+  },
+  {
+    "concept": "S1_scroll_the_build",
+    "engine": "wangp",
+    "model": "minimax_h3_fl2va_pruned_pdd",
+    "seed": 101,
+    "size": "1344x768",
+    "frames": 243,
+    "seconds": 4038.0,
+    "out": [
+      "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\hero-h3\\renders\\S1_scroll_the_build_s101_1344x768_pdd8.mp4"
+    ],
+    "errors": [],
+    "at": "2026-11-03T02:35:55"
+  },
+  {
+    "concept": "S2_scroll_walk_in",
+    "engine": "wangp",
+    "model": "minimax_h3_fl2va_pruned_pdd",
+    "seed": 101,
+    "size": "1344x768",
+    "frames": 243,
+    "seconds": 572.4,
+    "out": [
+      "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\hero-h3\\renders\\S2_scroll_walk_in_s101_1344x768_pdd8.mp4"
+    ],
+    "errors": [],
+    "at": "2026-11-03T02:45:27"
+  },
+  {
+    "concept": "S3_scroll_rise",
+    "engine": "wangp",
+    "model": "minimax_h3_fl2va_pruned_pdd",
+    "seed": 101,
+    "size": "1344x768",
+    "frames": 243,
+    "seconds": 567.0,
+    "out": [
+      "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\hero-h3\\renders\\S3_scroll_rise_s101_1344x768_pdd8.mp4"
+    ],
+    "errors": [],
+    "at": "2026-11-03T02:54:54"
+  },
+  {
+    "concept": "S1_scroll_the_build",
+    "engine": "wangp",
+    "model": "minimax_h3_fl2va_pruned",
+    "seed": 101,
+    "size": "1344x768",
+    "frames": 243,
+    "seconds": 3598.0,
+    "out": [
+      "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\hero-h3\\renders\\S1_scroll_the_build_s101_1344x768_full.mp4"
+    ],
+    "errors": [],
+    "at": "2026-11-03T10:37:47"
+  },
+  {
+    "concept": "S2_scroll_walk_in",
+    "engine": "wangp",
+    "model": "minimax_h3_fl2va_pruned",
+    "seed": 101,
+    "size": "1344x768",
+    "frames": 243,
+    "seconds": 3173.8,
+    "out": [
+      "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\hero-h3\\renders\\S2_scroll_walk_in_s101_1344x768_full.mp4"
+    ],
+    "errors": [],
+    "at": "2026-11-03T11:30:41"
+  },
+  {
+    "concept": "G_entrance",
+    "engine": "wangp",
+    "model": "minimax_h3_fl2va_pruned",
+    "seed": 101,
+    "size": "1344x768",
+    "frames": 124,
+    "seconds": 2017.9,
+    "out": [
+      "C:\\Users\\Moqui\\Projects\\Dd\\cgc\\_work\\hero-h3\\renders\\G_entrance_s101_1344x768_full.mp4"
+    ],
+    "errors": [],
+    "at": "2026-11-03T12:05:07"
+  }
+]

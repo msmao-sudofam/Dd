@@ -37,6 +37,14 @@ a=text.index('<div class="tool-grid">');b=text.index('</div></section><section c
 text=text[:a]+(root/'_work/weight-tool.html').read_text(encoding='utf-8')+text[b:]
 old="Number($('#makeup').value)";assert text.count(old)==1
 text=text.replace(old,"Number($('#makeup input:checked').value)")
+# Easter egg: the weight tool leaves the main flow and hides behind a quiet line at the bottom of the footer.
+a=text.index('<section class="section" id="weight">');b=text.index('</section>',a)+len('</section>')
+text=text[:a]+text[b:]
+for o,n in (('06 / Put the plans in motion','05 / Put the plans in motion'),('07 / Before you call','06 / Before you call')):assert text.count(o)==1;text=text.replace(o,n)
+egg=('<details class="egg" id="weight"><summary class="mono"><i class="egg-pane" aria-hidden="true"></i>How heavy is that glass?</summary>'
+ '<div class="egg-body"><h2 class="egg-h">What does the glass weigh?</h2>'+(root/'_work/weight-tool.html').read_text(encoding='utf-8')+'</div></details>')
+old='<p class="mono muted">COMMERCIAL GLAZING CONTRACTORS INC.';assert text.count(old)==1
+text=text.replace(old,egg+old,1)
 # Process icons: one line drawing per step, drawn in when the step scrolls into view (CSS).
 ICONS={'Send plans':['M6 3h8l4 4v14H6z','M14 3v4h4','M9 16l6-6','M11 10h4v4'],
  'Takeoff + scope sheet':['M3 17L17 3l4 4L7 21z','M7 13l2 2','M10 10l2 2','M13 7l2 2'],
@@ -71,7 +79,7 @@ text=re.sub(r'media/([\w-]+?)-thumb\.webp 480w, media/\1\.webp 1200w',mid,text)
 # Hero strip: licence moves into the film bar (hero html), so the separate proof strip goes; recent jobs move to the field section.
 text,n=re.subn(r'<section class="proof">.*?</section>','',text,count=1,flags=re.S);assert n==1
 old='The photographs and field clips in this gallery are CGC’s actual work.</p>';assert old in text
-text=text.replace(old,'The photographs and field clips in this gallery are CGC’s actual work. Recent: Ono Hawaiian BBQ in Temecula, Haven House shelter, a Meritage Homes office TI with Pacific Tusk Builders, and Esplanade Builders.</p>',1)
+text=text.replace(old,'The photographs and field clips in this gallery are CGC’s actual work. Recent: Ono Hawaiian BBQ in Temecula, Haven House shelter, a Meritage Homes office build-out with Pacific Tusk Builders, and Esplanade Builders.</p>',1)
 assert 'Put us on the bid list.' in text;text=text.replace('Put us on the bid list.','Get the glass priced.',1)
 # Service rows: photo plus a motion graphic that plays on hover (or when the row is on screen on touch).
 # Row stills are generated illustrations (_work/svc-thumbs/render.py); real photos stay in From the field.
@@ -87,5 +95,35 @@ old='</article></div></div></section>';assert text.count(old)==1
 text=text.replace(old,'</article></div><p class="svc-note mono">Row images are generated illustrations. CGC jobsite photos are in From the field.</p></div></section>',1)
 # Line arrow: iOS draws the ↗ character as a blue emoji.
 text=text.replace('<span aria-hidden="true">↗</span>','<span aria-hidden="true" class="arr"><svg viewBox="0 0 12 12"><path d="M3 9 9 3M4 3h5v5"/></svg></span>')
+# Plain-language pass: every heading and label should read clearly to someone new to glazing.
+COPY=[('>Work</a>','>Our work</a>'),('>Scopes</a>','>Services</a>'),('>How we bid</a>','>How it works</a>'),
+('01 / Before meets after','01 / Before and after'),('The difference<br>is clear.','See the<br>difference.'),
+('Explore three illustrated glazing concepts. Move the divider to compare. Actual CGC jobsite photographs are available below.','Three illustrated examples of what new glass does for a space. Drag the line to compare. Real CGC job photos are further down.'),
+('Illustrative concept / generated visualization','Illustration'),
+('<p class="concept-note">Concept visualization. Not a photograph of a CGC project.</p>','<p class="concept-note">Illustration, not a photo of a CGC job.</p>'),
+('Curtain wall / a matched corner-building concept.','Curtain wall / from boarded openings to finished glass.'),
+('See the actual jobsite comparisons','See real before-and-after job photos'),
+('Original CGC photographs. The camera positions differ between visits.','Real CGC job photos. Taken from slightly different spots on each visit.'),
+('One trade.<br>All phases.','Glass, start<br>to finish.'),
+('Row images are generated illustrations. CGC jobsite photos are in From the field.','The pictures above are illustrations. Real job photos are in Our work, below.'),
+('03 / Real projects. Real photographs.','03 / Our work'),('From the field.','Real jobs.<br>Real photos.'),
+('Glass partitions and office fronts for tenant improvements.','Glass walls, partitions and office fronts for office build-outs.'),
+('Exterior glazing scope coordinated with the structure and building envelope.','Full glass exterior walls, coordinated with the building structure.'),
+('Field clips / glass handling and installation','Job site videos'),
+('04 / From plans to punch','04 / How it works'),('Plans to punch.','From plans to<br>finished job.'),
+('<h3>Send plans</h3>','<h3>You send the plans</h3>'),('<h3>Takeoff + scope sheet</h3>','<h3>We review and measure</h3>'),
+('<h3>Bid with clarifications / exclusions</h3>','<h3>You get a clear, itemized bid</h3>'),
+('<h3>Shop drawings &amp; submittals</h3>','<h3>Drawings for approval</h3>'),('<h3>Shop drawings & submittals</h3>','<h3>Drawings for approval</h3>'),
+('<h3>Fabricate + install</h3>','<h3>We build and install</h3>'),('<h3>Punch &amp; turnover</h3>','<h3>Final walkthrough</h3>'),('<h3>Punch & turnover</h3>','<h3>Final walkthrough</h3>'),
+('05 / Put the plans in motion','05 / Request a bid'),('Get the glass priced.','Get a price on<br>your project.'),
+('Plans, scope, city and a due date. Start there.','Tell us about the job and share the plans if you have them. We will get back to you with a bid.'),
+('CGC / BID TICKET <span class="muted">— DRAFT</span>','Your request <span class="muted">— summary</span>'),
+('06 / Before you call','06 / Questions'),('Before you<br>send the plans.','Common<br>questions.'),
+('Send the set.','Send us your plans.')]
+missing=[]
+for o,n in COPY:
+    if o in text: text=text.replace(o,n)
+    elif n not in text: missing.append(o)
+assert not [m for m in missing if '&' not in m and 'Shop' not in m and 'Punch' not in m], missing
 path.write_text(text,encoding='utf-8')
 print('Built current architectural revision.')

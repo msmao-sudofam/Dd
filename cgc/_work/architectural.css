@@ -464,3 +464,27 @@ header .btn{display:none}
 @media(max-width:760px){.lite-tool{grid-template-columns:1fr}.lite-stage{min-height:300px}.lite-panel{border-left:0;border-top:1px solid rgba(255,255,255,.08);padding:24px 20px}}
 @media(prefers-reduced-motion:reduce){.lite,.lite-meter span{transition:none}.lite .sheen:before,.lite-handle:after{animation:none}}
 .lite-makeup input,.lite-makeup input:focus,.lite-makeup input:focus-visible{outline:none;box-shadow:none}
+/* Weight tool as a footer easter egg */
+.egg{margin:8px 0 24px;border:0}
+.egg>summary{list-style:none;display:inline-flex;align-items:center;gap:10px;min-height:44px;cursor:pointer;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#8f8b84;transition:color .2s}
+.egg>summary::-webkit-details-marker{display:none}
+.egg>summary:hover,.egg[open]>summary{color:#c99a3e}
+.egg-pane{width:12px;height:16px;border:1px solid currentColor;background:linear-gradient(135deg,rgba(160,195,212,.35),transparent);transition:transform .3s var(--ease)}
+.egg>summary:hover .egg-pane{transform:rotate(-8deg) scale(1.15)}
+.egg-body{padding-top:20px;animation:egg-in .5s var(--ease)}
+@keyframes egg-in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.egg-h{color:#fff;font-size:clamp(32px,4vw,48px);margin:0}
+.egg .lite-intro{color:#8f8b84}
+.egg .lite-tool{border:1px solid rgba(255,255,255,.08)}
+@media(prefers-reduced-motion:reduce){.egg-body{animation:none}}
+/* Hero scroll cue */
+.scroll-cue{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);z-index:3;display:flex;flex-direction:column;align-items:center;gap:8px;min-width:44px;min-height:44px;color:#fff;text-decoration:none;transition:opacity .4s}
+.scroll-cue span{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.8)}
+.scroll-cue svg{width:16px;height:28px;fill:none;stroke:#c99a3e;stroke-width:1.6;animation:cue 1.8s var(--ease) infinite}
+.scroll-cue.gone{opacity:0;pointer-events:none}
+@keyframes cue{0%{transform:translateY(-6px);opacity:.35}35%{opacity:1}100%{transform:translateY(10px);opacity:.35}}
+@media(max-width:760px){.scroll-cue{left:auto;right:20px;transform:none;bottom:14px}}
+@media(prefers-reduced-motion:reduce){.scroll-cue svg{animation:none}}
+.scroll-cue{z-index:6}.build-hero .build-shade{pointer-events:none}
+@media(max-width:760px){.scroll-cue{left:50%;right:auto;bottom:auto;top:42%;transform:translateX(-50%)}}
+@media(max-width:760px){#film .film-bottom{display:none}}

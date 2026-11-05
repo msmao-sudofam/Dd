@@ -6,13 +6,12 @@ if(conceptTabs.length){$('.concept-tabs').hidden=false;conceptTabs.forEach((tab,
 // The generated concept film plays muted on load. The poster remains the fallback for reduced motion and failed playback.
 const filmVideo=$('#intro-film');let filmLoaded=false;
 // The poster <img> stays the only poster download and the LCP candidate. The video is revealed once it has a frame, so it never paints over the poster and never fetches a second poster copy.
-const filmChapters=[[0,'Plywood to storefront'],[4.77,'Lifted into place'],[9.53,'The seal'],[12.63,'Lit floor by floor'],[17.4,'One clean skin'],[22.17,'The entrance']];
 // No pause control by request: the reel always runs while on screen (reduced motion keeps the poster).
 function filmButton(){}
 function loadFilm(){if(filmLoaded)return;filmLoaded=true;const d=filmVideo.dataset.dir||'assets/film/reel';filmVideo.src=d+(matchMedia('(max-width:760px)').matches?'/mobile.mp4':'/desktop.mp4');filmVideo.load()}
 function startFilm(){if(reduced.matches||document.hidden)return;loadFilm();filmVideo.play().catch(()=>{})}
 filmVideo.addEventListener('loadeddata',()=>{filmVideo.classList.add('ready','poster-ready');filmButton()});filmVideo.addEventListener('play',filmButton);filmVideo.addEventListener('pause',filmButton);
-filmVideo.addEventListener('timeupdate',()=>{const t=filmVideo.currentTime,d=filmVideo.duration||1,chapter=filmChapters.filter(c=>t>=c[0]).length-1;$('#film-chapter').textContent='0'+(chapter+1)+' / '+filmChapters[chapter][1];$('#film-progress').style.width=(t/d*100)+'%';$('#film-time').textContent='00:'+String(Math.floor(t)).padStart(2,'0')+' / 00:'+String(Math.round(d)).padStart(2,'0')});
+filmVideo.addEventListener('timeupdate',()=>{const p=$('#film-progress');if(p)p.style.width=(filmVideo.currentTime/(filmVideo.duration||1)*100)+'%'});
 filmVideo.addEventListener('error',()=>filmVideo.classList.remove('ready','poster-ready'));
 // The reel sits mid-page now: it plays while on screen and pauses when scrolled away.
 new IntersectionObserver(entries=>{if(entries[0].isIntersecting)startFilm();else{filmVideo.pause();filmButton()}},{threshold:.35}).observe($('#film .film-stage'));
@@ -70,7 +69,7 @@ const lite=$('#lite');if(lite){const stage=$('#lite-stage'),form=$('#weight-form
 const ft=i=>{const f=Math.floor(i/12),r=+(i%12).toFixed(2);return f+'′'+(r?' '+r+'″':'')};
 const size=()=>({w:+$('#wf').value*12+ +$('#wi').value,h:+$('#hf').value*12+ +$('#hi').value});
 let sc=1,x0=0,base=0,drag=null;
-const draw=()=>{const {w,h}=size();if(!(w>0&&h>0))return;const r=stage.getBoundingClientRect(),pad=28,gap=36,pw=72*40/120;
+const draw=()=>{const {w,h}=size();if(!(w>0&&h>0))return;const r=stage.getBoundingClientRect();if(!r.width)return;const pad=28,gap=36,pw=72*40/120;
 // Scale: the person (72 in) and the lite both fit, with room to grow the lite by 2 ft.
 if(!drag)sc=Math.min((r.width-pad*2-gap-pw*1.0)/(Math.max(w,48)+24),(r.height-pad*2-18)/(Math.max(h,72)+12));
 base=r.height-pad;x0=pad+72*sc*40/120+gap;
@@ -87,7 +86,7 @@ handle.addEventListener('pointerdown',e=>{e.preventDefault();handle.setPointerCa
 handle.addEventListener('pointermove',e=>{if(!drag)return;set((Math.min(e.clientX-drag.left,drag.width-12)-x0)/sc,(drag.top+base-Math.max(e.clientY,drag.top+12))/sc)});
 const end=()=>{drag=null;stage.classList.remove('dragging');draw()};handle.addEventListener('pointerup',end);handle.addEventListener('pointercancel',end);
 handle.addEventListener('keydown',e=>{const d={ArrowRight:[1,0],ArrowLeft:[-1,0],ArrowUp:[0,1],ArrowDown:[0,-1]}[e.key];if(!d)return;e.preventDefault();const s=e.shiftKey?12:1,{w,h}=size();set(w+d[0]*s,h+d[1]*s)});
-form.addEventListener('input',draw);addEventListener('resize',draw);draw()}
+form.addEventListener('input',draw);addEventListener('resize',draw);$('#weight').addEventListener('toggle',draw);draw()}
 
 // Scope hover loops: real CGC field clips only, desktop hover, loaded on first hover.
 const LOOPS={'Interior glass & office fronts':'frameless-glass-offices-walkthrough','Entrances & doors':'interior-glass-black-frame-walkthrough','Service & repair':'glass-on-rack-truck'};
@@ -141,3 +140,7 @@ else{const o=new IntersectionObserver(es=>es.forEach(e=>e.target.classList.toggl
 // Process steps scrub with scroll.
 {const steps=$$('.process>div');const f=()=>{const vh=innerHeight;steps.forEach(s=>s.style.setProperty('--p',Math.min(1,Math.max(0,(vh*.95-s.getBoundingClientRect().top)/(vh*.45))).toFixed(3)))};
 if(document.documentElement.classList.contains('motion')&&steps.length){addEventListener('scroll',f,{passive:true});addEventListener('resize',f);f()}}
+
+// Scroll cue: nudges people into the build, then gets out of the way.
+{const cue=$('.scroll-cue');if(cue){cue.addEventListener('click',e=>{e.preventDefault();scrollBy({top:innerHeight*.9,behavior:'smooth'})});
+const f=()=>cue.classList.toggle('gone',scrollY>60);addEventListener('scroll',f,{passive:true});f()}}

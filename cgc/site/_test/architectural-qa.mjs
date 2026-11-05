@@ -13,7 +13,7 @@ for(const width of [360,390,430,1440]){
   await page.screenshot({path:`_test/results/v4-hero-${width}.png`});
   await page.locator('#film').scrollIntoViewIfNeeded();await page.waitForFunction(()=>{const v=document.querySelector('#intro-film');return !v.paused&&v.readyState>=2&&!!v.currentSrc},null,{timeout:15000});
   const autoSource=await page.locator('#intro-film').evaluate(v=>v.currentSrc);assert(autoSource.includes(width<761?'reel/mobile.mp4':'reel/desktop.mp4'),'Autoplay uses the responsive film source');
-  assert.match(await page.locator('.film-tag').textContent(),/Concept film/);
+
   assert.equal(await page.locator('#film-toggle,#film-captions').count(),0,'Reel has no pause or caption controls (owner request)');
   const tabs=page.getByRole('tab');await tabs.nth(0).focus();await page.keyboard.press('End');
   assert.equal(await tabs.nth(2).getAttribute('aria-selected'),'true');assert(await page.locator('#concept-panel-2').isVisible());assert(!await page.locator('#concept-panel-0').isVisible());
