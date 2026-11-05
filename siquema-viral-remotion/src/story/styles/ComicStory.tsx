@@ -50,7 +50,7 @@ const Burst: React.FC<{ k: number }> = ({ k }) => {
     return `${Math.cos(a) * r},${Math.sin(a) * r * 0.62}`;
   }).join(" ");
   return (
-    <g transform={`translate(780 640) scale(${0.6 + 0.4 * k}) rotate(-8)`} opacity={k > 0 ? 1 : 0}>
+    <g transform={`translate(855 880) scale(${(0.6 + 0.4 * k) * 0.78}) rotate(-8)`} opacity={k > 0 ? 1 : 0}>
       <polygon points={pts} fill={YEL} stroke={INK} strokeWidth={10} strokeLinejoin="round" />
       <text x={0} y={22} textAnchor="middle" fontFamily={BANGERS} fontSize={76} fill={RED} stroke={INK} strokeWidth={3}>
         SÍ QUEMA!
@@ -89,7 +89,7 @@ const Body: React.FC = () => {
         <line x1={torsoA[0]} y1={torsoA[1] + 10} x2={torsoB[0]} y2={torsoB[1]} stroke={INK} strokeWidth={96} strokeLinecap="round" />
         <line x1={torsoA[0]} y1={torsoA[1] + 10} x2={torsoB[0]} y2={torsoB[1]} stroke={RED} strokeWidth={80} strokeLinecap="round" />
         <path d={`M ${map(pose.head)[0] - 46} ${map(pose.head)[1] - 10} Q ${map(pose.head)[0]} ${map(pose.head)[1] - 80} ${map(pose.head)[0] + 46} ${map(pose.head)[1] - 10}`} fill={INK} />
-        <ChalkCloud f={f} color="#FFFFFF" />
+        <ChalkCloud f={f} color="#FFFFFF" ink={INK} />
         <Barbell f={f} bar={INK} plate={RED} plateStroke={INK} width={14} />
         <Crowd f={f} skin={[SKIN, "#C98B5E", "#8D5A3B"]} shirt={[RED, "#2E5BBA", YEL, "#3E8E3A"]} outline={INK} outlineW={7} signBg="#FFFFFF" signFg={RED} signFont={BANGERS} />
         <Burst k={burst} />
@@ -102,7 +102,7 @@ const Body: React.FC = () => {
 };
 
 export const ComicStory: React.FC = () => (
-  <Reel dur={STORY_DUR} push={0.05} printColor={INK} grain={0.05} hits={[B.lock]} sfx={STORY_SFX}>
+  <Reel dur={STORY_DUR} push={0.05} printBand printColor={INK} grain={0.05} hits={[B.lock]} sfx={STORY_SFX}>
     <Body />
   </Reel>
 );

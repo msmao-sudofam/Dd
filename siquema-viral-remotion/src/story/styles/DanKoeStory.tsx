@@ -35,12 +35,24 @@ const Body: React.FC = () => {
         {CROWD.flatMap((x, i) =>
           [0, 1].map((row) => {
             const cx = 540 + x * 330 + row * 165 - 80;
-            const cy = 1430 + row * 50 - crowdJump(f, i + row) * 260;
-            return <circle key={`${i}-${row}`} cx={cx} cy={cy} r={8} fill={W} opacity={row ? 0.55 : 0.9} />;
+            const cy = 1360 + row * 46 - crowdJump(f, i + row) * 220;
+            const arm = f >= B.cheer && !row ? 1 : 0;
+            return (
+              <g key={`${i}-${row}`} opacity={row ? 0.55 : 0.9}>
+                <circle cx={cx} cy={cy} r={8} fill={W} />
+                {arm ? (
+                  <>
+                    <line x1={cx} y1={cy + 10} x2={cx} y2={cy + 40} stroke={W} strokeWidth={2} />
+                    <line x1={cx} y1={cy + 18} x2={cx - 16} y2={cy - 6} stroke={W} strokeWidth={2} strokeLinecap="round" />
+                    <line x1={cx} y1={cy + 18} x2={cx + 16} y2={cy - 6} stroke={W} strokeWidth={2} strokeLinecap="round" />
+                  </>
+                ) : null}
+              </g>
+            );
           }),
         )}
         {up > 0 ? (
-          <text x={540} y={1380 - 30 * up} textAnchor="middle" fontFamily={INTER} fontWeight={800} fontSize={40} fill={W} opacity={up} letterSpacing="0.1em">
+          <text x={540} y={1338 - 14 * up} textAnchor="middle" fontFamily={INTER} fontWeight={800} fontSize={40} fill={W} opacity={up} letterSpacing="0.1em">
             {SIGN}
           </text>
         ) : null}
@@ -51,7 +63,7 @@ const Body: React.FC = () => {
 };
 
 export const DanKoeStory: React.FC = () => (
-  <Reel dur={STORY_DUR} push={0.05} printColor={W} grain={0.03} sfx={STORY_SFX}>
+  <Reel dur={STORY_DUR} push={0.05} printBand printColor={W} grain={0.03} sfx={STORY_SFX}>
     <Body />
   </Reel>
 );

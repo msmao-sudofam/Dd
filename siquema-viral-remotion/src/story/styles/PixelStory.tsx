@@ -3,8 +3,8 @@ import { AbsoluteFill, useCurrentFrame } from "remotion";
 import { Reel, hash } from "../../lib/fx";
 import { PIXEL } from "../../lib/theme";
 import { StoryCaptions, STORY_SFX } from "../common";
-import { Barbell, ChalkCloud, Figure, Shaker } from "../draw2d";
-import { B, CROWD, SIGN, STORY_DUR, V2, crowdJump, meterAt, poseAt, signUp } from "../rig";
+import { Barbell, Shaker } from "../draw2d";
+import { BONES, B, CROWD, Pose, SIGN, STORY_DUR, V2, chalkAt, crowdJump, meterAt, poseAt, signUp } from "../rig";
 
 // PR DAY in /pixelart: a 180x320 logical canvas scaled x6 with crisp edges, sunset city, HUD, pixel crowd.
 const S = 60; // logical px per metre (= 360 real px / 6)
@@ -94,9 +94,67 @@ const PixelCrowd: React.FC<{ f: number }> = ({ f }) => {
   );
 };
 
+/** Rasterize a bone onto the logical grid: square w x w stamps at integer positions (no anti-aliasing). */
+const pxLine = (a: V2, b: V2, w: number, color: string, key: string) => {
+  const n = Math.max(1, Math.ceil(Math.max(Math.abs(b[0] - a[0]), Math.abs(b[1] - a[1]))));
+  const seen = new Set<string>();
+  const out: React.ReactElement[] = [];
+  for (let i = 0; i <= n; i++) {
+    const x = Math.round(a[0] + ((b[0] - a[0]) * i) / n - w / 2);
+    const y = Math.round(a[1] + ((b[1] - a[1]) * i) / n - w / 2);
+    const k = `${x},${y}`;
+    if (seen.has(k)) continue;
+    seen.add(k);
+    out.push(<rect key={`${key}-${k}`} x={x} y={y} width={w} height={w} fill={color} />);
+  }
+  return out;
+};
+const pxDisc = (c: V2, r: number, color: string, key: string) => {
+  const out: React.ReactElement[] = [];
+  for (let y = -r; y <= r; y++) for (let x = -r; x <= r; x++) if (x * x + y * y <= r * r + r * 0.6) out.push(<rect key={`${key}-${x}-${y}`} x={c[0] + x} y={c[1] + y} width={1} height={1} fill={color} />);
+  return out;
+};
+
+/** The lifter as a sprite on the grid: skin limbs, red shirt block, black shorts, pixel head and hair. */
+const PixelLifter: React.FC<{ f: number }> = ({ f }) => {
+  const p: Pose = poseAt(f);
+  const m = (j: keyof Pose): V2 => map(p[j]);
+  const skin = "#F2C49B";
+  const limbs = BONES.filter(([a, b]) => !(a === "neck" && b === "pelvis") && !(a === "hipL" && b === "hipR") && !(a === "shL" && b === "shR"));
+  const head = m("head");
+  return (
+    <g>
+      {limbs.flatMap(([a, b]) => pxLine(m(a), m(b), 4, skin, `${a}${b}`))}
+      {pxLine([m("neck")[0], m("neck")[1] + 3], m("pelvis"), 10, C.red, "torso")}
+      {pxLine(m("shL"), m("shR"), 5, C.red, "shoulders")}
+      {pxLine(m("hipL"), m("hipR"), 6, "#111", "shorts")}
+      {pxDisc([Math.round(head[0]), Math.round(head[1])], 5, skin, "head")}
+      <rect x={Math.round(head[0]) - 5} y={Math.round(head[1]) - 6} width={11} height={3} fill="#2A1A12" />
+      <rect x={Math.round(head[0]) - 2} y={Math.round(head[1])} width={1} height={1} fill="#111" />
+      <rect x={Math.round(head[0]) + 2} y={Math.round(head[1])} width={1} height={1} fill="#111" />
+    </g>
+  );
+};
+
+/** Chalk dust as stepped pixel clusters. */
+const PixelDust: React.FC<{ f: number }> = ({ f }) => {
+  const c = chalkAt(f);
+  if (!c) return null;
+  const o = map([c.x, c.y]);
+  const r = Math.round(c.r * S);
+  return (
+    <g opacity={c.alpha > 0.4 ? 1 : 0.6}>
+      {Array.from({ length: 16 }, (_, i) => {
+        const a = (i / 16) * Math.PI * 2 + (i % 3) * 0.3;
+        const rr = r * (0.55 + (i % 4) * 0.15);
+        return <rect key={i} x={Math.round(o[0] + Math.cos(a) * rr)} y={Math.round(o[1] + Math.sin(a) * rr * 0.7)} width={2} height={2} fill="#F3EEE6" />;
+      })}
+    </g>
+  );
+};
+
 const Body: React.FC = () => {
   const f = useCurrentFrame();
-  const pose = poseAt(f);
   const m = meterAt(f);
   return (
     <AbsoluteFill style={{ background: C.sky0 }}>
@@ -123,12 +181,8 @@ const Body: React.FC = () => {
         <rect x={34} y={GROUND - 2} width={112} height={7} fill="#6B4E37" />
         <rect x={34} y={GROUND - 2} width={112} height={1} fill="#8A6A4E" />
         <Shaker f={f} map={map} body="#F3EEE6" lid="#111" />
-        <Figure pose={pose} map={map} stroke="#F2C49B" width={5} head={{ fill: "#F2C49B", r: 0.13 }} />
-        {/* shirt + shorts over the bones */}
-        <line x1={map(pose.neck)[0]} y1={map(pose.neck)[1] + 2} x2={map(pose.pelvis)[0]} y2={map(pose.pelvis)[1]} stroke={C.red} strokeWidth={11} />
-        <line x1={map(pose.hipL)[0]} y1={map(pose.hipL)[1]} x2={map(pose.hipR)[0]} y2={map(pose.hipR)[1]} stroke="#111" strokeWidth={7} />
-        <rect x={map(pose.head)[0] - 7} y={map(pose.head)[1] - 8} width={14} height={4} fill="#2A1A12" />
-        <ChalkCloud f={f} map={map} color="#F3EEE6" />
+        <PixelLifter f={f} />
+        <PixelDust f={f} />
         <Barbell f={f} map={map} bar="#C9CDD4" plate={C.red} width={2} />
         <PixelCrowd f={f} />
       </svg>
@@ -138,7 +192,7 @@ const Body: React.FC = () => {
 };
 
 export const PixelStory: React.FC = () => (
-  <Reel dur={STORY_DUR} push={0.05} grain={0} printColor="#F3EEE6" sfx={STORY_SFX}>
+  <Reel dur={STORY_DUR} push={0.05} printBand grain={0} printColor="#F3EEE6" sfx={STORY_SFX}>
     <Body />
   </Reel>
 );

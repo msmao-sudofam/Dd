@@ -151,7 +151,7 @@ export const shakerAt = (f: number): { x: number; y: number; tilt: number } => {
     const tilt = interpolate(f, [B.drink, B.drink + 10, B.drinkEnd - 6, B.drinkEnd], [0, 2.2, 2.2, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
     return { x: p.hR[0], y: p.hR[1] - 0.08, tilt };
   }
-  return { x: 0.95, y: 0, tilt: 0 };
+  return { x: -0.98, y: 0, tilt: 0 }; // left of the platform, clear of the crowd's sign
 };
 
 /** Chalk cloud from the clap: 0 before, grows and fades over ~0.7 s. */

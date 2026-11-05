@@ -92,20 +92,22 @@ export const PopCaption: React.FC<{ text: React.ReactNode; top: number; at: numb
 };
 
 /** Bottom-of-safe-zone legal line. 22px, 60% opacity, centered. */
-export const FinePrint: React.FC<{ fda?: boolean; color?: string }> = ({ fda, color = C.ink }) => (
+/** band: a dark strip behind the line, for busy scenes (crowds, skylines) where it must still read. */
+export const FinePrint: React.FC<{ fda?: boolean; color?: string; band?: boolean }> = ({ fda, color = C.ink, band }) => (
   <div
     style={{
       position: "absolute",
-      left: 90,
-      right: 90,
+      left: band ? 0 : 90,
+      right: band ? 0 : 90,
+      ...(band ? { background: "rgba(11,8,9,.72)", padding: "8px 90px 10px" } : {}),
       bottom: H - SAFE_BOTTOM,
       textAlign: "center",
       fontFamily: INTER,
       fontWeight: 500,
       fontSize: 22,
       lineHeight: 1.35,
-      color,
-      opacity: 0.6,
+      color: band ? "#F3EEE6" : color,
+      opacity: band ? 0.85 : 0.6,
     }}
   >
     <div>{FINE_PRINT}</div>
@@ -166,8 +168,10 @@ export const Reel: React.FC<{
   grain?: number;
   /** slow camera push over the whole piece (0.04 = 1 → 1.04) */
   push?: number;
+  /** put the fine print on a dark band */
+  printBand?: boolean;
   children: React.ReactNode;
-}> = ({ dur, hits = [], sfx = [], fda, printColor, grain, push = 0, children }) => {
+}> = ({ dur, hits = [], sfx = [], fda, printColor, grain, push = 0, printBand, children }) => {
   const f = useCurrentFrame();
   const all: Sfx[] = [...sfx, { at: dur - LOOP - 2, s: "whoosh", v: 0.25 }]; // gate: allow stock-sfx, synthesized, loop slide only
   const pf = f >= dur - LOOP / 2 ? 0 : f;
@@ -180,7 +184,7 @@ export const Reel: React.FC<{
         </Punch>
       </LoopBack>
       <Grain opacity={grain} />
-      <FinePrint fda={fda} color={pc} />
+      <FinePrint fda={fda} color={pc} band={printBand} />
       {all.map((x, i) => (
         <Sequence key={i} from={Math.max(0, x.at)} durationInFrames={sec(1)} layout="none">
           <Audio src={staticFile(`sfx/${x.s}.wav`)} volume={x.v ?? VOL[x.s]} />

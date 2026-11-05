@@ -96,7 +96,7 @@ const Body: React.FC = () => {
 };
 
 export const FlatStory: React.FC = () => (
-  <Reel dur={STORY_DUR} push={0.05} printColor="#F3E3C2" grain={0.04} sfx={STORY_SFX}>
+  <Reel dur={STORY_DUR} push={0.05} printBand printColor="#F3E3C2" grain={0.04} sfx={STORY_SFX}>
     <Body />
   </Reel>
 );

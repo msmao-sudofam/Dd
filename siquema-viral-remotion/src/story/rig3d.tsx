@@ -54,10 +54,17 @@ export const Figure3D: React.FC<{ pose: Pose; look: Look; skin: string; shirt: s
         {look.mat({ color: skin })}
       </mesh>
       {hair ? (
-        <mesh position={v3([pose.head[0], pose.head[1] + 0.06], -0.01)} scale={[1, 0.6, 1]}>
-          <sphereGeometry args={[0.135, look.segs * 2, look.segs]} />
-          {look.mat({ color: hair })}
-        </mesh>
+        look.boxy ? (
+          <mesh position={v3([pose.head[0], pose.head[1] + 0.13], -0.01)}>
+            <boxGeometry args={[0.25, 0.07, 0.25]} />
+            {look.mat({ color: hair })}
+          </mesh>
+        ) : (
+          <mesh position={v3([pose.head[0], pose.head[1] + 0.06], -0.01)} scale={[1, 0.6, 1]}>
+            <sphereGeometry args={[0.135, look.segs * 2, look.segs]} />
+            {look.mat({ color: hair })}
+          </mesh>
+        )
       ) : null}
       {face ? (
         <>
@@ -84,7 +91,7 @@ export const Bar3D: React.FC<{ f: number; look: Look; bar: string; plate: string
       {[-1, 1].flatMap((s) =>
         PLATE_X.map((px, i) => (
           <mesh key={`${s}-${i}`} position={[s * px, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
-            {look.boxy ? <boxGeometry args={[0.07, (i ? PLATE_R * 0.8 : PLATE_R) * 2, (i ? PLATE_R * 0.8 : PLATE_R) * 2]} /> : <cylinderGeometry args={[i ? PLATE_R * 0.8 : PLATE_R, i ? PLATE_R * 0.8 : PLATE_R, 0.07, look.segs * 2]} />}
+            <cylinderGeometry args={[i ? PLATE_R * 0.8 : PLATE_R, i ? PLATE_R * 0.8 : PLATE_R, 0.07, Math.max(12, look.segs * 2)]} />
             {look.mat({ color: plate })}
           </mesh>
         )),
@@ -110,7 +117,7 @@ export const Shaker3D: React.FC<{ f: number; look: Look; body: string; lid: stri
 };
 
 /** Crowd in front of the platform (z > 0), jumping after the lift; one holds the sign. */
-export const Crowd3D: React.FC<{ f: number; look: Look; skins: string[]; shirts: string[]; z?: number; signColor: string; signText: React.ReactNode }> = ({
+export const Crowd3D: React.FC<{ f: number; look: Look; skins: string[]; shirts: string[]; z?: number; signColor: string; signText: React.ReactNode; signScale?: number }> = ({
   f,
   look,
   skins,
@@ -118,6 +125,7 @@ export const Crowd3D: React.FC<{ f: number; look: Look; skins: string[]; shirts:
   z = 3.0,
   signColor,
   signText,
+  signScale = 1,
 }) => {
   const up = signUp(f);
   return (
@@ -135,7 +143,7 @@ export const Crowd3D: React.FC<{ f: number; look: Look; skins: string[]; shirts:
               {look.mat({ color: skins[i % skins.length] })}
             </mesh>
             {i === 5 && up > 0 ? (
-              <group position={[0, 1.05 + 0.35 * up, 0.05]}>
+              <group position={[0, 1.05 + 0.35 * up, 0.05]} scale={signScale}>
                 <mesh>
                   <boxGeometry args={[0.7, 0.24, 0.03]} />
                   {look.mat({ color: signColor })}

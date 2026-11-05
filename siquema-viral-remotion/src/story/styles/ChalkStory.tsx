@@ -50,7 +50,7 @@ const Drawing: React.FC<{ f: number }> = ({ f }) => {
       </text>
       <line x1={90} y1={486} x2={300} y2={486} stroke={YEL} strokeWidth={5} strokeLinecap="round" />
       {f >= B.lock ? (
-        <text x={90} y={548} fontFamily={CAVEAT} fontSize={46} fill={YEL} style={{ fontWeight: 700 }}>
+        <text x={90} y={1262} fontFamily={CAVEAT} fontSize={46} fill={YEL} style={{ fontWeight: 700 }}>
           FORCE {">"} WEIGHT ✓
         </text>
       ) : null}
@@ -61,11 +61,15 @@ const Drawing: React.FC<{ f: number }> = ({ f }) => {
       ))}
       <Shaker f={f} body="none" lid="none" stroke={IVORY} width={5} />
       <Figure pose={pose} stroke={IVORY} width={9} head={{ fill: "none", r: 0.13 }} />
-      <ChalkCloud f={f} color="rgba(242,238,227,.55)" />
+      <ChalkCloud f={f} color={IVORY} ring />
       <Barbell f={f} bar={IVORY} plate="none" plateStroke={IVORY} width={8} />
       {/* force vs weight, drawn on as the bar moves */}
-      <Arrow x={900} y1={by} y2={by - 170} color={YEL} label="force" k={lifting * prog(f, B.grab, 14, E.inOut)} />
-      <Arrow x={180} y1={by} y2={by + 130} color={PINK} label="weight" k={lifting * prog(f, B.grab + 6, 14, E.inOut)} />
+      {f < B.endLine ? (
+        <>
+          <Arrow x={900} y1={by} y2={by - 110} color={YEL} label="force" k={lifting * prog(f, B.grab, 14, E.inOut)} />
+          <Arrow x={180} y1={by} y2={by + 110} color={PINK} label="weight" k={lifting * prog(f, B.grab + 6, 14, E.inOut)} />
+        </>
+      ) : null}
       {/* chalk crowd: heads + bodies, arms up after the lift */}
       {CROWD.map((x, i) => {
         const cx = 540 + x * 330;
@@ -120,7 +124,7 @@ const Body: React.FC = () => {
 };
 
 export const ChalkStory: React.FC = () => (
-  <Reel dur={STORY_DUR} push={0.05} printColor={IVORY} grain={0.07} sfx={STORY_SFX}>
+  <Reel dur={STORY_DUR} push={0.05} printBand printColor={IVORY} grain={0.07} sfx={STORY_SFX}>
     <Body />
   </Reel>
 );

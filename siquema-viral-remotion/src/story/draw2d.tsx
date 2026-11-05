@@ -75,7 +75,7 @@ export const Shaker: React.FC<{ f: number; map?: Map; body: string; lid: string;
 };
 
 /** Chalk cloud from the clap: a few soft overlapping puffs. */
-export const ChalkCloud: React.FC<{ f: number; map?: Map; color: string }> = ({ f, map = defaultMap, color }) => {
+export const ChalkCloud: React.FC<{ f: number; map?: Map; color: string; ink?: string; ring?: boolean }> = ({ f, map = defaultMap, color, ink, ring }) => {
   const c = chalkAt(f);
   if (!c) return null;
   const k = Math.abs(map([1, 0])[0] - map([0, 0])[0]);
@@ -88,7 +88,7 @@ export const ChalkCloud: React.FC<{ f: number; map?: Map; color: string }> = ({ 
         [0.55, 0.1, 0.75],
         [0.1, -0.4, 0.6],
       ].map(([dx, dy, rr], i) => (
-        <circle key={i} cx={p[0] + dx * c.r * k} cy={p[1] + dy * c.r * k} r={c.r * rr * k} fill={color} />
+        <circle key={i} cx={p[0] + dx * c.r * k} cy={p[1] + dy * c.r * k} r={c.r * rr * k} fill={ring ? "none" : color} stroke={ring ? color : ink} strokeWidth={ring ? 5 : ink ? 7 : 0} strokeDasharray={ring ? "18 10" : undefined} />
       ))}
     </g>
   );

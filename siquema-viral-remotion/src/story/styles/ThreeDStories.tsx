@@ -55,10 +55,44 @@ const ZackDScene: React.FC = () => {
         <boxGeometry args={[2.4, 0.06, 1.4]} />
         {clay.mat({ color: "#C89A6A" })}
       </mesh>
-      {/* soft rounded back wall props: a rack and a clock-free wall */}
+      {/* gym: back wall with big windows onto a soft city, a squat rack, a banner */}
       <mesh position={[0, 2, -2.4]}>
-        <boxGeometry args={[8, 4, 0.2]} />
+        <boxGeometry args={[10, 4.4, 0.2]} />
         {clay.mat({ color: "#E9D9C4" })}
+      </mesh>
+      {[-1.9, 0, 1.9].map((x) => (
+        <group key={x} position={[x, 2.3, -2.28]}>
+          <mesh>
+            <boxGeometry args={[1.5, 1.6, 0.06]} />
+            {clay.mat({ color: "#9CC8E8" })}
+          </mesh>
+          {[-0.45, -0.1, 0.3].map((bx, i) => (
+            <mesh key={bx} position={[bx, -0.8 + (0.35 + i * 0.18) / 2, 0.04]}>
+              <boxGeometry args={[0.28, 0.35 + i * 0.18, 0.02]} />
+              {clay.mat({ color: "#7FA9C9" })}
+            </mesh>
+          ))}
+          <mesh position={[0, 0, 0.05]}>
+            <boxGeometry args={[0.06, 1.6, 0.03]} />
+            {clay.mat({ color: "#F7F2EA" })}
+          </mesh>
+        </group>
+      ))}
+      <group position={[-1.7, 0, -1.4]}>
+        {[-0.35, 0.35].map((dx) => (
+          <mesh key={dx} position={[dx, 0.9, 0]}>
+            <capsuleGeometry args={[0.05, 1.7, 4, 12]} />
+            {clay.mat({ color: "#3A3A40" })}
+          </mesh>
+        ))}
+        <mesh position={[0, 1.5, 0]} rotation={[0, 0, Math.PI / 2]}>
+          <capsuleGeometry args={[0.03, 1.0, 4, 12]} />
+          {clay.mat({ color: "#9AA0A8" })}
+        </mesh>
+      </group>
+      <mesh position={[1.8, 0.75, -2.27]}>
+        <boxGeometry args={[1.2, 0.36, 0.03]} />
+        {clay.mat({ color: "#D7192A" })}
       </mesh>
       <Figure3D pose={poseAt(f)} look={clay} skin="#E8A97E" shirt="#D7192A" pants="#2B2A2A" hair="#3B2416" face />
       <Bar3D f={f} look={clay} bar="#9AA0A8" plate="#D7192A" />
@@ -69,7 +103,7 @@ const ZackDScene: React.FC = () => {
   );
 };
 export const ZackDStory: React.FC = () => (
-  <Reel dur={STORY_DUR} push={0.05} grain={0.04} sfx={STORY_SFX}>
+  <Reel dur={STORY_DUR} push={0.05} printBand grain={0.04} sfx={STORY_SFX}>
     <AbsoluteFill style={{ background: "#CFE0DA" }}>
       <Stage3D>
         <ZackDScene />
@@ -136,7 +170,7 @@ const CgiScene: React.FC = () => {
   );
 };
 export const CgiStory: React.FC = () => (
-  <Reel dur={STORY_DUR} push={0.05} grain={0.05} printColor="#E8E8EE" sfx={STORY_SFX}>
+  <Reel dur={STORY_DUR} push={0.05} printBand grain={0.05} printColor="#E8E8EE" sfx={STORY_SFX}>
     <AbsoluteFill style={{ background: "#1A1530" }}>
       <Stage3D>
         <CgiScene />
@@ -187,12 +221,12 @@ const Ps2Scene: React.FC = () => {
       <Bar3D f={f} look={lambert} bar="#8A8A92" plate="#C21A26" />
       <Shaker3D f={f} look={lambert} body="#E7E1D6" lid="#1B1B1F" />
       <ChalkPuff3D f={f} color="#FFFFFF" />
-      <Crowd3D f={f} look={lambert} skins={SKINS} shirts={SHIRTS} signColor="#F3EEE6" signText={<SignFace text={SIGN} font={INTER} color="#C21A26" bg="#F3EEE6" />} />
+      <Crowd3D f={f} look={lambert} skins={SKINS} shirts={SHIRTS} signScale={1.5} signColor="#F3EEE6" signText={<SignFace text={SIGN} font={INTER} color="#C21A26" bg="#F3EEE6" />} />
     </>
   );
 };
 export const Ps2Story: React.FC = () => (
-  <Reel dur={STORY_DUR} push={0.05} grain={0.06} printColor="#F3EEE6" sfx={STORY_SFX}>
+  <Reel dur={STORY_DUR} push={0.05} printBand grain={0.06} printColor="#F3EEE6" sfx={STORY_SFX}>
     <AbsoluteFill style={{ background: "#3A2C4A" }}>
       <Stage3D dpr={0.25} antialias={false} aces={false} drift={0}>
         <Ps2Scene />
@@ -249,7 +283,7 @@ const LegoScene: React.FC = () => {
         {brick.mat({ color: "#9A9A9A" })}
       </mesh>
       <Figure3D pose={poseAt(f)} look={brick} skin="#E2B98E" shirt="#D7192A" pants="#2E5BBA" hair="#5B3A22" />
-      <Bar3D f={f} look={brick} bar="#5A5A5A" plate="#1B1B1F" />
+      <Bar3D f={f} look={brick} bar="#5A5A5A" plate="#D7192A" />
       <Shaker3D f={f} look={brick} body="#F3EEE6" lid="#1B1B1F" />
       <ChalkPuff3D f={f} color="#FFFFFF" />
       <Crowd3D f={f} look={brick} skins={["#E2B98E", "#C98B5E", "#8D5A3B"]} shirts={SHIRTS} signColor="#F3EEE6" signText={<SignFace text={SIGN} font={BANGERS} color="#D7192A" bg="#F3EEE6" />} />
@@ -257,7 +291,7 @@ const LegoScene: React.FC = () => {
   );
 };
 export const LegoStory: React.FC = () => (
-  <Reel dur={STORY_DUR} push={0.05} grain={0.04} sfx={STORY_SFX}>
+  <Reel dur={STORY_DUR} push={0.05} printBand grain={0.04} sfx={STORY_SFX}>
     <AbsoluteFill style={{ background: "#8FD0F5" }}>
       <Stage3D>
         <LegoScene />

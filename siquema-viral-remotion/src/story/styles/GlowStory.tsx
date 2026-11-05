@@ -82,7 +82,7 @@ const Body: React.FC = () => {
 };
 
 export const GlowStory: React.FC = () => ( // gate: allow glow, internal test of a retired style, never posted
-  <Reel dur={STORY_DUR} push={0.05} printColor={LINE} grain={0.05} sfx={STORY_SFX}>
+  <Reel dur={STORY_DUR} push={0.05} printBand printColor={LINE} grain={0.05} sfx={STORY_SFX}>
     <Body />
   </Reel>
 );
