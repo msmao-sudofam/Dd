@@ -82,10 +82,11 @@ export const ChalkCloud: React.FC<{ f: number; map?: Map; color: string; ink?: s
   const t = 1 - c.alpha / 0.8; // 0 → 1 over the puff's life
   const shrink = Math.min(1, (1 - t) * 2.2);
   // three opaque puffs that drift up and out from the hands, away from the chest, then shrink away
+  // none rise straight up: two drift up and out to the sides, one low and out on a diagonal
   const puffs: [number, number, number][] = [
-    [-0.22 - 0.35 * t, 0.12 + 0.4 * t, 0.07],
-    [0.22 + 0.35 * t, 0.1 + 0.45 * t, 0.075],
-    [0.02, 0.22 + 0.55 * t, 0.06],
+    [-0.24 - 0.4 * t, 0.1 + 0.32 * t, 0.075],
+    [0.24 + 0.42 * t, 0.06 + 0.36 * t, 0.06],
+    [0.3 + 0.3 * t, -0.12 - 0.18 * t, 0.045],
   ];
   return (
     <g>

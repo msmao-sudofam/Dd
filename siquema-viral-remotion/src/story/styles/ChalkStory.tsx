@@ -45,12 +45,8 @@ const Drawing: React.FC<{ f: number }> = ({ f }) => {
   return (
     <g>
       {/* title */}
-      <text x={990} y={1262} textAnchor="end" fontFamily={CAVEAT} fontSize={64} fill={IVORY} style={{ fontWeight: 700 }}>
-        PR 101
-      </text>
-      <line x1={810} y1={1276} x2={990} y2={1276} stroke={YEL} strokeWidth={5} strokeLinecap="round" />
       {f >= B.lock ? (
-        <text x={90} y={1262} fontFamily={CAVEAT} fontSize={46} fill={YEL} style={{ fontWeight: 700 }}>
+        <text x={1000} y={760} textAnchor="end" fontFamily={CAVEAT} fontSize={40} fill={YEL} style={{ fontWeight: 700 }}>
           FORCE {">"} WEIGHT ✓
         </text>
       ) : null}
