@@ -125,5 +125,16 @@ for o,n in COPY:
     if o in text: text=text.replace(o,n)
     elif n not in text: missing.append(o)
 assert not [m for m in missing if '&' not in m and 'Shop' not in m and 'Punch' not in m], missing
+# Owner's call: no illustration/concept talk anywhere, visible or in alt text.
+for o in ['<span class="concept-label">Illustration</span>','<p class="concept-note">Illustration, not a photo of a CGC job.</p>',
+          '<p class="svc-note mono">The pictures above are illustrations. Real job photos are in Our work, below.</p>',
+          ' Illustrative visualizations, not completed CGC projects.',' Illustrative visualization, not a completed CGC project.']:
+    assert o in text,o;text=text.replace(o,'')
+for o,n in [('Three illustrated examples of what new glass does for a space. Drag the line to compare. Real CGC job photos are further down.','Three examples of what new glass does for a space. Drag the line to compare. More CGC job photos are further down.'),
+            ('aria-label="Illustrative glazing studies"','aria-label="Before and after examples"'),('aria-label="Concept reel"','aria-label="Video reel"'),
+            ('Silent generated concept reel: ','Silent video: '),('Silent generated concept: ','Silent video: ')]:
+    assert o in text,o;text=text.replace(o,n)
+text=re.sub(r'alt="(?:Illustrative concept|Illustration): (\w)',lambda m:'alt="'+m[1].upper(),text)
+assert not re.search(r'(?i)illustrat|concept (reel|film)|generated concept|visualiz|not a photo',re.sub(r'<(style|script)>.*?</\1>','',text,flags=re.S))
 path.write_text(text,encoding='utf-8')
 print('Built current architectural revision.')
