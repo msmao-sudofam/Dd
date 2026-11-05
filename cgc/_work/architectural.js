@@ -65,15 +65,29 @@ const end=()=>{touch=null;cmp.classList.remove('dragging')};cmp.addEventListener
 input.addEventListener('input',()=>{glideT0=0;target=pos=+input.value;paint()});paint();
 if(!reduced.matches)new IntersectionObserver((es,o)=>{if(es[0].isIntersecting&&!glided&&!pair.hidden){glided=true;glideT0=performance.now();go(50);o.disconnect()}},{threshold:.6}).observe(cmp)});
 
-// Live glass pane: the drawing follows the calculator inputs.
-const pane=$('.pane');if(pane){const dw=$('.dim-w'),dh=$('.dim-h'),layers=$('.layers'),ll=$('.layers-label');
-const fmt=i=>{const f=Math.floor(i/12),r=+(i%12).toFixed(2);return f+'′'+(r?'-'+r+'″':'')};
-const draw=()=>{const w=+$('#wf').value*12+ +$('#wi').value,h=+$('#hf').value*12+ +$('#hi').value;if(!(w>0&&h>0))return;
-const box=pane.parentNode,bw=box.clientWidth-36,bh=box.clientHeight-46,sc=Math.min(bw/w,bh/h);pane.style.setProperty('--pw',Math.max(6,w*sc)+'px');pane.style.setProperty('--ph',Math.max(6,h*sc)+'px');
-dw.textContent=fmt(w);dh.textContent=fmt(h);const m=$('#makeup'),igu=m.selectedIndex===3,t=+m.value;
-layers.innerHTML=igu?'<i style="width:8px"></i><i class="air" style="width:16px"></i><i style="width:8px"></i>':`<i style="width:${8*t}px"></i>`;
-ll.textContent=m.options[m.selectedIndex].text.split(':')[0].replace(' monolithic','')};
-$('#weight-form').addEventListener('input',draw);addEventListener('resize',draw);draw()}
+// Weight tool: the lite is drawn to scale beside a 6 ft person; drag its corner (or use arrow keys) to size it.
+const lite=$('#lite');if(lite){const stage=$('#lite-stage'),form=$('#weight-form'),person=$('.lite-person'),plabel=$('.lite-person-label'),handle=$('#lite-handle'),out=$('#weight-result'),carry=$$('#lite-carry li'),meter=$('#lite-meter');
+const ft=i=>{const f=Math.floor(i/12),r=+(i%12).toFixed(2);return f+'′'+(r?' '+r+'″':'')};
+const size=()=>({w:+$('#wf').value*12+ +$('#wi').value,h:+$('#hf').value*12+ +$('#hi').value});
+let sc=1,x0=0,base=0,drag=null;
+const draw=()=>{const {w,h}=size();if(!(w>0&&h>0))return;const r=stage.getBoundingClientRect(),pad=28,gap=36,pw=72*40/120;
+// Scale: the person (72 in) and the lite both fit, with room to grow the lite by 2 ft.
+if(!drag)sc=Math.min((r.width-pad*2-gap-pw*1.0)/(Math.max(w,48)+24),(r.height-pad*2-18)/(Math.max(h,72)+12));
+base=r.height-pad;x0=pad+72*sc*40/120+gap;
+person.style.cssText=`height:${72*sc}px;left:${pad}px;bottom:${pad}px`;plabel.style.cssText=`left:${pad}px;bottom:${pad+72*sc+6}px`;
+lite.style.cssText=`left:${x0}px;bottom:${pad}px;width:${w*sc}px;height:${h*sc}px`;stage.style.setProperty('--grid',12*sc+'px');
+$('.lite-dim-w').textContent=ft(w);$('.lite-dim-h').textContent=ft(h);
+const m=$('#makeup input:checked'),t=+m.value,lb=w*h/144*3.27*t;
+$('#lite-area').textContent=(w*h/144).toFixed(1)+' ft²';$('#lite-psf').textContent=(3.27*t).toFixed(2)+' lb';
+const band=lb<=100?0:lb<=250?1:lb<=800?2:3;carry.forEach((li,k)=>li.classList.toggle('on',k===band));meter.style.width=Math.min(100,Math.log10(Math.max(lb,10))/Math.log10(3000)*100)+'%';
+lite.classList.toggle('igu',m.hasAttribute('data-igu'));out.classList.remove('tick');void out.offsetWidth;out.classList.add('tick')};
+const set=(w,h)=>{w=Math.max(6,Math.min(1200,Math.round(w)));h=Math.max(6,Math.min(1200,Math.round(h)));
+$('#wf').value=Math.floor(w/12);$('#wi').value=w%12;$('#hf').value=Math.floor(h/12);$('#hi').value=h%12;form.dispatchEvent(new Event('input',{bubbles:true}))};
+handle.addEventListener('pointerdown',e=>{e.preventDefault();handle.setPointerCapture(e.pointerId);drag=stage.getBoundingClientRect();stage.classList.add('dragging')});
+handle.addEventListener('pointermove',e=>{if(!drag)return;set((Math.min(e.clientX-drag.left,drag.width-12)-x0)/sc,(drag.top+base-Math.max(e.clientY,drag.top+12))/sc)});
+const end=()=>{drag=null;stage.classList.remove('dragging');draw()};handle.addEventListener('pointerup',end);handle.addEventListener('pointercancel',end);
+handle.addEventListener('keydown',e=>{const d={ArrowRight:[1,0],ArrowLeft:[-1,0],ArrowUp:[0,1],ArrowDown:[0,-1]}[e.key];if(!d)return;e.preventDefault();const s=e.shiftKey?12:1,{w,h}=size();set(w+d[0]*s,h+d[1]*s)});
+form.addEventListener('input',draw);addEventListener('resize',draw);draw()}
 
 // Scope hover loops: real CGC field clips only, desktop hover, loaded on first hover.
 const LOOPS={'Interior glass & office fronts':'frameless-glass-offices-walkthrough','Entrances & doors':'interior-glass-black-frame-walkthrough','Service & repair':'glass-on-rack-truck'};

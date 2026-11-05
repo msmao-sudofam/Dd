@@ -30,11 +30,13 @@ text=text.replace('<div class="faq">',(root/'_work/walk-film.html').read_text(en
 text=text.replace('srcset="assets/logo-v3-mark.svg"><img src="assets/logo-v3.svg"','srcset="assets/logo-v3-mark-dark.svg"><img src="assets/logo-v3-dark.svg"',1).replace('<meta name="theme-color" content="#ffffff">','<meta name="theme-color" content="#1b2329">')
 text=text.replace('href="/assets/fonts/archivo.woff2"','href="/assets/fonts/geist.woff2"')
 # Logo draw-in: the rings are inline SVG (strokes can animate), the wordmark is its own file.
-brand='<a class="brand" href="#film" aria-label="CGC home">'+(root/'_work/brand-mark.svg').read_text(encoding='utf-8')+'<img class="brand-word" src="assets/logo-v3-word-dark.svg" alt="Commercial Glazing Contractors Inc." width="234" height="46"></a>'
-text,n=re.subn(r'<a class="brand" href="#film" aria-label="CGC home">.*?</a>',lambda _:brand,text,count=1,flags=re.S);assert n==1
-# Live glass pane above the weight result.
-pane='<div class="pane-viz" aria-hidden="true"><div class="pane-box"><div class="pane"><i class="sheen"></i></div><span class="dim dim-w"></span><span class="dim dim-h"></span></div><div class="pane-section"><span class="mono">Section</span><div class="layers"></div><span class="layers-label mono"></span></div></div>'
-text=text.replace('<div class="result"><span class="mono">Approximate glass weight</span>','<div class="result">'+pane+'<span class="mono">Approximate glass weight</span>',1)
+brand='<a class="brand" href="#build" aria-label="CGC home">'+(root/'_work/brand-mark.svg').read_text(encoding='utf-8')+'<img class="brand-word" src="assets/logo-v3-word-dark.svg" alt="Commercial Glazing Contractors Inc." width="234" height="46"></a>'
+text,n=re.subn(r'<a class="brand" href="#(?:film|build)" aria-label="CGC home">.*?</a>',lambda _:brand,text,count=1,flags=re.S);assert n==1
+# Weight tool: drag-to-size lite with a 6 ft person for scale, makeup chips and a handling meter.
+a=text.index('<div class="tool-grid">');b=text.index('</div></section><section class="section" id="bid">')
+text=text[:a]+(root/'_work/weight-tool.html').read_text(encoding='utf-8')+text[b:]
+old="Number($('#makeup').value)";assert text.count(old)==1
+text=text.replace(old,"Number($('#makeup input:checked').value)")
 # Process icons: one line drawing per step, drawn in when the step scrolls into view (CSS).
 ICONS={'Send plans':['M6 3h8l4 4v14H6z','M14 3v4h4','M9 16l6-6','M11 10h4v4'],
  'Takeoff + scope sheet':['M3 17L17 3l4 4L7 21z','M7 13l2 2','M10 10l2 2','M13 7l2 2'],
