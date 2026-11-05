@@ -23,6 +23,11 @@ backs it.
 
 **AI people as testimonials.** A generated face never carries a customer quote.
 
+**Cartoon characters are OK (M Mo, 2026-11-05).** Clearly drawn or animated characters (pixel sprites,
+stick figures, comic art, flat illustration, clay or toy-style 3D) may act out a story: lifting, cheering,
+holding a sign. They are never realistic AI people, never presented as customers, and never give a quote
+or a result ("I lost…", "this works…"). The tub and label are still never drawn or modeled.
+
 ## Careful (gate WARNs; only OK if it's verbatim from the real label)
 
 - "fat burner" / "thermogenic fat burner". The product category may be printed on

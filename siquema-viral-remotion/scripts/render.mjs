@@ -48,7 +48,11 @@ const fileFor = (id) => {
 console.log("bundling…");
 const serveUrl = await bundle({ entryPoint: path.join(root, "src", "index.ts") });
 const comps = await getCompositions(serveUrl, { browserExecutable, envVariables });
-const ids = comps.filter((c) => c.id !== "ContactSheet").map((c) => c.id).filter((id) => only.length === 0 || only.includes(id));
+// Internal* compositions (retired styles, stamped NOT FOR POSTING) render only when named.
+const ids = comps
+  .filter((c) => c.id !== "ContactSheet")
+  .map((c) => c.id)
+  .filter((id) => (only.length === 0 ? !id.startsWith("Internal") : only.includes(id)));
 if (only.length && ids.length !== only.length) {
   console.error("unknown composition(s):", only.filter((x) => !ids.includes(x)).join(", "));
   process.exit(1);

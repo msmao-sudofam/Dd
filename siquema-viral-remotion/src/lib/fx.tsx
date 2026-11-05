@@ -8,6 +8,7 @@ import {
   Sequence,
   staticFile,
   useCurrentFrame,
+  useVideoConfig,
 } from "remotion";
 import { C, FDA, FINE_PRINT, H, INTER, MONO, SAFE_BOTTOM, W, sec } from "./theme";
 
@@ -30,6 +31,14 @@ export const punchScale = (f: number, hits: number[], amount = 0.05) => {
     if (d >= 0 && d < 10) s = Math.max(s, 1 + amount * Math.exp(-d / 3));
   }
   return s;
+};
+
+/** Slow push-in on the content; frozen at frame 0 for the loop-back, so the cover is unscaled. */
+export const Push: React.FC<{ amount: number; children: React.ReactNode }> = ({ amount, children }) => {
+  const f = useCurrentFrame();
+  const { durationInFrames } = useVideoConfig();
+  if (!amount) return <>{children}</>;
+  return <AbsoluteFill style={{ transform: `scale(${1 + (amount * f) / durationInFrames})`, transformOrigin: "540px 864px" }}>{children}</AbsoluteFill>;
 };
 
 export const Punch: React.FC<{ hits: number[]; children: React.ReactNode }> = ({ hits, children }) => {
@@ -155,8 +164,10 @@ export const Reel: React.FC<{
   /** Fine-print color, or a function of frame (evaluated at frame 0 during the loop-back). */
   printColor?: string | ((f: number) => string);
   grain?: number;
+  /** slow camera push over the whole piece (0.04 = 1 → 1.04) */
+  push?: number;
   children: React.ReactNode;
-}> = ({ dur, hits = [], sfx = [], fda, printColor, grain, children }) => {
+}> = ({ dur, hits = [], sfx = [], fda, printColor, grain, push = 0, children }) => {
   const f = useCurrentFrame();
   const all: Sfx[] = [...sfx, { at: dur - LOOP - 2, s: "whoosh", v: 0.25 }]; // gate: allow stock-sfx, synthesized, loop slide only
   const pf = f >= dur - LOOP / 2 ? 0 : f;
@@ -164,7 +175,9 @@ export const Reel: React.FC<{
   return (
     <AbsoluteFill style={{ backgroundColor: C.dark }}>
       <LoopBack dur={dur}>
-        <Punch hits={hits}>{children}</Punch>
+        <Punch hits={hits}>
+          <Push amount={push}>{children}</Push>
+        </Punch>
       </LoopBack>
       <Grain opacity={grain} />
       <FinePrint fda={fda} color={pc} />

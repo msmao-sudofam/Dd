@@ -15,6 +15,11 @@ applied to:     <slop.md / moves.json:<id> / principles.md / brand.md>
 
 ---
 
+## 2026-11-05 · Animation Studio, promo reference
+my note:        (sent the promo recording) "come up with ur own ideas" · "Allow cartoon characters" · "All 10"
+what it learned: The promo sells STORY, not information: one hero doing one spectacular action (a car that lifts off), in a full world (skyline, sky, ground), with characters reacting (a crowd, a sign), told identically in every style, with almost no text. Build ads that way: one story, a hero action, environment, a reacting crowd, one label line at the end. Cartoon characters are allowed (compliance.md).
+applied to:     compliance.md, slop.md, next build ("PR DAY" in all 10 styles)
+
 ## 2026-11-05 · Animation Studio style examples (6 ads)
 my note:        "none of these motion graphics looks like the video i got the skill from said it would look like"
 what it learned: Before building a style, get the reference that sold it (the promo video or screenshots) and match its look shot by shot. Clean procedural diagrams that only follow the style guide's rules read as a different product. Ask for the reference first; don't build from the text guide alone.
