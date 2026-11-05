@@ -11,7 +11,7 @@ for(const width of [360,390,430,1440]){
   page.on('pageerror',e=>errors.push(e.message));page.on('console',e=>{if(e.type()==='error')errors.push(e.text())});
   await page.goto(baseURL);await page.evaluate(()=>document.fonts.ready);
   await page.screenshot({path:`_test/results/v4-hero-${width}.png`});
-  await page.waitForFunction(()=>{const v=document.querySelector('#intro-film');return !v.paused&&v.readyState>=2&&!!v.currentSrc},null,{timeout:15000});
+  await page.locator('#film').scrollIntoViewIfNeeded();await page.waitForFunction(()=>{const v=document.querySelector('#intro-film');return !v.paused&&v.readyState>=2&&!!v.currentSrc},null,{timeout:15000});
   const autoSource=await page.locator('#intro-film').evaluate(v=>v.currentSrc);assert(autoSource.includes(width<761?'reel/mobile.mp4':'reel/desktop.mp4'),'Autoplay uses the responsive film source');
   assert.match(await page.locator('.film-tag').textContent(),/Concept film/);
   await page.waitForFunction(()=>document.querySelector('#film-toggle').getAttribute('aria-pressed')==='true');
@@ -19,11 +19,11 @@ for(const width of [360,390,430,1440]){
   assert.equal(await tabs.nth(2).getAttribute('aria-selected'),'true');assert(await page.locator('#concept-panel-2').isVisible());assert(!await page.locator('#concept-panel-0').isVisible());
   await page.keyboard.press('ArrowRight');assert.equal(await tabs.nth(0).getAttribute('aria-selected'),'true');
   const layout=await page.evaluate(()=>({overflow:document.documentElement.scrollWidth-innerWidth,smallTargets:[...document.querySelectorAll('button,a.btn,header a,.mobile-bar a,input[type=range]')].filter(e=>e.getBoundingClientRect().width&&getComputedStyle(e).visibility!=='hidden'&&!e.closest('.pair label')).filter(e=>{const r=e.getBoundingClientRect();return r.width<44||r.height<44}).map(e=>e.id||e.textContent.slice(0,40)),smallInputs:[...document.querySelectorAll('input,select,textarea')].filter(e=>e.offsetWidth&&e.name!=='hp'&&e.type!=='checkbox').filter(e=>parseFloat(getComputedStyle(e).fontSize)<16).map(e=>e.id)}));
-  const violations=(await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze()).violations.map(v=>({id:v.id,nodes:v.nodes.map(n=>n.target)}));
+  await page.waitForTimeout(1500);const violations=(await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze()).violations.map(v=>({id:v.id,nodes:v.nodes.map(n=>n.target)}));
   for(const id of ['before-after','install','work','bid','faq']){
     await page.locator('#'+id).scrollIntoViewIfNeeded();await page.screenshot({path:`_test/results/v4-${id}-${width}.png`});
   }
-  await page.locator('.film-stage').scrollIntoViewIfNeeded();
+  await page.locator('.film-stage').scrollIntoViewIfNeeded();await page.waitForTimeout(1500);
   if(await page.locator('#intro-film').evaluate(v=>v.paused))await page.locator('#film-toggle').click();
   await page.waitForFunction(()=>{const v=document.querySelector('#intro-film');return !v.paused&&v.readyState>=2},null,{timeout:15000});
   const source=await page.locator('#intro-film').evaluate(v=>v.currentSrc);assert(source.includes(width<761?'reel/mobile.mp4':'reel/desktop.mp4'),'Resumed film keeps the responsive source');
