@@ -35,7 +35,7 @@ const Body: React.FC = () => {
         {CROWD.flatMap((x, i) =>
           [0, 1].map((row) => {
             const cx = 540 + x * 330 + row * 165 - 80;
-            const cy = 1360 + row * 46 - crowdJump(f, i + row) * 220;
+            const cy = 1392 + row * 38 - crowdJump(f, i + row) * 200;
             const arm = f >= B.cheer && !row ? 1 : 0;
             return (
               <g key={`${i}-${row}`} opacity={row ? 0.55 : 0.9}>
@@ -52,7 +52,7 @@ const Body: React.FC = () => {
           }),
         )}
         {up > 0 ? (
-          <text x={540} y={1338 - 14 * up} textAnchor="middle" fontFamily={INTER} fontWeight={800} fontSize={40} fill={W} opacity={up} letterSpacing="0.1em">
+          <text x={540} y={1356} textAnchor="middle" fontFamily={INTER} fontWeight={800} fontSize={40} fill={W} opacity={up} letterSpacing="0.1em">
             {SIGN}
           </text>
         ) : null}

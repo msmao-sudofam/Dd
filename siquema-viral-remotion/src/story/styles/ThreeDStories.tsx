@@ -14,16 +14,20 @@ import { Stage3D } from "../stage3d";
 const ChalkPuff3D: React.FC<{ f: number; color: string }> = ({ f, color }) => {
   const c = chalkAt(f);
   if (!c) return null;
+  const t = 1 - c.alpha / 0.8;
+  const shrink = Math.min(1, (1 - t) * 2.2);
+  // solid matte puffs drifting up and out from the hands (no transparency)
+  const puffs: [number, number, number][] = [
+    [-0.22 - 0.35 * t, 0.12 + 0.4 * t, 0.07],
+    [0.22 + 0.35 * t, 0.1 + 0.45 * t, 0.075],
+    [0.02, 0.22 + 0.55 * t, 0.06],
+  ];
   return (
-    <group position={[c.x, c.y, 0.25]}>
-      {[
-        [0, 0, 1],
-        [-0.5, 0.15, 0.7],
-        [0.5, 0.1, 0.75],
-      ].map(([dx, dy, s], i) => (
-        <mesh key={i} position={[dx * c.r, dy * c.r, 0]}>
-          <sphereGeometry args={[c.r * s, 16, 12]} />
-          <meshBasicMaterial color={color} transparent opacity={c.alpha * 0.8} depthWrite={false} />
+    <group position={[c.x, c.y, 0.3]}>
+      {puffs.map(([dx, dy, r], i) => (
+        <mesh key={i} position={[dx, dy, 0]} scale={shrink}>
+          <sphereGeometry args={[r + 0.05 * t, 16, 12]} />
+          <meshStandardMaterial color={color} roughness={1} />
         </mesh>
       ))}
     </group>

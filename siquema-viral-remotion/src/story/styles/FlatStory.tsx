@@ -59,7 +59,7 @@ const Body: React.FC = () => {
         <line x1={torsoA[0] + 22} y1={torsoA[1] + 20} x2={torsoB[0] + 22} y2={torsoB[1]} stroke={P.redS} strokeWidth={34} strokeLinecap="round" />
         <line x1={map(pose.hipL)[0]} y1={map(pose.hipL)[1]} x2={map(pose.hipR)[0]} y2={map(pose.hipR)[1]} stroke={P.ink} strokeWidth={60} strokeLinecap="round" />
         <path d={`M ${head[0] - 48} ${head[1] - 6} Q ${head[0] - 40} ${head[1] - 60} ${head[0]} ${head[1] - 58} Q ${head[0] + 48} ${head[1] - 56} ${head[0] + 46} ${head[1] - 2} Q ${head[0]} ${head[1] - 30} ${head[0] - 48} ${head[1] - 6} Z`} fill={P.hair} />
-        <ChalkCloud f={f} color="#F3EEE6" />
+        <ChalkCloud f={f} color="#EDE6DA" />
         <Barbell f={f} bar="#C9CDD4" plate={P.red} width={12} />
         {/* crowd silhouettes with phones up after the lift */}
         {CROWD.map((x, i) => {

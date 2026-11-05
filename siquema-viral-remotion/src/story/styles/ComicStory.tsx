@@ -89,7 +89,7 @@ const Body: React.FC = () => {
         <line x1={torsoA[0]} y1={torsoA[1] + 10} x2={torsoB[0]} y2={torsoB[1]} stroke={INK} strokeWidth={96} strokeLinecap="round" />
         <line x1={torsoA[0]} y1={torsoA[1] + 10} x2={torsoB[0]} y2={torsoB[1]} stroke={RED} strokeWidth={80} strokeLinecap="round" />
         <path d={`M ${map(pose.head)[0] - 46} ${map(pose.head)[1] - 10} Q ${map(pose.head)[0]} ${map(pose.head)[1] - 80} ${map(pose.head)[0] + 46} ${map(pose.head)[1] - 10}`} fill={INK} />
-        <ChalkCloud f={f} color="#FFFFFF" ink={INK} />
+        <ChalkCloud f={f} color="#FFF8E7" ink={INK} />
         <Barbell f={f} bar={INK} plate={RED} plateStroke={INK} width={14} />
         <Crowd f={f} skin={[SKIN, "#C98B5E", "#8D5A3B"]} shirt={[RED, "#2E5BBA", YEL, "#3E8E3A"]} outline={INK} outlineW={7} signBg="#FFFFFF" signFg={RED} signFont={BANGERS} />
         <Burst k={burst} />

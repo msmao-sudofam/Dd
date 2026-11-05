@@ -79,17 +79,21 @@ export const ChalkCloud: React.FC<{ f: number; map?: Map; color: string; ink?: s
   const c = chalkAt(f);
   if (!c) return null;
   const k = Math.abs(map([1, 0])[0] - map([0, 0])[0]);
-  const p = map([c.x, c.y]);
+  const t = 1 - c.alpha / 0.8; // 0 → 1 over the puff's life
+  const shrink = Math.min(1, (1 - t) * 2.2);
+  // three opaque puffs that drift up and out from the hands, away from the chest, then shrink away
+  const puffs: [number, number, number][] = [
+    [-0.22 - 0.35 * t, 0.12 + 0.4 * t, 0.07],
+    [0.22 + 0.35 * t, 0.1 + 0.45 * t, 0.075],
+    [0.02, 0.22 + 0.55 * t, 0.06],
+  ];
   return (
-    <g opacity={c.alpha}>
-      {[
-        [0, 0, 1],
-        [-0.5, 0.15, 0.7],
-        [0.55, 0.1, 0.75],
-        [0.1, -0.4, 0.6],
-      ].map(([dx, dy, rr], i) => (
-        <circle key={i} cx={p[0] + dx * c.r * k} cy={p[1] + dy * c.r * k} r={c.r * rr * k} fill={ring ? "none" : color} stroke={ring ? color : ink} strokeWidth={ring ? 5 : ink ? 7 : 0} strokeDasharray={ring ? "18 10" : undefined} />
-      ))}
+    <g>
+      {puffs.map(([dx, dy, rr], i) => {
+        const q = map([c.x + dx, c.y + dy]);
+        const r = (rr + 0.06 * t) * k * shrink;
+        return <circle key={i} cx={q[0]} cy={q[1]} r={r} fill={ring ? "none" : color} stroke={ring ? color : ink} strokeWidth={ring ? 5 : ink ? 6 : 0} strokeDasharray={ring ? "18 10" : undefined} />;
+      })}
     </g>
   );
 };
