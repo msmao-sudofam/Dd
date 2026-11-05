@@ -81,5 +81,7 @@ for name,svg in FX.items():
     text=text[:m.start(2)]+'<div class="svc-media">'+img+'<svg class="svc-fx" viewBox="0 0 280 170" aria-hidden="true" focusable="false">'+svg+'</svg></div>'+text[m.end(2):]
 old='</article></div></div></section>';assert text.count(old)==1
 text=text.replace(old,'</article></div><p class="svc-note mono">Row images are generated illustrations. CGC jobsite photos are in From the field.</p></div></section>',1)
+# Line arrow: iOS draws the ↗ character as a blue emoji.
+text=text.replace('<span aria-hidden="true">↗</span>','<span aria-hidden="true" class="arr"><svg viewBox="0 0 12 12"><path d="M3 9 9 3M4 3h5v5"/></svg></span>')
 path.write_text(text,encoding='utf-8')
 print('Built current architectural revision.')

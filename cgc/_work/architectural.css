@@ -329,3 +329,16 @@ footer .footer-logo img.ft-word{background:none;padding:0;width:auto;height:40px
 .faq details[open] summary:after{transform:rotate(45deg)}
 .faq summary:hover{color:var(--mute)}
 .svc-note{margin-top:18px;font-size:10px;letter-spacing:.04em;text-transform:uppercase;color:#8f8b84}
+/* Film bar v3: one quiet line, borderless icon controls */
+#film .film-bottom{gap:16px;padding:14px 0}
+#film .film-bottom>.film-tag{color:#8f8b84;gap:0}
+.film-note a{color:#8f8b84}
+#film #film-toggle,#film #film-captions{border:0;background:none;min-height:44px;padding:0;color:#d8d4cc;display:inline-flex;align-items:center;justify-content:center}
+#film #film-toggle{width:44px}#film #film-toggle svg{width:14px;height:14px;fill:currentColor}
+#film #film-toggle[aria-pressed=true] .i-play,#film #film-toggle[aria-pressed=false] .i-pause{display:none}
+#film #film-captions{width:auto;padding:0 4px;font:10px var(--f-mono);letter-spacing:.06em;color:#8f8b84}
+#film #film-captions[aria-pressed=true]{color:#d8d4cc}
+#film #film-toggle:hover,#film #film-captions:hover{color:#fff}
+.arr svg{width:.75em;height:.75em;fill:none;stroke:currentColor;stroke-width:1.5;vertical-align:middle}
+.footer-title .arr svg{stroke-width:1.2}
+#film .film-note{margin-left:.5em}#film .film-bottom{gap:8px}#film .film-bottom>.film-tag{margin-right:8px}
