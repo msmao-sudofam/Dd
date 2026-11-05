@@ -409,3 +409,6 @@ header .btn{display:none}
 @media(max-width:760px){.build-hero h1{font-size:clamp(52px,15vw,64px)}#film .film-stage{padding-top:20px!important;padding-bottom:24px!important}}
 @media(max-width:760px){#film .cinema-poster,#film .cinema-video{grid-row:1}}
 @media(max-width:760px){#film{padding-top:0}#film .film-stage{padding-top:24px!important}}
+@media(max-width:760px){.build-hero .build-canvas{object-position:center}}
+.build-hero .build-shade:before{content:'';position:absolute;inset:0 0 auto;height:200px;background:linear-gradient(rgba(10,10,10,.6),rgba(10,10,10,0))}
+.build-hero[data-n="131"].scrub{height:520svh}

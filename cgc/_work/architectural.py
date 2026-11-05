@@ -86,4 +86,14 @@ text=text.replace(old,'</article></div><p class="svc-note mono">Row images are g
 # Line arrow: iOS draws the ↗ character as a blue emoji.
 text=text.replace('<span aria-hidden="true">↗</span>','<span aria-hidden="true" class="arr"><svg viewBox="0 0 12 12"><path d="M3 9 9 3M4 3h5v5"/></svg></span>')
 path.write_text(text,encoding='utf-8')
+# Test variant (unlisted, noindex): the concept reel is the scroll hero, the build film plays mid-page.
+v=text.replace('<section class="build-film build-hero" id="build"','<section class="build-film build-hero" id="build" data-frames="assets/film/reelscroll" data-n="131"',1)
+v=v.replace('src="assets/film/build/d081.webp" alt="Illustrative concept: a finished office building wrapped in glass at sunrise"','src="assets/film/reelscroll/d131.webp" alt="Illustrative concept: glass doors open onto a lit lobby"',1)
+v=v.replace('<li>Open frame</li><li>Glass set</li><li>One clean skin</li>','<li>Storefront</li><li>The lift</li><li>The seal</li><li>Lit floors</li><li>One skin</li><li>Entrance</li>',1)
+v=re.sub(r'<picture class="cinema-poster">.*?</picture>','<picture class="cinema-poster"><img src="assets/film/build/d081.webp" alt="Illustrative concept: a finished office building wrapped in glass at sunrise" width="1920" height="1080" loading="lazy"></picture>',v,count=1,flags=re.S)
+v=re.sub(r'<video id="intro-film"([^>]*?)aria-label="[^"]*"',r'<video id="intro-film" data-dir="assets/film/buildclip"aria-label="Silent generated concept: an office building frame is wrapped in glass floor by floor. Not a completed CGC project."',v,count=1)
+v=re.sub(r'<track kind="captions" src="assets/film/reel/captions.vtt"[^>]*>','',v,count=1)
+v=v.replace('<head>','<head><meta name="robots" content="noindex">',1)
+assert v.count('data-dir="assets/film/buildclip"')==1 and v.count('reelscroll/d131')==1
+(root/'site/reel-hero.html').write_text(v,encoding='utf-8')
 print('Built current architectural revision.')

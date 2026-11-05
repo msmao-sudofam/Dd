@@ -14,7 +14,7 @@ for(const width of [360,390,430,1440]){
   await page.locator('#film').scrollIntoViewIfNeeded();await page.waitForFunction(()=>{const v=document.querySelector('#intro-film');return !v.paused&&v.readyState>=2&&!!v.currentSrc},null,{timeout:15000});
   const autoSource=await page.locator('#intro-film').evaluate(v=>v.currentSrc);assert(autoSource.includes(width<761?'reel/mobile.mp4':'reel/desktop.mp4'),'Autoplay uses the responsive film source');
   assert.match(await page.locator('.film-tag').textContent(),/Concept film/);
-  await page.waitForFunction(()=>document.querySelector('#film-toggle').getAttribute('aria-pressed')==='true');
+  assert.equal(await page.locator('#film-toggle,#film-captions').count(),0,'Reel has no pause or caption controls (owner request)');
   const tabs=page.getByRole('tab');await tabs.nth(0).focus();await page.keyboard.press('End');
   assert.equal(await tabs.nth(2).getAttribute('aria-selected'),'true');assert(await page.locator('#concept-panel-2').isVisible());assert(!await page.locator('#concept-panel-0').isVisible());
   await page.keyboard.press('ArrowRight');assert.equal(await tabs.nth(0).getAttribute('aria-selected'),'true');
@@ -24,12 +24,8 @@ for(const width of [360,390,430,1440]){
     await page.locator('#'+id).scrollIntoViewIfNeeded();await page.screenshot({path:`_test/results/v4-${id}-${width}.png`});
   }
   await page.locator('.film-stage').scrollIntoViewIfNeeded();await page.waitForTimeout(1500);
-  if(await page.locator('#intro-film').evaluate(v=>v.paused))await page.locator('#film-toggle').click();
   await page.waitForFunction(()=>{const v=document.querySelector('#intro-film');return !v.paused&&v.readyState>=2},null,{timeout:15000});
   const source=await page.locator('#intro-film').evaluate(v=>v.currentSrc);assert(source.includes(width<761?'reel/mobile.mp4':'reel/desktop.mp4'),'Resumed film keeps the responsive source');
-  await page.locator('#film-toggle').click();await page.waitForFunction(()=>document.querySelector('#film-toggle').getAttribute('aria-pressed')==='false');assert(await page.locator('#intro-film').evaluate(v=>v.paused),'Pause control stops the film');
-  await page.locator('#film-toggle').click();await page.waitForFunction(()=>{const v=document.querySelector('#intro-film');return !v.paused&&v.readyState>=2&&document.querySelector('#film-toggle').getAttribute('aria-pressed')==='true'});
-  await page.locator('#film-captions').click();assert.equal(await page.locator('#film-captions').getAttribute('aria-pressed'),'true');
   if(width===390){
     await page.locator('.field-films>summary').click();await page.locator('#clip-0').scrollIntoViewIfNeeded();
     await page.waitForFunction(()=>{const v=document.querySelector('#clip-0');return v.readyState>=2&&!v.paused&&!!v.poster});
