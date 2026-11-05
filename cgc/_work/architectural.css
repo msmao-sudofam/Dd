@@ -352,3 +352,14 @@ header .btn{display:none}
 .mobile-bar a:nth-child(2){background:#fff;color:#0b0b0b;font-weight:500}
 }
 @media(max-width:760px){.brand-word{flex-shrink:0;height:auto;width:calc(100vw - 150px);max-width:250px}}
+/* Phone hero, minimal: film controls float on the video, no license row, no marquee; Call lives in the bottom bar */
+@media(max-width:760px){
+#film{position:relative}
+#film .film-bottom{position:absolute;top:calc(60px + 56.25vw - 52px);right:20px;left:auto;width:auto;padding:0 2px 0 12px;gap:0;background:rgba(10,10,10,.6);border-radius:22px;backdrop-filter:blur(6px)}
+#film .film-cred,#film .film-progress{display:none}
+#film .film-bottom>.film-tag{margin:0 2px 0 0;font-size:9px;color:#d8d4cc}
+#film #film-captions{color:#d8d4cc}
+#film .hero-actions .btn.ghost{display:none}
+.marquee{display:none}
+}
+@media(max-width:760px){#film .hero-actions{padding-bottom:32px}}
