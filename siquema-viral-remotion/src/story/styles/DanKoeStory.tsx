@@ -29,7 +29,23 @@ const Body: React.FC = () => {
         {joints.map(([x, y], i) => (
           <circle key={i} cx={x} cy={y} r={6} fill={W} />
         ))}
-        {c ? <circle cx={540} cy={map([0, c.y])[1]} r={c.r * 360} fill="none" stroke={W} strokeWidth={2} opacity={c.alpha} /> : null}
+        {c ? (() => {
+          // chalk dust as dot travel: a few dots leave the hands along short straight lines (no ring)
+          const t = 1 - c.alpha / 0.8;
+          const o = map([0, c.y]);
+          return [-2.5, -0.6, 0.6, 2.5].map((a, i) => {
+            const d = (0.12 + 0.42 * t) * 360;
+            const ang = -Math.PI / 2 + a * 0.45;
+            const x = o[0] + Math.cos(ang) * d * (i % 2 ? 1 : 1.25);
+            const y = o[1] + Math.sin(ang) * d * 0.55 + 40 * t;
+            return (
+              <g key={i} opacity={1 - t * 0.6}>
+                <line x1={o[0] + Math.cos(ang) * 30} y1={o[1] + Math.sin(ang) * 16} x2={x} y2={y} stroke={W} strokeWidth={1.5} strokeDasharray={undefined} opacity={0.4} />
+                <circle cx={x} cy={y} r={6} fill={W} />
+              </g>
+            );
+          });
+        })() : null}
         <Barbell f={f} bar={locked ? C.brightRed : W} plate="none" plateStroke={locked ? C.brightRed : W} width={3} />
         {/* the crowd: a row of dots that rise when the bar locks out */}
         {CROWD.flatMap((x, i) =>

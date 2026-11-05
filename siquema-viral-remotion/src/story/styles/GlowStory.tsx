@@ -57,7 +57,23 @@ const Body: React.FC = () => {
           <Barbell f={f} bar={GOLD} plate="none" plateStroke={GOLD} width={8} dash="1 12" />
           <Shaker f={f} body="none" lid="none" stroke={LINE} width={4} />
         </Glowing> {/* gate: allow glow, internal test of a retired style, never posted */}
-        {c ? <circle cx={540} cy={map([0, c.y])[1]} r={c.r * 360} fill="none" stroke={LINE} strokeWidth={4} strokeDasharray="1 10" opacity={c.alpha} /> : null}
+        {c ? (() => {
+          // chalk dust as dot travel: a few dots leave the hands along short straight lines (no ring)
+          const t = 1 - c.alpha / 0.8;
+          const o = map([0, c.y]);
+          return [-2.5, -0.6, 0.6, 2.5].map((a, i) => {
+            const d = (0.12 + 0.42 * t) * 360;
+            const ang = -Math.PI / 2 + a * 0.45;
+            const x = o[0] + Math.cos(ang) * d * (i % 2 ? 1 : 1.25);
+            const y = o[1] + Math.sin(ang) * d * 0.55 + 40 * t;
+            return (
+              <g key={i} opacity={1 - t * 0.6}>
+                <line x1={o[0] + Math.cos(ang) * 30} y1={o[1] + Math.sin(ang) * 16} x2={x} y2={y} stroke={LINE} strokeWidth={3} strokeDasharray={"1 10"} opacity={0.4} />
+                <circle cx={x} cy={y} r={6} fill={LINE} />
+              </g>
+            );
+          });
+        })() : null}
         {/* crowd: dotted heads, rising after the lift */}
         {CROWD.map((x, i) => {
           const cx = 540 + x * 330;
