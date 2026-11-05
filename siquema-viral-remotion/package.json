@@ -1,7 +1,7 @@
 {
   "name": "siquema-viral-remotion",
   "version": "1.0.0",
-  "description": "S\u00ed Quema viral cut reels (Remotion)",
+  "description": "Sí Quema viral cut reels (Remotion)",
   "repository": {},
   "license": "UNLICENSED",
   "engines": {
@@ -9,14 +9,18 @@
   },
   "private": true,
   "dependencies": {
+    "@react-three/fiber": "^9.8.1",
     "@remotion/bundler": "^4.0.539",
     "@remotion/cli": "4.0.539",
     "@remotion/fonts": "^4.0.539",
     "@remotion/google-fonts": "^4.0.539",
     "@remotion/renderer": "^4.0.539",
+    "@remotion/three": "^4.0.539",
+    "@types/three": "^0.180.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "remotion": "4.0.539",
+    "three": "^0.180.0",
     "zod": "^4.5.4"
   },
   "devDependencies": {

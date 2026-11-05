@@ -1,4 +1,10 @@
-import { Composition } from "remotion";
+import { Composition, Folder } from "remotion";
+import { ChalkboardAd, CHALK_AD_DUR } from "./styles/ChalkboardAd";
+import { ComicArtAd, COMIC_AD_DUR } from "./styles/ComicArtAd";
+import { DanKoeAd, DANKOE_AD_DUR } from "./styles/DanKoeAd";
+import { FlatVectorAd, FLAT_AD_DUR } from "./styles/FlatVectorAd";
+import { PixelArtAd, PIXEL_AD_DUR } from "./styles/PixelArtAd";
+import { ZackDAd, ZACKD_AD_DUR } from "./styles/ZackDAd";
 import { ContactSheet, SHEET_DUR, SHEET_H, SHEET_W } from "./ContactSheet";
 import { FPS, H, W } from "./lib/theme";
 import { CommentReply, COMMENT_DUR, commentSchema } from "./reels/CommentReply";
@@ -37,6 +43,15 @@ export const RemotionRoot: React.FC = () => {
         defaultProps={{ username: "@username", comment: "your question here" }}
         {...v}
       />
+      {/* One example ad per Animation Studio style that SÍ QUEMA allows (see siquema-motion/animation-studio.md) */}
+      <Folder name="StyleExamples">
+        <Composition id="StyleChalkboard" component={ChalkboardAd} durationInFrames={CHALK_AD_DUR} {...v} />
+        <Composition id="StyleFlatVector" component={FlatVectorAd} durationInFrames={FLAT_AD_DUR} {...v} />
+        <Composition id="StyleDanKoe" component={DanKoeAd} durationInFrames={DANKOE_AD_DUR} {...v} />
+        <Composition id="StyleComicArt" component={ComicArtAd} durationInFrames={COMIC_AD_DUR} {...v} />
+        <Composition id="StylePixelArt" component={PixelArtAd} durationInFrames={PIXEL_AD_DUR} {...v} />
+        <Composition id="StyleZackD" component={ZackDAd} durationInFrames={ZACKD_AD_DUR} {...v} />
+      </Folder>
       <Composition id="ContactSheet" component={ContactSheet} durationInFrames={SHEET_DUR} fps={FPS} width={SHEET_W} height={SHEET_H} />
     </>
   );

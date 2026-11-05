@@ -1,6 +1,10 @@
 import { loadFont as loadAnton } from "@remotion/google-fonts/Anton";
 import { loadFont as loadInter } from "@remotion/google-fonts/Inter";
 import { loadFont as loadSpaceMono } from "@remotion/google-fonts/SpaceMono";
+import { loadFont as loadCaveat } from "@remotion/google-fonts/Caveat";
+import { loadFont as loadBangers } from "@remotion/google-fonts/Bangers";
+import { loadFont as loadSilkscreen } from "@remotion/google-fonts/Silkscreen";
+import { loadFont as loadFredoka } from "@remotion/google-fonts/Fredoka";
 import { loadFont as loadLocal } from "@remotion/fonts";
 import { staticFile } from "remotion";
 
@@ -22,6 +26,20 @@ export const INTER = LOCAL
 export const MONO = LOCAL
   ? (local("Space Mono", "SpaceMono-400.woff2", "400"), local("Space Mono", "SpaceMono-700.woff2", "700"))
   : loadSpaceMono("normal", { weights: ["400", "700"], subsets: ["latin"] }).fontFamily;
+
+// Style-example fonts (Animation Studio styles): chalk hand, comic, pixel, rounded 3D explainer.
+export const CAVEAT = LOCAL
+  ? local("Caveat", "Caveat-700.woff2", "700")
+  : loadCaveat("normal", { weights: ["700"], subsets: ["latin"] }).fontFamily;
+export const BANGERS = LOCAL
+  ? local("Bangers", "Bangers-400.woff2", "400")
+  : loadBangers("normal", { weights: ["400"], subsets: ["latin"] }).fontFamily;
+export const PIXEL = LOCAL
+  ? (local("Silkscreen", "Silkscreen-400.woff2", "400"), local("Silkscreen", "Silkscreen-700.woff2", "700"))
+  : loadSilkscreen("normal", { weights: ["400", "700"], subsets: ["latin"] }).fontFamily;
+export const FREDOKA = LOCAL
+  ? local("Fredoka", "Fredoka-600.woff2", "600")
+  : loadFredoka("normal", { weights: ["600"], subsets: ["latin"] }).fontFamily;
 
 export const C = {
   cream: "#F3EEE6",
