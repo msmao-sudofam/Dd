@@ -23,6 +23,7 @@ the video. This skill decides whether it ships.
 | `moves.json` | ~30 named moves with status: new / current / watch / retired | Picking moves |
 | `references/` | Reels M Mo likes, broken down into rules | Picking a style |
 | `feedback.md` | Every note M Mo gave, and the rule learned from it | Every job, before planning |
+| `animation-studio.md` | Which of the Animation Studio pack's 10 styles SÍ QUEMA may use, and the extra rules for each | Any job that uses Animation Studio or names one of its styles (`/chalkboard`, `/flatvector`, …) |
 
 ## Workflow
 
