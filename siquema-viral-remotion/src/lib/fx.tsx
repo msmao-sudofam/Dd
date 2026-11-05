@@ -8,6 +8,7 @@ import {
   Sequence,
   staticFile,
   useCurrentFrame,
+  useVideoConfig,
 } from "remotion";
 import { C, FDA, FINE_PRINT, H, INTER, MONO, SAFE_BOTTOM, W, sec } from "./theme";
 
@@ -30,6 +31,14 @@ export const punchScale = (f: number, hits: number[], amount = 0.05) => {
     if (d >= 0 && d < 10) s = Math.max(s, 1 + amount * Math.exp(-d / 3));
   }
   return s;
+};
+
+/** Slow push-in on the content; frozen at frame 0 for the loop-back, so the cover is unscaled. */
+export const Push: React.FC<{ amount: number; children: React.ReactNode }> = ({ amount, children }) => {
+  const f = useCurrentFrame();
+  const { durationInFrames } = useVideoConfig();
+  if (!amount) return <>{children}</>;
+  return <AbsoluteFill style={{ transform: `scale(${1 + (amount * f) / durationInFrames})`, transformOrigin: "540px 864px" }}>{children}</AbsoluteFill>;
 };
 
 export const Punch: React.FC<{ hits: number[]; children: React.ReactNode }> = ({ hits, children }) => {
@@ -83,20 +92,22 @@ export const PopCaption: React.FC<{ text: React.ReactNode; top: number; at: numb
 };
 
 /** Bottom-of-safe-zone legal line. 22px, 60% opacity, centered. */
-export const FinePrint: React.FC<{ fda?: boolean; color?: string }> = ({ fda, color = C.ink }) => (
+/** band: a dark strip behind the line, for busy scenes (crowds, skylines) where it must still read. */
+export const FinePrint: React.FC<{ fda?: boolean; color?: string; band?: boolean }> = ({ fda, color = C.ink, band }) => (
   <div
     style={{
       position: "absolute",
-      left: 90,
-      right: 90,
+      left: band ? 0 : 90,
+      right: band ? 0 : 90,
+      ...(band ? { background: "rgba(11,8,9,.72)", padding: "8px 90px 10px" } : {}),
       bottom: H - SAFE_BOTTOM,
       textAlign: "center",
       fontFamily: INTER,
       fontWeight: 500,
       fontSize: 22,
       lineHeight: 1.35,
-      color,
-      opacity: 0.6,
+      color: band ? "#F3EEE6" : color,
+      opacity: band ? 0.85 : 0.6,
     }}
   >
     <div>{FINE_PRINT}</div>
@@ -155,8 +166,12 @@ export const Reel: React.FC<{
   /** Fine-print color, or a function of frame (evaluated at frame 0 during the loop-back). */
   printColor?: string | ((f: number) => string);
   grain?: number;
+  /** slow camera push over the whole piece (0.04 = 1 → 1.04) */
+  push?: number;
+  /** put the fine print on a dark band */
+  printBand?: boolean;
   children: React.ReactNode;
-}> = ({ dur, hits = [], sfx = [], fda, printColor, grain, children }) => {
+}> = ({ dur, hits = [], sfx = [], fda, printColor, grain, push = 0, printBand, children }) => {
   const f = useCurrentFrame();
   const all: Sfx[] = [...sfx, { at: dur - LOOP - 2, s: "whoosh", v: 0.25 }]; // gate: allow stock-sfx, synthesized, loop slide only
   const pf = f >= dur - LOOP / 2 ? 0 : f;
@@ -164,10 +179,12 @@ export const Reel: React.FC<{
   return (
     <AbsoluteFill style={{ backgroundColor: C.dark }}>
       <LoopBack dur={dur}>
-        <Punch hits={hits}>{children}</Punch>
+        <Punch hits={hits}>
+          <Push amount={push}>{children}</Push>
+        </Punch>
       </LoopBack>
       <Grain opacity={grain} />
-      <FinePrint fda={fda} color={pc} />
+      <FinePrint fda={fda} color={pc} band={printBand} />
       {all.map((x, i) => (
         <Sequence key={i} from={Math.max(0, x.at)} durationInFrames={sec(1)} layout="none">
           <Audio src={staticFile(`sfx/${x.s}.wav`)} volume={x.v ?? VOL[x.s]} />

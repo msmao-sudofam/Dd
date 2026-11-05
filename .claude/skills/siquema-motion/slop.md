@@ -20,6 +20,7 @@ the contact sheet.
   (the name means heat; that doesn't mean fake fire)
 - ~~Stock whooshes, chimes, bells, risers on every cut~~ **[code: sfx filenames]**
 - ~~AI-generated tubs, labels, scoops, or "customers"~~
+  (clearly cartoon characters acting out a story are allowed; see compliance.md)
 - ~~AI-drawn text inside generated images~~ (letters melt, it gives the game away)
 - ~~3D tub spinning on a gradient~~
 
