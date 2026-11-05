@@ -15,6 +15,11 @@ applied to:     <slop.md / moves.json:<id> / principles.md / brand.md>
 
 ---
 
+## 2026-11-05 · Animation Studio style examples (6 ads)
+my note:        "none of these motion graphics looks like the video i got the skill from said it would look like"
+what it learned: Before building a style, get the reference that sold it (the promo video or screenshots) and match its look shot by shot. Clean procedural diagrams that only follow the style guide's rules read as a different product. Ask for the reference first; don't build from the text guide alone.
+applied to:     animation-studio.md (process), next build
+
 ## 2026-10-27 · siquema-viral-remotion (8 transparency reels)
 my note:        "Do it all" (answer to the reviewer's owner-call list: "Thermogenic Blend" on the example label, "Caffeine? ? mg", unstarred "the one that makes you sweat", text scramble, unverified coffee comparison)
 what it learned: When a flagged line is the owner's own wording, take the safer option by default: neutral words on fictional comparison labels ("Proprietary Blend"), an asterisk on any effect line, no scrambled/nonsense text even mid-animation (type-on instead), plain punctuation, and a real public source (FDA/USDA) for every comparison.
