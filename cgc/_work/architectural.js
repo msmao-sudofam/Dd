@@ -14,12 +14,10 @@ filmToggle.onclick=()=>{if(filmVideo.paused){loadFilm();filmVideo.play().then(fi
 filmVideo.addEventListener('loadeddata',()=>{filmVideo.classList.add('ready','poster-ready');filmButton()});filmVideo.addEventListener('play',filmButton);filmVideo.addEventListener('pause',filmButton);
 filmVideo.addEventListener('timeupdate',()=>{const t=filmVideo.currentTime,d=filmVideo.duration||1,chapter=filmChapters.filter(c=>t>=c[0]).length-1;$('#film-chapter').textContent='0'+(chapter+1)+' / '+filmChapters[chapter][1];$('#film-progress').style.width=(t/d*100)+'%';$('#film-time').textContent='00:'+String(Math.floor(t)).padStart(2,'0')+' / 00:'+String(Math.round(d)).padStart(2,'0')});
 filmVideo.addEventListener('error',()=>{filmVideo.classList.remove('ready','poster-ready');filmToggle.setAttribute('aria-label','Retry concept film')});
-new IntersectionObserver(entries=>{if(!entries[0].isIntersecting){filmVideo.pause();filmButton()}},{threshold:.1}).observe($('.film-stage'));
+// The reel sits mid-page now: it plays while on screen and pauses when scrolled away.
+new IntersectionObserver(entries=>{if(entries[0].isIntersecting)startFilm();else{filmVideo.pause();filmButton()}},{threshold:.35}).observe($('#build .build-stage')||$('.film-stage'));
 document.addEventListener('visibilitychange',()=>{if(document.hidden){filmVideo.pause();filmButton()}});reduced.addEventListener('change',()=>{if(reduced.matches){filmVideo.pause();filmButton()}});
 $('#film-captions').onclick=()=>{const t=filmVideo.textTracks[0];if(!t)return;const on=t.mode!=='showing';t.mode=on?'showing':'hidden';$('#film-captions').setAttribute('aria-pressed',String(on));$('#film-captions').setAttribute('aria-label',on?'CC / Hide film captions':'CC / Show film captions')};
-// Start after load so the 2 MB reel never competes with the poster (the LCP) and first paint.
-const queueFilm=()=>setTimeout(startFilm,600);
-if(document.readyState==='complete')queueFilm();else addEventListener('load',queueFilm,{once:true});
 
 // Scroll reveal. Progressive: elements are only hidden after this runs, and never with reduced motion.
 if(!reduced.matches&&'IntersectionObserver' in window){
@@ -31,12 +29,11 @@ document.documentElement.classList.add('motion')}
 const build=$('#build');
 if(build&&!reduced.matches){
 const canvas=build.querySelector('canvas'),ctx=canvas.getContext('2d'),N=81,small=matchMedia('(max-width:760px)').matches,frames=[],steps=$$('.build-steps li'),bar=build.querySelector('.build-bar span');let shown=-1,loaded=false;
-if(small){canvas.width=960;canvas.height=540}
-const src=i=>'assets/film/build/'+(small?'m':'d')+String(i+1).padStart(3,'0')+'.webp';
+const src=i=>'assets/film/build/d'+String(i+1).padStart(3,'0')+'.webp';
 const draw=i=>{for(let j=i;j>=0;j--)if(frames[j]?.complete&&frames[j].naturalWidth){if(j!==shown){ctx.drawImage(frames[j],0,0,canvas.width,canvas.height);shown=j}return}};
 const progress=()=>{const r=build.getBoundingClientRect(),run=r.height-innerHeight;return Math.min(1,Math.max(0,-r.top/(run||1)))};
 const tick=()=>{const p=progress(),i=Math.round(p*(N-1));draw(i);bar.style.width=p*100+'%';steps.forEach((s,k)=>s.classList.toggle('on',p>=k/steps.length-.001))};
-const load=()=>{if(loaded)return;loaded=true;for(let i=0;i<N;i++){const im=new Image();im.decoding='async';im.onload=()=>{if(i===0||Math.abs(i-Math.round(progress()*(N-1)))<3)tick()};im.src=src(i);frames[i]=im}};
+const load=()=>{if(loaded)return;loaded=true;for(let i=0;i<N;i+=small?2:1){const im=new Image();im.decoding='async';im.onload=()=>{if(i===0||Math.abs(i-Math.round(progress()*(N-1)))<3)tick()};im.src=src(i);frames[i]=im}};
 build.classList.add('scrub');
 new IntersectionObserver(es=>{if(es[0].isIntersecting)load()},{rootMargin:'150% 0px'}).observe(build);
 let raf=0;addEventListener('scroll',()=>{if(!raf)raf=requestAnimationFrame(()=>{raf=0;if(loaded)tick()})},{passive:true});addEventListener('resize',tick)}
@@ -46,7 +43,7 @@ const walk=$('.walk-film video');
 if(walk&&!reduced.matches)new IntersectionObserver(es=>{if(es[0].isIntersecting){if(!walk.src){walk.src=matchMedia('(max-width:760px)').matches?'assets/film/walk/mobile.mp4':'assets/film/walk/desktop.mp4'}walk.play().catch(()=>{})}else walk.pause()},{threshold:.25}).observe(walk);
 
 // Clear header while the hero film is behind it; frosted once the page scrolls past.
-const header=$('header');new IntersectionObserver(es=>header.classList.toggle('clear',es[0].isIntersecting),{rootMargin:'-60px 0px 0px 0px',threshold:0}).observe($('.film-stage'));
+const header=$('header');new IntersectionObserver(es=>header.classList.toggle('clear',es[0].isIntersecting),{rootMargin:'-60px 0px 0px 0px',threshold:0}).observe($('#build .build-stage')||$('.film-stage'));
 
 // Before/after sliders: mouse hover follows, touch drags only on a sideways swipe (vertical scrolling passes through),
 // eased toward the target every frame, and one glide on first view so visitors see it moves.

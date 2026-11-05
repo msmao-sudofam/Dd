@@ -374,3 +374,38 @@ header .btn{display:none}
 #film .hero-shade{display:none!important}
 #film .film-bottom{top:auto!important;bottom:44px!important;right:32px!important}
 }
+/* Build hero: the scroll-to-build film is the opening screen */
+.build-hero.scrub{height:280svh}
+.build-hero .build-stage,.build-hero.scrub .build-stage{top:0;height:100svh;min-height:560px}
+.build-hero .build-still,.build-hero .build-canvas{object-fit:cover;object-position:42% center}
+.build-hero .build-shade{background:linear-gradient(to top,rgba(10,10,10,.9) 0%,rgba(10,10,10,.55) 34%,rgba(10,10,10,0) 62%),linear-gradient(to right,rgba(10,10,10,.5),rgba(10,10,10,0) 55%)}
+.build-hero .build-copy{bottom:110px}
+.build-hero .build-copy .eyebrow{display:block;margin-bottom:22px}
+.build-hero h1{color:#fff}
+.build-lede{max-width:430px;margin:22px 0 28px;font-size:17px;line-height:1.45;color:rgba(255,255,255,.78)}
+.build-hero .hero-actions{max-width:470px}
+.build-hero .hero-actions .btn.ghost{color:#fff;border-color:transparent;background:transparent;text-decoration:underline;text-underline-offset:6px;text-decoration-color:rgba(255,255,255,.4)}
+.build-meta{position:absolute;left:0;right:0;bottom:30px;display:flex;justify-content:space-between;align-items:center}
+.build-hero .build-steps{margin:0}
+.build-hero .build-note{margin:0;font:10px var(--f-mono);text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.66)}
+@media(max-width:760px){
+.build-hero .build-stage,.build-hero.scrub .build-stage{display:block;height:100svh;min-height:0;padding:0}
+.build-hero .build-still,.build-hero .build-canvas{position:absolute;inset:0;height:100%;aspect-ratio:auto}
+.build-hero.scrub .build-still{display:block;visibility:hidden}
+.build-hero .build-shade{display:block;background:linear-gradient(to top,rgba(10,10,10,.95) 0%,rgba(10,10,10,.7) 40%,rgba(10,10,10,0) 70%)}
+.build-hero .build-copy{position:absolute;left:20px;right:20px;bottom:64px;width:auto;margin:0;padding:0}
+.build-hero h1{font-size:clamp(52px,15vw,64px)}
+.build-hero .build-copy .eyebrow{font-size:9px;margin-bottom:14px}
+.build-lede{font-size:15px;margin:14px 0 20px;max-width:320px}
+.build-hero .hero-actions .btn.ghost{display:none}
+.build-hero .build-steps{display:none}
+.build-meta{bottom:22px;width:calc(100% - 40px)}
+.build-hero .build-bar{position:absolute;bottom:0}
+#film .cinema-poster,#film .cinema-video{aspect-ratio:16/9}
+#film .film-stage{padding-top:32px!important}
+}
+.build-hero h1{margin:0;text-transform:none;font-stretch:100%;font-weight:600;font-size:clamp(56px,7.4vw,136px);line-height:.88;letter-spacing:-.065em;animation:rise 1s var(--ease) both}
+.loading .build-hero h1{animation-play-state:paused}
+@media(max-width:760px){.build-hero h1{font-size:clamp(52px,15vw,64px)}#film .film-stage{padding-top:20px!important;padding-bottom:24px!important}}
+@media(max-width:760px){#film .cinema-poster,#film .cinema-video{grid-row:1}}
+@media(max-width:760px){#film{padding-top:0}#film .film-stage{padding-top:24px!important}}
