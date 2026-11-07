@@ -1,0 +1,68 @@
+name: videoapp CI
+
+on:
+  pull_request:
+  push:
+    branches: [main, claude/install-claude-code-cli-Px3YJ]
+
+concurrency:
+  group: videoapp-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: videoapp
+
+jobs:
+  unit:
+    name: Lint, typecheck, unit + SQL tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: videoapp/package-lock.json
+      - name: Install ffmpeg (watermark tests use ffprobe)
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - run: npm ci
+      - run: npm run lint
+      - run: npx next typegen && npm run typecheck
+      - name: Unit + SQL migration tests (mock mode)
+        run: npm test
+        env:
+          TEST_PG_URL: postgres://postgres:postgres@127.0.0.1:5432/postgres
+          REQUIRE_PG: "1"
+
+  e2e:
+    name: Playwright e2e (mock mode)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: videoapp/package-lock.json
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: E2E against a production build with mock providers, backend and Stripe
+        run: npm run test:e2e
+      - name: Upload Playwright traces on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-traces
+          path: videoapp/test-results/
+          retention-days: 7
